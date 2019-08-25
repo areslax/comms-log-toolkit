@@ -1,0 +1,67 @@
+/*
+ * ###############################
+ * ARES_style.css
+ * Stylesheet for ARES portal docs
+ * ############################### */
+
+* { font-family: Courier,Courier New,monospace; }
+
+@media print {
+	* { border: none; }
+	SELECT,TEXTAREA { border: none; background: none; }
+	.noprint { display: none; }
+}
+
+SELECT {
+	background: transparent;
+}
+SELECT:focus {
+	background-color: rgb(255,255,200);
+}
+
+TEXTAREA {
+    border: solid 1px lightgrey;
+    overflow: hidden;
+    padding: 0;
+    outline: none;
+/*    background-color: #D0D0D0; */
+    background-color: white;
+}
+
+.actdiv { display: none; }
+.combut {
+	padding: 2px;
+	text-align: center;
+	font-size: 12px;
+	width: 60px;
+	border: solid 1px grey;
+	background-color: rgb(255,200,200);
+}
+.topknot {
+	padding: 0px;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.location {
+	width: 70px;
+	text-align: center;
+}
+
+.px40 { width: 42px; }
+.px60 { width: 60px; }
+.px80 { width: 88px; }
+.px100 { width: 100px; }
+
+.bg-grn { background-color: rgb(200,240,180); }
+.bg-blu { background-color: rgb(220,220,255); }
+.bg-red { background-color: rgb(255,220,220); }
+.bg-ylo { background-color: rgb(255,255,120); }
+.bg-blk { background-color: rgb(0,0,0);color:lightgrey; }
+.bg-wht { background-color: rgb(255,255,255); }
+
+.actstamp {
+	width: 60px;
+	display: none;
+}

@@ -1,0 +1,56 @@
+============================================================================
+Current Known Issues, Core Feature Additions and Bugs
+============================================================================
+
+All:
+
+[0] Core: PHP Encryption before public beta
+[1] Core: Re-build Minefield with PHM branding
+[2] Calendar: Timeline: Project length limited to 51 weeks
+[3] Calendar: Dynamic width
+[4] Calendar: Convert displayed 24-hour time to 12-hour time
+[5] Calendar: Confirm delete
+[6] Budget Manager: Dynamic width
+[7] Budget Manager: Confirm page unload when changes made but not saved
+[8] Windows: Replace modified XAMPP with clean custom build
+[9] Journal: iBrowser is crap. Write or find image upload/insert plugin.
+
+Windows 98:
+
+[1] Calendar and Journal fail to open without data file
+
+Windows XP:
+
+[1] Drive mapping is inconsistent (can collide w/existing maps)
+
+Windows Vista Home:
+
+[1] Autorun.inf is unreliable
+[2] Drive mapping is inconsistent (can collide w/existing maps)
+[3] Parental Controls really screw things up; many alerts, main pages don't load
+[4] ALzip ZIP files with passwords won't open
+
+Macintosh OSX (PPC and Intel, >10.5.x):
+
+[0] No known issues (except All)
+
+Linux (will be needed for "Netbooks"):
+
+[1] Build package (Note: Linux recognizes autorun.inf!)
+
+============================================================================
+Additional Features
+============================================================================
+
+[1] Step-by-Step Tutorials
+[2] Context-sensitive Help; Additional Help details with visuals
+[3] Journal: Help for using iBrowser (third party)
+[4] Budget Manager: Sort by "Due Date"
+[5] Budget Manager: Turn more stuff red when over budget
+[6] Budget Manager: "Section total is X% of Total Budget" + advisories
+[7] Budget Manager: Guidelines (recommendations, tips and hints)
+[8] Budget Manager: Freeze entries when "Done Date" != ""
+[9] Calendar: Guidelines (recommendations, tips and hints)
+[10] Calendar: Grid View: Show link for task duration (1 => many)
+[11] Calendar: Timeline View: Projects under 51 days use days instead of weeks
+

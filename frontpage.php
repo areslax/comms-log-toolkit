@@ -1,0 +1,110 @@
+<?php
+$isadmin = (!empty($_GET['admin'])) ? "?admin=1":"";
+?>
+<html>
+<head><title>The ARES Toolkit</title>
+
+<?php
+include "common_includes.php";
+?>
+
+<script type="text/javascript">
+function popIRC() {
+	window.open('aresircchat.php','ircwin','width=360,height=380,scrollbars=no');
+}
+</script>
+<style type="text/css">
+* { font-family:Verdana,Arial,Helvetica,sans-serif }
+A { text-decoration:none;font-weight:bold }
+A:hover { border-bottom:1px dotted blue; }
+BODY { padding:40px; }
+.colbody {
+ padding-left:10px;
+ font-size:10pt;
+ font-style:italic;
+}
+.colhead {
+ font-size:12pt;
+ font-weight:bold;
+ color:#009;
+}
+.txtboxl {
+ position:absolute;
+ top:300px;
+ left:160px;
+}
+.txtboxr {
+ position:absolute;
+ top:300px;
+ left:490px;
+}
+.ctr { text-align:center; }
+</style>
+</head>
+<body onload="self.focus()">
+
+<p class="ctr" style="margin-top:-30px">
+
+<img src="images/ares_logo.png" border=0 alt="The ARES Toolkit" />
+
+</p>
+
+<center>
+<table border=0 cellpadding=0 cellspacing=0>
+<tr><td align=center colspan=3 style="border-top:solid 1px #900;border-bottom:solid 1px #900">
+
+<br>
+<!-- put new entries here -->
+<?php
+if (!empty($_GET['admin'])) {
+?>
+<p style="margin:6px">
+<b>Manage:</b>&nbsp;&nbsp;&nbsp; <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Incidents</a> &nbsp;|&nbsp; <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Net Controls</a> &nbsp;|&nbsp; <a href="ARES_Member_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Members</a> &nbsp;|&nbsp; <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Locations</a><br><br>
+<?php
+}
+?>
+<a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead">ARES Net Control Comms Log</a><br><br>
+<!--/p-->
+<p style="border-top:solid 1px #900;margin-top:0px;margin-bottom:0px;padding-top:20px;">
+<?php
+#}
+?>
+<a href="forum/index.php" target="_blank">ARES Toolkit Forum</a> &nbsp;|&nbsp; <a href="javascript:popIRC()" class="colhead">ARESLAX IRC Chat</a>
+<p style="border-top:solid 1px #900;margin-top:20px;margin-bottom:0px;padding-top:20px;">
+<b>Download or Complete &amp; Print:</b><br><br>
+<a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead">ARES MCI Poll</a><br>
+<a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead">ARES HSA Poll</a><br>
+<a href="files/20190703_ARES_EVENT_Log_rev_4_form.pdf" class="colhead">ARES Event Log</a><br>
+<a href="files/20190703_ARES_Message_Log_rev_6_form.pdf" class="colhead">ARES Message Log</a><br>
+<a href="files/20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf" class="colhead">Resource Request Form</a><br>
+<a href="files/20190716_RADIOGRAM_Form-2011.pdf" class="colhead">Radiogram Form</a><br>
+<a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead">Hospital Abbreviations</a><br>
+</p>
+
+<br></td></tr>
+</table>
+
+<table border=0 cellpadding=6 cellspacing=0 style="margin-top:12px">
+<tr>
+<td align=center>
+<!-- <a href="calendar_grid.php" class="colhead">Event Calendar</a><br />
+ <span class="colbody">For managing time</span>-->
+
+ <span class="colhead">ARESLAX</span> <a href="https://groups.io/g/ARESLAX" target="_blank" class="colhead" title="ARESLAX at groups.io">Groups.io</a> | <a href="http://www.arrllax.org/index.php?page=ares" target="_blank" class="colhead" title="ARESLAX.org at ARRL.org">.ORG</a><br />
+ <span class="colbody">For managing accounts and such</span><br />
+</td>
+</tr>
+
+</table>
+
+</center>
+<p class="ctr">
+<!--a href="javascript:void addIcon()" style="font-size:9pt;color:#99d">Click here to add an icon to your Desktop</a-->
+</p>
+
+<?include "footer.html"?>
+
+<iframe id=modal style="position:fixed;top:10px;left:50%;width:800px;margin-left:-400px;height:90%;padding:10px;background-color:white;border:solid 1px black;border-radius:6px;display:none;"</iframe>
+
+</body>
+</html>

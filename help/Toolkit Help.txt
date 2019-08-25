@@ -1,0 +1,200 @@
+ARES Toolkit Help
+
+Toolkit Overview
+
+The ARES Toolkit is your homebuilding project
+management buddy. By using the Toolkit, you will see better time
+management, better money management and the realization of your
+dreams.
+
+Starting & Stopping the Toolkit
+
+When the USB stick is inserted into any available USB port in your
+computer, it will be ready to run.
+
+For Macintosh users, simply double-click on the new "TOOLKIT" icon
+on your Desktop to open the Toolkit, then double-click the icon
+labeled "Macintosh Start".
+
+For Windows users, when the drive is inserted, you should be prompted
+to run the program. If the prompt does not appear, then use your "My
+Computer" or "Windows Explorer" programs to click on the new
+"TOOLKIT" icon, then double-click the icon labeled "Windows Start".
+
+As long as the USB stick remains in the computer, you may use the
+appropriate "..Start" icons to re-start the Toolkit.
+
+To shut down the Toolkit, click the link in the Menu of the Toolkit,
+then quit out of the Toolkit window completely once you receive the
+"..Toolkit Has Stopped.." notice. If you have already closed the
+Toolkit window, open the "TOOLKIT" and double-click the appropriate
+"..Stop" icon to stop the Toolkit.
+
+If you are having trouble ejecting the USB stick or re-starting the
+Toolkit, be sure you have quit completely out of the Toolkit program
+window and then double-click the appropriate "..Stop" icon in the
+"TOOLKIT". If the Toolkit program window is still running, then a new
+one cannot open, and the Mac won't let you eject the stick when some
+parts of the Toolkit are still running in the background.
+
+Journal Overview
+
+The Project Journal helps you keep notes and jot down thoughts about
+the homebuilding process. It's a place to wonder about things and
+make observations that will guide you through the process.
+
+You can format your text and include images in your entries to help
+plan your home's look, and to make communicating your dreams to the
+rest of your homebuilding team just a little bit easier.
+
+Working with Journal Entries
+
+To make a new Journal entry, click the yellow button labeled "Create
+a New Journal Entry" near the top of the page. A window will pop up
+with the New Entry form inside it. When you have finished typing your
+entry, formatting your text and including your images, click the
+yellow button labeled "I'm Done - Save This Entry" to enter it into
+your Journal.
+
+You may not delete or edit a journal entry in the Basic version of
+the Toolkit. Upgrading to the paid Premium version will unlock this
+feature.
+
+Calendar Overview
+
+The Calendar is your tool to keep you on time and your project on
+track, and to help you coordinate with the professionals who you
+choose to work with. You can see at a glance when activity will
+occur, and who is responsible for doing what, when. There are three
+different ways of looking at your Calendared items, each designed to
+give you valuable information that a single view simply cannot.
+
+To switch between the different views, click on the icons up next to
+the "Create a New Calendar Item" button.
+
+Tasks assigned to the Homeowner are highlighted in blue, and tasks
+which are the responsibility of the Contractors are highlighted in
+red.
+
+Working with Calendar Entries
+
+To make a new Calendar item, click the yellow button labeled "Create
+a New Calendar Item" near the top of the page. A window will pop up
+with the New Item form inside it. Use the little grid icons
+associated with the "From" and "To" date fields to choose your dates,
+and use the drop down menus to choose your times. When you have
+finished entering your item, click the "Save This Item" button to
+save it or click "Cancel" to discard the item.
+
+You may edit or delete Calendar items by using the icons visible in
+the Grid View, in the List View or in the Day View of the Calendar.
+
+To edit a Calendar item, click the "pencil" icon associated with the
+entry you wish to make changes to. A window will pop up with the Edit
+Item form inside it. After making your changes, you may click the
+"Save These Changes" button to save your changes or click the
+"Cancel" button to cancel your editing.
+
+To delete a Calendar item, click the red "x" icon associated with the
+entry you wish to delete. You will be asked to confirm your request.
+
+Grid View
+
+The traditional Grid View gives you a handy, familiar way to look at
+when project elements begin, and who is assigned to take care of
+them.
+
+Click on any day's number to see the items that begin on that day.
+You may also click on the links to "HOMEOWNER" or "CONTRACTOR" to
+view the tasks assigned to either the Homeowner or your Contractors
+that begin on that day.
+
+Use the month and year drop down menus or the yellow "previous" and
+"next" buttons to move between months.
+
+Timeline View
+
+The innovative Timeline View allows you to get a feel for the "Big
+Picture", with everything broken down by week.
+
+Hold your cursor over an item's title or related color bar to view
+the details for that item.
+
+Edit or delete Calendar items from the Timeline View by clicking the
+"pencil" or "x" icons associated with each item.
+
+List View
+
+In the List View, get the complete details of your project elements
+in the order in which they must be executed.
+
+Group items by the date they start on to print out to-do lists for
+your team.
+
+Edit or delete Calendar items from the List View by clicking the
+"pencil" or "x" icons associated with each item. Click the link to
+see all items for the same day the current item.
+
+Day View
+
+The Day View is used when drilling down into any Calendar item, or
+when grouping items by "HOMEOWNER" or "CONTRACTOR".
+
+Edit or delete Calendar items from the Day View by clicking the
+"pencil" or "x" icons associated with each item. Click the link to
+return to your previous view.
+
+Budget Manager Overview
+
+The Budget Manager will help you keep an eye on your money. By
+starting with your maximum budget and instantly showing you how your
+plans and expenses impact that amount, you can see in real-time how
+to best position what you have to spend. As the project proceeds,
+you will make changes and juggle your budget so everything comes out
+just as you want it to.
+
+Working with Budget Manager Entries
+
+To make a new Budget Manager entry, click in the last row (labeled
+"Click here to add a new row...") of any section and use the new row
+to make your entry. Use the little grid icons next to the Date fields
+to choose the "Due Date", and to keep your Budget current by entering
+the "Done Date" when any task is completed.
+
+You may make changes to an existing Budget Manager entry by simply
+clicking in the field you wish to change and making your
+modifications. The headings in the Budget Manager can be edited by
+clicking inside a heading and typing to re-label it.
+
+As you make changes to the dollar amounts and click away from the
+field, the "Total Spend" amount will update automatically so you can
+see immediately how changes affect your bottom line.
+
+Assign a "Go To Person" to every task so you know who to turn to for
+status updates. When you upgrade your Toolkit from the Basic version
+to the Premium version, these entries will be linked to the "Go To
+Person's" contact info and Professional Profile.
+
+Click the yellow button labeled "Save My Budget Changes" to save any
+current changes you have made to the headings or to the entries, or
+click the button labeled "Discard Changes" to cancel your changes and
+return the Budget Manager to the way it was the last time you saved
+it.
+
+The PHM[TM] Website
+
+The website (http://www.proactivehomebuilding.com) is your entry into
+the Proactive Homebuilding[TM] Community and an extension of the Basic
+Toolkit.
+
+When you register with the website, you will be opening the door to a
+new group of friends and a whole passle of tools to help you manage
+your homebuilding projects like an expert.
+
+When you connect to the website, you may upgrade your Toolkit from
+the Basic version to the Premium version; unlocking additional
+features, the ability to store a lot more information, including
+videos, and full integration with the Proactive Homebuilding Method[TM]
+and all of its professional and social networking tools.
+
+Copyright 2009 Dori Howard Enterprises. All rights are reserved.
