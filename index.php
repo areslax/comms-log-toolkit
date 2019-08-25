@@ -5,6 +5,7 @@ $isadmin = (!empty($_GET['admin'])) ? "?admin=1":"";
 <!doctype html>
 <html>
 <head><title>ARES Toolkit</title>
+<link rel="icon" type="image/png" href="favicon.ico">
 <script type="text/javascript">
 var curr_callsign = "";
 </script>

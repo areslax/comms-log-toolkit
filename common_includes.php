@@ -13,3 +13,5 @@
 <script type="text/javascript" src="scripts/ARES_Locations_and_People.js?nocache=<?=date("YmdHis")?>"></script>
 <script type="text/javascript" src="scripts/ARES_common_methods.js?nocache=<?=date("YmdHis")?>"></script>
 
+<link rel="icon" type="image/png" href="favicon.ico">
+
