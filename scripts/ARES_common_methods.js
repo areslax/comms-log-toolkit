@@ -11,6 +11,19 @@ jQuery.each(typs, function(key,val) {
 	typlist = typlist+"<option value='"+key+"'>"+val+"</option>";
 });
 
+function startNewLog() {
+	jQuery.ajax({
+		type: "POST",
+		url: "ajax_start_new_log.php",
+		data: "doit=1",
+		success: function(a,b,c){
+			console.log(a);
+		}
+	});
+	location.href = location.href;
+}
+
+
 function getTimestamp(fld) {
 	var stamp = new Date();
 	var day = (stamp.getDate()<10) ? "0"+String(stamp.getDate()):String(stamp.getDate());
@@ -106,9 +119,31 @@ function saveMe(incoming) {
 var callsign = "";
 function setCallSign(id,cs) {
 	callsign = cs;
-	if (id>0) {
+//	if (id>0) {
 		document.getElementById("who"+(id+1)).value=callsign;
-	}
+		var datastr = "cs="+callsign+"&ncid="+document.getElementById("stationid").value+"&iid="+document.getElementById("incidentid").value+"&lid="+document.getElementById("loc"+id).value;
+		jQuery.ajax({
+			//set operator and php cookie with o_id
+			type: "POST",
+			url: "ajax_set_operator.php",
+			data: datastr,
+			success: function(a,b,c){
+				console.log(a);
+			}
+		});
+//	}
+}
+var stationid = "";
+function setNetControl(ncid) {
+	var datastr = "ncid="+ncid;
+	jQuery.ajax({
+		type: "POST",
+		url: "ajax_set_net_control.php",
+		data: datastr,
+		success: function(a,b,c){
+			console.log(a);
+		}
+	});
 }
 
 function really() {
@@ -127,31 +162,37 @@ function checkAction(idn,idx) {
 
 function markDone(idn) {
 	document.getElementById("act"+idn).style.display = "none";
-	document.getElementById("actdiv"+idn).innerHTML = "<textarea id='actdone"+idn+"' name='actdone"+idn+"' style='resize:none;text-align:center;font-size:10px;width:80px;height:22px;background:none;border:none;'></textarea>";
+	document.getElementById("actdiv"+idn).innerHTML = "<textarea id='actdone"+idn+"' name='actdone_"+idn+"' style='resize:none;text-align:center;font-size:10px;width:80px;height:22px;background:none;border:none;'></textarea>";
 	getTimestamp("actdone"+idn);
 }
 
 function checkType(rtyp,rfld,doit,inid,sid) {
 	if (rfld!='') {
 	//do in_array
+	//mci poll
 	if (rtyp=='1') {
 		showModal("ARES_MCI_Poll.php?fld="+locfld[rfld]+"&rfld="+rfld+"&inid="+inid+"&sid="+sid,"block");
 	}
+	//hsa poll
 	if (rtyp=='2') {
 		showModal("ARES_HSA_Poll.php?fld="+locfld[rfld]+"&rfld="+rfld+"&inid="+inid+"&sid="+sid,"block");
 	}
+	//event
 	if (rtyp=='3' && doit) {
 		showModal("ARES_Event_Log.php?fld="+locfld[rfld]+":"+jQuery("#eventid").val()+":"+callsign+"&rfld="+rfld+"&inid="+inid+"&sid="+sid,"block");
 	}
+	//resource request
 	if (rtyp=='4') {
 		showModal("file_wrapper.php?furl=20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf","block");
 	}
+	//relay request
 	if (rtyp=='5') {
 		var itr = rfld.substring(3,rfld.length);
-		document.getElementById('msgbox_'+itr).innerHTML = "<table border=0 cellpadding=2 cellspacing=0 style='background:none;margin-bottom:-6px;'><tr valign=top style='background:none !important'><td align=left style='background:none !important'><input type=text name=msgfrom_"+itr+" id=msgfrom"+itr+" class='people' style='width:100px' onfocus='hiliteme("+itr+")' placeholder='Relay From'><br><input type=text name=msgto_"+itr+" id=msgto"+itr+" onfocus='hiliteme("+itr+")' class='people' onchange='getRelayOpts(this.value,"+iter+");' style='width:100px' placeholder='Relay To'><p style='text-align:center;margin-top:4px;' id=sentfld_"+iter+"><button type=button id=msgbut_"+iter+" style='font-size:11px;cursor:pointer;' onclick='relayMessage("+iter+")'>SEND NOW</button></p></td><td style='background:none !important'>\n<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=4 style='width:183px;padding:2px;' onfocus='hiliteme("+itr+")'></textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style='background:none !important'><tr id=butsms_"+iter+" style='display:none'><td style='padding:0px !important'><input type=checkbox name=sendvia["+itr+"] value=sms></td><td style='font-size:10px;text-align:left;'>SMS</td></tr><tr id=butemail_"+iter+" style='display:none'><td><input type=checkbox name=sendvia["+itr+"] value=email></td><td style='font-size:10px;text-align:left;'>Email</td></tr><tr id=butother_"+iter+"><td><input type=checkbox name=sendvia["+itr+"] value=other></td><td style='font-size:10px;text-align:left;'>Other</td></tr></table></tr></table>";
+		document.getElementById('msgbox_'+itr).innerHTML = "<table border=0 cellpadding=2 cellspacing=0 style='background:none;margin-bottom:-6px;'><tr valign=top style='background:none !important'><td align=left style='background:none !important'><input type=hidden name=rmtyps_"+itr+" id=rmtyps"+itr+" value=''><input type=text name=msgfrom_"+itr+" id=msgfrom"+itr+" class='people' style='width:100px' onfocus='hiliteme("+itr+")' placeholder='Relay From'><br><input type=text name=msgto_"+itr+" id=msgto"+itr+" onfocus='hiliteme("+itr+")' class='people' onchange='getRelayOpts(this.value,"+itr+");' style='width:100px' placeholder='Relay To'><p style='text-align:center;margin-top:4px;' id=sentfld_"+itr+"><button type=button id=msgbut_"+itr+" style='font-size:11px;cursor:pointer;' onclick='relayMessage("+itr+")'>SEND NOW</button></p></td><td style='background:none !important'>\n<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=4 style='width:183px;padding:2px;' onfocus='hiliteme("+itr+")'></textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style='background:none !important'><tr id=butsms_"+itr+" style='display:none'><td style='padding:0px !important'><input type=checkbox name=sendvia_"+itr+"[] value=sms></td><td style='font-size:10px;text-align:left;'>SMS</td></tr><tr id=butemail_"+itr+" style='display:none'><td><input type=checkbox name=sendvia_"+itr+"[] value=email></td><td style='font-size:10px;text-align:left;'>Email</td></tr><tr id=butother_"+itr+"><td><input type=checkbox name=sendvia_"+itr+"[] value=other></td><td style='font-size:10px;text-align:left;'>Other</td></tr></table></tr></table>";
 		init();
 		initAuto();
 	}
+	//others
 	else {
 		var itr = rfld.substring(3,rfld.length);
 		document.getElementById('msgbox_'+itr).innerHTML = "<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=2 style='width:350px;padding:2px;height:34px;' onfocus='hiliteme("+itr+")'></textarea>";
@@ -197,6 +238,7 @@ function getRelayOpts(val,itr) {
 			else {
 				jQuery("#butemail_"+itr).css("display","none");
 			}
+			jQuery("#rmtyps"+itr).val(a);
 			jQuery("#msg"+(itr-1)).focus();
 		}
 	});
@@ -204,6 +246,8 @@ function getRelayOpts(val,itr) {
 
 function relayMessage(itr) {
 	getTimestampHTML("sentfld_"+itr);
+	var sentdata = jQuery("#sentfld_"+itr).html().replace("<br>"," ");
+	jQuery("#msgstatus"+itr).val(sentdata);
 	jQuery("#msgbut_"+itr).attr("disabled",true);
 }
 
