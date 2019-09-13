@@ -50,6 +50,7 @@ function saveData(frm) {
                                 }
                         }
 			parent.<?=$msgfld?>.innerHTML = msgdata;
+			frm.submit();
 			parent.modal.style.display = "none";
 			parent.modal.src = "";
 		}
@@ -65,9 +66,9 @@ SPAN { padding: 6px 6px 1px 3px; }
 .black { color:white;background-color: black; }
 </style>
 
-<body onbeforeunload="return false" onload="init()">
+<body onload="init()">
 
-<form id=hsalog style="margin-bottom:0px">
+<form id=hsalog method=post action="http://www.km6wka.net/ares/api/reports/save.php" style="margin-bottom:0px">
 <input type=hidden name=hsatmstmp id=hsatmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=hsalocation id=hsalocation value="<?=$loccode?>">
 <input type=hidden name=hsaincident id=hsaincident value="<?=$inid?>">
@@ -87,11 +88,13 @@ Time This Data Was Collected: <input type=text size=14 name=hsadatacollected val
 <p style="margin:10px 0 10px 0">
 <b>HOSPITAL SERVICE LEVEL:</b>
 </p>
-<span class='green' title="Green: Full Service"><input type=radio name=hsasvclvl value=1 onmouseup="document.getElementById('hsamedsurg').focus();"></span>
-<span class='yellow' title="Yellow: Limited Service"><input type=radio name=hsasvclvl value=2 onmouseup="document.getElementById('hsamedsurg').focus();"></span>
-<span class='red' title="Red: Emergency Service Only"><input type=radio name=hsasvclvl value=3 onmouseup="document.getElementById('hsamedsurg').focus();"></span>
-<span class='black' title="Black: No Service, Shelter in Place"><input type=radio name=hsasvclvl value=4 onmouseup="document.getElementById('hsamedsurg').focus();"></span>
-<br><br>
+<table border=0 cellpadding=3 cellspacing=6><tr>
+<th class='green' title="Green: Full Service"><input type=radio name=hsasvclvl value=1 onmouseup="document.getElementById('hsamedsurg').focus();"><br>GRN</th>
+<th class='yellow' title="Yellow: Limited Service"><input type=radio name=hsasvclvl value=2 onmouseup="document.getElementById('hsamedsurg').focus();"><br>YLO</th>
+<th class='red' title="Red: Emergency Service Only"><input type=radio name=hsasvclvl value=3 onmouseup="document.getElementById('hsamedsurg').focus();"><br>RED</th>
+<th class='black' title="Black: No Service, Shelter in Place"><input type=radio name=hsasvclvl value=4 onmouseup="document.getElementById('hsamedsurg').focus();"><br>BLK</th>
+</tr></table>
+<br>
 
 <p style="margin:0 0 6px 0">
 <b>AVAILABLE BED COUNT:</b>
