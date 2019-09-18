@@ -102,11 +102,7 @@ foreach($d->ids as $id) {
 	$hidemenu = (empty($d->$actdone)) ? "":"display:none;";
 	$grab .= '<select name=act_'.$id.' id=act'.$id.' onfocus="hiliteme('.$id.')" style="width:60px;'.$hidemenu.'" onchange="checkAction('.$id.',this.selectedIndex)" onblur="document.getElementById(\'who'.$id.'\').focus()"><option'.$nosel.'>No<option'.$yssel.'>Yes</select>';
 	$grab .= '<div id=actdiv'.$id.' class="actdiv" style="'.$showdone.'">';
-<<<<<<< HEAD
 	$donebut = '<button type=button style="display:inherit;" class="combut noprint" onclick="markDone('.$id.')">Done</button>';
-=======
-	$donebut = '<button type=button style="display:inherit;" class="combut" onclick="markDone('.$id.')">Done</button>';
->>>>>>> e8c33dad0bd19cc606f6d6e81d7c1396c9fc9c1c
 	if (!empty($d->$actdone)) { $donebut = '<div style="font-size:10px;line-height:10px;">'.str_replace(" ","<br>",date("m/d/Y H:i:s",strtotime($d->$actdone))).'</div>'; }
 	$grab .= $donebut;
 	$grab .= '</div></td><td><input type=text name=who_'.$id.' id=who'.$id.' size=9 style="text-align:center" placeholder="Callsign" onfocus="hiliteme('.$id.')" onblur="if(this.value==\'\'){this.value=prompt(\'What is your call sign?\');}setCallSign('.$id.',this.value);addRow(this.form);document.getElementById(\'who'.($id + 1).'\').value=this.value;this.onBlur=\'\';disableblur(this);document.getElementById(\'ts'.($id +1).'\').focus();" value="'.$d->$who.'"></td></tr>';
