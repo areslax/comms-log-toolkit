@@ -4,7 +4,7 @@
  * Form for quickly transcribing messages
  * Last updated: 2019-07-31
  * ###################################### */
-ini_set('display_errors','1');
+ini_set('display_errors','0');
 
 if (!isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on") {
 	header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"], true, 301);
