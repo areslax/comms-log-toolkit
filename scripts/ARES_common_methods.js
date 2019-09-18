@@ -22,6 +22,7 @@ function startNewLog() {
 	});
 	location.href = location.href;
 }
+<<<<<<< HEAD
 //https://developers.google.com/web/fundamentals/native-hardware/user-location/
 function getGeoLoc(){
 	// check for Geolocation support
@@ -42,6 +43,9 @@ function getGeoLoc(){
 		navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 	}
 }
+=======
+
+>>>>>>> e8c33dad0bd19cc606f6d6e81d7c1396c9fc9c1c
 
 function getTimestamp(fld) {
 	var stamp = new Date();
