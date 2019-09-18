@@ -8,7 +8,7 @@
 
 @media print {
 	* { border: none; }
-	SELECT,TEXTAREA { border: none; background: none; }
+	INPUT,SELECT,TEXTAREA { border: none; background: none; }
 	.noprint { display: none; }
 }
 

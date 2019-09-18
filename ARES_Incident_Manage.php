@@ -363,7 +363,7 @@ foreach($orow as $o) {
 }
 ksort($ops);
 foreach($ops as $cs => $data) {
-	echo "<tr><td align=left title='".$data['locationname']."' style='cursor:pointer'>".$cs."</td><td align=left><a href='ARES_Member_Manage.php?mid=".$data['mid']."' target='_blank' title='Click to view ".$cs." Member Details'>".$data['name']."</a></td><td style='background-color:".$data['statusclr'].";cursor:pointer;' title='".$data['statustxt']."' onclick=\"showStatusEdit(".$data['mid'].",'".$cs.": ".$data['name']."',".$data['statusid'].")\">".$data['status']."</td></tr>\n";
+	echo "<tr><td align=left title='".$data['locationname']."' style='cursor:pointer'>".$cs."</td><td align=left><a href='ARES_Member_Manage.php?mid=".$data['mid']."&admin=".$_GET['admin']."' target='_blank' title='Click to view ".$cs." Member Details'>".$data['name']."</a></td><td style='background-color:".$data['statusclr'].";cursor:pointer;' title='".$data['statustxt']."' onclick=\"showStatusEdit(".$data['mid'].",'".$cs.": ".$data['name']."',".$data['statusid'].")\">".$data['status']."</td></tr>\n";
 }
 ?>
 </table>

@@ -16,7 +16,15 @@ $loccode = substr($_GET['fld'],0,4);
 $locname = substr($_GET['fld'],5,strlen($_GET['fld']));
 $inid = (empty($_GET['inid']) || !is_numeric($_GET['inid'])) ? "":$_GET['inid'];
 $stid = (empty($_GET['sid']) || !is_numeric($_GET['sid'])) ? "":$_GET['sid'];
-$msgfld = (empty($_GET['rfld'])) ? "":"msg".substr($_GET['rfld'],3,strlen($_GET['rfld']))
+$msgfld = (empty($_GET['rfld'])) ? "":"msg".substr($_GET['rfld'],3,strlen($_GET['rfld']));
+
+//get patient types
+$pq = $conn->prepare("select * from Patient_Types order by pt_id");
+$pq->execute();
+$ptypes = "<option value=0>&nbsp;</option>";
+while($pr=$pq->fetch(PDO::FETCH_ASSOC)) {
+	$ptypes .= "<option value=".$pr['pt_id'].">".$pr['pt_title']."</option>";
+}
 ?>
 <!doctype html>
 <html>
@@ -35,7 +43,7 @@ function setScribe(u) { isme = u; }
 function addRow() {
 	if (document.getElementById('patientinfo'+iter).value=='') {
 		iter++;
-		jQuery("#main_table tr:last").after("<tr id=row"+iter+" valign=top><th id=rid"+iter+"><input type=hidden name=ids[] value="+iter+">"+iter+"</th><td><select id=patienttype"+iter+" onfocus='hiliteme("+iter+")'><option value=''>&nbsp;&nbsp;&nbsp;</option></select></td><td style='padding-bottom:0px'><textarea id=patientinfo"+iter+" class='msg' rows=1 style='width:300px;padding:2px;' onfocus='hiliteme("+iter+")'></textarea></td><td align=left><input type=text id=transport"+iter+" name=transport"+iter+" onfocus='hiliteme("+iter+")'></td><td><input type=text id=timearrived"+iter+" name=timearrived"+iter+" onfocus='hiliteme("+iter+")' onblur='disableblur(this);addRow();this.onBlur=\"\";document.getElementById(\"patienttype"+(iter+1)+"\").focus();'></td></tr>\n");
+		jQuery("#main_table tr:last").after("<tr id=row"+iter+" valign=top><th id=rid"+iter+">"+iter+"</th><td><select id=patienttype"+iter+" name=patienttype["+iter+"] onfocus='hiliteme("+iter+")'><?=$ptypes?></select></td><td style='padding-bottom:0px'><textarea id=patientinfo"+iter+" name=patientinfo["+iter+"] class='msg' rows=1 style='width:300px;padding:2px;' onfocus='hiliteme("+iter+")'></textarea></td><td align=center><input type=text id=transport"+iter+" name=transport["+iter+"] size=10 onfocus='hiliteme("+iter+")'></td><td align=center><input type=text id=timearrived"+iter+" name=timearrived["+iter+"] size=10 onfocus='hiliteme("+iter+")' onblur='disableblur(this);addRow();this.onBlur=\"\";document.getElementById(\"patienttype"+(iter+1)+"\").focus();'></td></tr>\n");
 		init();
 	}
 }
@@ -53,26 +61,30 @@ function hiliteme(rw) {
 	document.getElementById("row"+rw).className = "bg-grn";
 }
 function saveData(frm) {
-	var frmdata = jQuery(frm).serializeToJSON();
-	frmdata = JSON.stringify(frmdata);
+	var frmobj = jQuery(frm).serializeToJSON();
+	frmstr = JSON.stringify(frmobj);
 	jQuery.ajax({
 		type: "POST",
 		url: "ajax_save_log.php",
-		data: "stationid=<?=$stationid?>&stacode=<?=$stationcode?>&locid=<?=$locid?>&loccode=<?=$loccode?>&incidentid=<?=$inid?>&rtyp=mcipoll&frmdata="+encodeURIComponent(frmdata),
+		data: "stationid=<?=$stationid?>&stacode=<?=$stationcode?>&locid=<?=$locid?>&loccode=<?=$loccode?>&incidentid=<?=$inid?>&rtyp=mcipoll&frmdata="+encodeURIComponent(frmstr),
 		success: function(a,b,c) {
 			console.log(a);
 			//build msgfld string
-			frmdata = frmdata.substr(2,(frmdata.length-4));
-			var frmtype = frmdata.substr(0,3);
-			var frmarry = frmdata.split('","');
+			frmstr = frmstr.substr(2,(frmstr.length-4));
+			var frmtype = frmstr.substr(0,3);
+			var frmarry = frmstr.split('","');
 			var msgdata = frmtype.toUpperCase()+" Poll\n";
 			for(i=0;i<frmarry.length;i++) {
 				msgarry = frmarry[i].split('":"');
 				if (msgarry[1].length>0) {
-					msgdata += msgarry[0].substr(3,msgarry[0].length)+": "+msgarry[1]+"\n";
+					msgdata += msgarry[0].replace("mci","")+": "+msgarry[1]+"\n"
 				}
 			}
+			//show in parent comms form
 			parent.<?=$msgfld?>.innerHTML = msgdata;
+			//send to api for mci poll table insert
+			frm.submit();
+			//hide modal
 			parent.modal.style.display = "none";
 			parent.modal.src = "";
 		}
@@ -91,8 +103,8 @@ SPAN { padding: 6px 6px 1px 3px; }
 .black { color:white;background-color: black; }
 </style>
 
-<body onbeforeunload="return false" onload="init()">
-<form id=mcilog>
+<body onload="init()">
+<form id=mcilog method=post action="http://www.km6wka.net/ares/api/reports/save.php">
 <input type=hidden name=mcitmstmp id=mcitmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=mcilocation id=mcilocation value="<?=$loccode?>">
 <input type=hidden name=mciincident id=mciincident value="<?=$inid?>">
@@ -127,8 +139,8 @@ Time This Data Was Collected: <input type=text size=14 name=mcidatacollected val
 </p>
 <table id=main_table border=1 cellpadding=4 cellspacing=0 style="border-color:white">
 <tr><th>ID</th><th>Type</th><th>Patient Info</th><th>Transport Unit</th><th>Time Arrived</th></tr>
-<tr id=row0 valign=top><th id=rid0><input type=hidden name=ids[] value=0>0</th><td><select id=patienttype0 onfocus="hiliteme(0)"><option value="">&nbsp;&nbsp;&nbsp;</option></select></td><td style="padding-bottom:0px"><textarea id=patientinfo0 class='msg' rows=1 style='width:300px;padding:2px;' onfocus="hiliteme(0)"></textarea></td><td align=left><input type=text id=transport0 name=transport0 onfocus="hiliteme(0)"></td><td><input type=text id=timearrived0 name=timearrived0 onfocus="hiliteme(0)" onblur="disableblur(this);addRow();this.onBlur='';document.getElementById('patienttype1').focus();"></td></tr>
-<tr id=row1 valign=top><th id=rid1><input type=hidden name=ids[] value=1>1</th><td><select id=patienttype1 onfocus="hiliteme(1)"><option value="">&nbsp;&nbsp;&nbsp;</option></select></td><td style="padding-bottom:0px"><textarea id=patientinfo1 class='msg' rows=1 style='width:300px;padding:2px;' onfocus="hiliteme(1)"></textarea></td><td align=left><input type=text id=transport1 name=transport1 onfocus="hiliteme(1)"></td><td><input type=text id=timearrived1 name=timearrived1 onfocus="hiliteme(1)" onblur="disableblur(this);addRow();this.onBlur='';document.getElementById('patienttype2').focus();"></td></tr>
+<tr id=row0 valign=top><th id=rid0>0</th><td><select id=patienttype0 name=patienttype[0] onfocus="hiliteme(0)"><?=$ptypes?></select></td><td style="padding-bottom:0px"><textarea id=patientinfo0 name=patientinfo[0] class='msg' rows=1 style='width:300px;padding:2px;' onfocus="hiliteme(0)"></textarea></td><td align=center><input type=text id=transport0 name=transport[0] size=10 onfocus="hiliteme(0)"></td><td align=center><input type=text id=timearrived0 name=timearrived[0] size=10 onfocus="hiliteme(0)" onblur="disableblur(this);addRow();this.onBlur='';document.getElementById('patienttype1').focus();"></td></tr>
+<tr id=row1 valign=top><th id=rid1>1</th><td><select id=patienttype1 name=patienttype[1] onfocus="hiliteme(1)"><?=$ptypes?></select></td><td style="padding-bottom:0px"><textarea id=patientinfo1 name=patientinfo[1] class='msg' rows=1 style='width:300px;padding:2px;' onfocus="hiliteme(1)"></textarea></td><td align=center><input type=text id=transport1 name=transport[1] size=10 onfocus="hiliteme(1)"></td><td align=center><input type=text id=timearrived1 name=timearrived[1] size=10 onfocus="hiliteme(1)" onblur="disableblur(this);addRow();this.onBlur='';document.getElementById('patienttype2').focus();"></td></tr>
 </table>
 <br>
 <button type=button style="cursor:pointer" title="Save MCI Poll Data and Close This Popup" onclick="saveData(this.form)">Save This Report</button>

@@ -59,26 +59,32 @@ BODY { padding:40px; }
 if (!empty($_GET['admin'])) {
 ?>
 <p style="margin:6px">
-<b>Manage:</b>&nbsp;&nbsp;&nbsp; <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Incidents</a> &nbsp;|&nbsp; <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Net Controls</a> &nbsp;|&nbsp; <a href="ARES_Member_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Members</a> &nbsp;|&nbsp; <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Locations</a><br><br>
+<b>Manage:</b>&nbsp;&nbsp;&nbsp; <a href="ARES_Alert_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Alerts</a> &nbsp;|&nbsp; <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Incidents</a> &nbsp;|&nbsp; <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Net Controls</a> &nbsp;|&nbsp; <a href="ARES_Member_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Operators</a> &nbsp;|&nbsp; <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Locations</a><br><br>
 <?php
 }
 ?>
-<a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead">ARES Net Control Comms Log</a><br><br>
+<a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead"><big>ARES Net Control Comms Log</big></a><br><br>
 <!--/p-->
 <p style="border-top:solid 1px #900;margin-top:0px;margin-bottom:0px;padding-top:20px;">
 <?php
 #}
 ?>
-<a href="forum/index.php" target="_blank">ARES Toolkit Forum</a> &nbsp;|&nbsp; <a href="javascript:popIRC()" class="colhead">ARESLAX IRC Chat</a>
+<a href="https://www.freelists.org/list/arestoolkit" target="_blank">ARES Toolkit Mailing List</a> | <a href="forum/index.php" target="_blank">ARES Toolkit Forum</a> &nbsp;|&nbsp; <a href="javascript:popIRC()" class="colhead">ARESLAX IRC Chat</a>
 <p style="border-top:solid 1px #900;margin-top:20px;margin-bottom:0px;padding-top:20px;">
-<b>Download or Complete &amp; Print:</b><br><br>
+<b>Download or Fill &amp; Print:</b><br><br>
+<table border=0 cellpadding=6 cellspacing=0>
+<tr><td align=center>
 <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead">ARES MCI Poll</a><br>
 <a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead">ARES HSA Poll</a><br>
 <a href="files/20190703_ARES_EVENT_Log_rev_4_form.pdf" class="colhead">ARES Event Log</a><br>
 <a href="files/20190703_ARES_Message_Log_rev_6_form.pdf" class="colhead">ARES Message Log</a><br>
+</td><td align=center>
 <a href="files/20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf" class="colhead">Resource Request Form</a><br>
 <a href="files/20190716_RADIOGRAM_Form-2011.pdf" class="colhead">Radiogram Form</a><br>
+<a href="https://training.fema.gov/icsresource/icsforms.aspx" class="colhead" target="_blank">FEMA.gov: ICS Forms</a><br>
 <a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead">Hospital Abbreviations</a><br>
+</td></tr>
+</table>
 </p>
 
 <br></td></tr>

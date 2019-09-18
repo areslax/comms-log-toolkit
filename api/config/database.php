@@ -4,15 +4,15 @@
  * ARESLAX API Database Settings
  * ############################# */
 
-class Database
+class dbConn
 {
 	private $host = "localhost";
-	private $db_name = "api_db";
+	private $db_name = "areslax";
 	private $username = "aresdb";
 	private $password = "areslax2019";
 	public $conn;
 
-	public function getConnection()
+	public function getConn()
 	{
 		$this->conn = null;
 		try
