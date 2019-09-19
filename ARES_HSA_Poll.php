@@ -68,7 +68,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 
 <body onload="init()">
 
-<form id=hsalog method=post action="http://www.km6wka.net/ares/api/reports/save.php" style="margin-bottom:0px">
+<form id=hsalog method=post action="https://www.km6wka.net/ares/api/reports/save.php" style="margin-bottom:0px">
 <input type=hidden name=hsatmstmp id=hsatmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=hsalocation id=hsalocation value="<?=$loccode?>">
 <input type=hidden name=hsaincident id=hsaincident value="<?=$inid?>">

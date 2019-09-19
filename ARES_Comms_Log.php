@@ -2,7 +2,7 @@
 /* ####################################
  * ARES_Comms_Log.php
  * Form for quickly transcribing messages
- * Last updated: 2019-07-31
+ * Last updated: 2019-09-18
  * ###################################### */
 ini_set('display_errors','0');
 
@@ -150,7 +150,7 @@ $stationloc = (empty($stationloc)) ? "":$stationloc;
 $incidentid = (empty($incidentid)) ? "":$incidentid;
 $incidentname = (empty($incidentname)) ? "":$incidentname;
 ?>
-<form id=commslog method=post action="http://www.km6wka.net/ares/api/reports/save.php">
+<form id=commslog method=post action="https://www.km6wka.net/ares/api/reports/save.php">
 <input type=hidden name=o_id value=<?=$oid?>>
 <table class="main_table" id="main_table" border=1 cellpadding=4 cellspacing=0 style="border-color:white">
 <!-- tr><th style="font-size:11px" colspan=9>This would be used by a local, or admin net control for making a report. There is a different display for the admin management view.</th></tr -->

@@ -63,6 +63,8 @@ function hiliteme(rw) {
 function saveData(frm) {
 	var frmobj = jQuery(frm).serializeToJSON();
 	frmstr = JSON.stringify(frmobj);
+//saving to json text files mainly used by sticks
+//on server for backup, in case no transfer to parent log
 	jQuery.ajax({
 		type: "POST",
 		url: "ajax_save_log.php",
@@ -80,7 +82,7 @@ function saveData(frm) {
 					msgdata += msgarry[0].replace("mci","")+": "+msgarry[1]+"\n"
 				}
 			}
-			//show in parent comms form
+			//transfer to parent comms form
 			parent.<?=$msgfld?>.innerHTML = msgdata;
 			//send to api for mci poll table insert
 			frm.submit();
@@ -104,7 +106,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 </style>
 
 <body onload="init()">
-<form id=mcilog method=post action="http://www.km6wka.net/ares/api/reports/save.php">
+<form id=mcilog method=post action="https://www.km6wka.net/ares/api/reports/save.php">
 <input type=hidden name=mcitmstmp id=mcitmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=mcilocation id=mcilocation value="<?=$loccode?>">
 <input type=hidden name=mciincident id=mciincident value="<?=$inid?>">

@@ -133,13 +133,15 @@ foreach($mems as $mid => $data) {
 	$chkbut = "<button id=sbutton".$mid." type=button onclick='setStatus(".$mid.",2)' style='display:".$bshow."'>Check In</button>";
 	//location
 	$GetLocationsPS->execute();
+	$lgps = "";
 	$locs = "<select name=locations".$mid." id=locations".$mid." style='width:160px' onchange='setDeploysTo(".$mid.",this[this.selectedIndex].value)'>";
 	while($lr=$GetLocationsPS->fetch(PDO::FETCH_ASSOC)) {
 		$sel = ($lr['l_id'] == $data['prestage_lid']) ? " selected":"";
+		$lgps = (empty($sel)) ? $lgps:$lr['l_gps'];
 		$locs .= "<option value=".$lr['l_id'].$sel.">".$lr['l_tactical'].": ".$lr['l_name']."</option>";
 	}
 	$locs .= "</select>";
-	echo "<tr id=row".$mid." style='background-color:".$rbg."'><td>".$chkbut."</td><td>".strtoupper($data['callsign'])."</td><td>".$data['fname']." ".$data['lname']."</td><td>".$statuses."</td><td>".$locs."</td></tr>\n";
+	echo "<tr id=row".$mid." style='background-color:".$rbg."'><td>".$chkbut."</td><td>".strtoupper($data['callsign'])."</td><td>".$data['fname']." ".$data['lname']."</td><td>".$statuses."</td><td>".$locs." <a href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td></tr>\n";
 }
 
 echo "</table>";
