@@ -20,27 +20,20 @@ $jdata = json_decode($_POST['frmdata']);
 switch($rtyp) {
 	case "mcipoll":
 	$stacode = $jdata->mcilocation;
-	//insert into mci poll table
 	$tmstamp = $jdata->mcitmstmp;
 	$location = $staid;
 	break;
 	case "hsapoll":
 	$stacode = $jdata->hsalocation;
-	//insert into hsa poll table
 	break;
 	case "resreq":
 	$stacode = $jdata->reqlocation;
-	//insert into resource request table
 	break;
 	case "relreq":
 	$stacode = $jdata->rellocation;
-	//insert into relay request table
 	break;
 	case "comms":
 	$stacode = $jdata->stationid;
-	//insert into comms table
-	//note: comms table also updated when "Logged By" field gets blur
-	//      also includes any of the above data in message field, so no need for separate inserts
 	break;
 }
 
