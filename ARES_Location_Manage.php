@@ -11,11 +11,25 @@ $searchresults = "";
 //got new location form submit
 if (!empty($_POST['addlocation'])) {
 	$togo = array("(",")"," ","-","_",".","/");
+	//main info
 	$pno = ltrim(str_replace($togo,'',$_POST['l_desk_phone']),'1');
 	$deskphone = substr($pno,0,3)."-".substr($pno,3,3)."-".substr($pno,-4,strlen($pno));
-	$q = $conn->prepare("insert into Locations (l_type,l_tactical,l_name,l_address,l_city,l_state,l_zip,l_gps,l_trauma_level,l_desk_phone) values (:type,:tactical,:name,:address,:city,:state,:zip,:gps,:trauma,:deskphone)");
-	$q->execute(array(':type'=>$_POST['l_type'],':tactical'=>$_POST['l_tactical'],':name'=>$_POST['l_name'],':address'=>$_POST['l_address'],':city'=>$_POST['l_city'],':state'=>$_POST['l_state'],':zip'=>$_POST['l_zip'],':gps'=>$_POST['l_gps'],':trauma'=>$_POST['l_trauma_level'],':deskphone'=>$deskphone));
+	$isbase = (isset($_POST['l_isbase'])) ? 1:0;
+	$helipad = (isset($_POST['l_helipad'])) ? 1:0;
+	$edap = (isset($_POST['l_edap'])) ? 1:0;
+	$perinatal = (isset($_POST['l_perinatal'])) ? 1:0;
+	$nicu = (isset($_POST['l_nicu'])) ? 1:0;
+	$psc = (isset($_POST['l_psc'])) ? 1:0;
+	$src = (isset($_POST['l_src'])) ? 1:0;
+	$crc = (isset($_POST['l_crc'])) ? 1:0;
+	$burn = (isset($_POST['l_burn'])) ? 1:0;
+	$active = (isset($_POST['l_active'])) ? 1:0;
+	$q = $conn->prepare("insert into Locations (l_type,l_tactical,l_name,l_address,l_city,l_state,l_zip,l_gps,l_trauma_level,l_desk_phone,l_admin_name,l_svc_area,l_isbase,l_helipad,l_special,l_edap,l_perinatal,l_nicu,l_psc,l_src,l_crc,l_burn,l_active) values (:type,:tactical,:name,:address,:city,:state,:zip,:gps,:trauma,:deskphone,:adminname,:svcarea,:isbase,:helipad,:special,:edap,:perinatal,:nicu,:psc,:src,:crc,:burn,:active)");
+	$q->execute(array(':type'=>$_POST['l_type'],':tactical'=>$_POST['l_tactical'],':name'=>$_POST['l_name'],':address'=>$_POST['l_address'],':city'=>$_POST['l_city'],':state'=>$_POST['l_state'],':zip'=>$_POST['l_zip'],':gps'=>$_POST['l_gps'],':trauma'=>$_POST['l_trauma_level'],':deskphone'=>$deskphone,':adminname'=>$_POST['l_admin_name'],':svcarea'->$_POST['l_svc_area'],':isbase'=>$isbase,':helipad'=>$helipad,':special'=>$_POST['l_special'],':edap'=>$edap,':perinatal'=>$perinatal,':nicu'=>$nicu,':psc'=>$psc,':src'=>$src,':crc'=>$crc,':burn'=>$burn,':active'=>$active));
 	$lid = $conn->lastInsertId();
+	//bed counts
+	$q = $conn->prepare("insert into Location_Bed_Counts (l_id,l_cnt_medsurg,l_cnt_tele,l_cnt_icu,l_cnt_picu,l_cnt_nicu,l_cnt_peds,l_cnt_obgyn,l_cnt_trauma,l_cnt_burn,l_cnt_iso,l_cnt_psych,l_cnt_or,l_cnt_total) values (:lid,:medsurg,:tele,:icu,:picu,:nicu,:peds,:obgyn,:trauma,:burn,:iso,:psych,:orm,:total)");
+	$q->execute(array(":lid"=>$lid,":medsurg"=>$_POST['l_cnt_medsurg'],":tele"=>$_POST['l_cnt_tele'],":icu"=>$_POST['l_cnt_icu'],":picu"=>$_POST['l_cnt_picu'],":nicu"=>$_POST['l_cnt_nicu'],":peds"=>$_POST['l_cnt_peds'],":obgyn"=>$_POST['l_cnt_obgyn'],":trauma"=>$_POST['l_cnt_trauma'],":burn"=>$_POST['l_cnt_burn'],":iso"=>$_POST['l_cnt_iso'],":psych"=>$_POST['l_cnt_psych'],":orm"=>$_POST['l_cnt_or'],":total"=>$_POST['l_cnt_total']));
 	//update common js file
 	file_get_contents("scripts/cron_generateNewLocations.php");
 }
@@ -113,13 +127,34 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 			$sel = ($r['l_type']==$lr['lt_id']) ? " selected":"";
 			$ltypes .= "<option value=".$lr['lt_id'].$sel.">".$lr['lt_title']."</option>";
 		}
-		$a = "<form method=post>\n<input type=hidden name=updatelocation value=1>\n<input type=hidden name=l_id value='".$lid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:580px'>
-<tr><td>Name</td><td colspan=3><input type=text name=l_name class='location' onfocus='this.select();' style='width:380px;text-align:left;' placeholder='i.e. Huntington Memorial Hospital - Pasadena' value='".$thisnam."'></td></tr>
-<tr><td>Type</td><td><select name=l_type style='width:100px'><option value=0></option>".$ltypes."</select></td><td>Address</td><td><input type=text name=l_address size=19 value='".$r['l_address']."'></td></tr>
-<tr><td>Tac Call</td><td><input type=text size=12 name=l_tactical value='".$r['l_tactical']."'></td><td>City</td><td><input type=text size=19 name=l_city value='".$r['l_city']."'></td></tr>
-<tr><td>Trauma Level</td><td><input type=text size=12 name=l_trauma_level value='".$r['l_trauma_level']."'></td><td>State, Zip</td><td><select name=l_state style='width:50px'><option value=CA>CA</option></select>&nbsp;<input type=text size=10 name=l_zip value='".$r['l_zip']."'></td></tr>
-<tr><td>Desk Phone <a href='tel:".$r['l_desk_phone']."' title='Click to launch your phone dialer'><img src='images/icon-phone.svg' alt='phone icon' border=0 width=14 align=absmiddle></a></td><td><input type=text size=12 name=l_desk_phone value='".$r['l_desk_phone']."'></td><td>GPS <a href='https://maps.google.com/?q=".$r['l_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td><td><input type=text size=21 name=l_gps value='".$r['l_gps']."'></td></tr>";
+		$edapchk = (!empty($r['l_edap'])) ? " checked":"";
+		$perinatalchk = (!empty($r['l_perinatal'])) ? " checked":"";
+		$nicuchk = (!empty($r['l_nicu'])) ? " checked":"";
+		$srcchk = (!empty($r['l_src'])) ? " checked":"";
+		$pscchk = (!empty($r['l_psc'])) ? " checked":"";
+		$cscchk = (!empty($r['l_csc'])) ? " checked":"";
+		$burnchk = (!empty($r['l_burn'])) ? " checked":"";
+		$activechk = (!empty($r['l_active'])) ? " checked":"";
+		$a = "<form method=post>\n<input type=hidden name=updatelocation value=1>\n<input type=hidden name=l_id value='".$lid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:580px'>";
+		$a .= "<tr><td>Name</td><td colspan=3><input type=text name=l_name class='location' onfocus='this.select();' style='width:380px;text-align:left;' placeholder='i.e. Huntington Memorial Hospital - Pasadena' value='".$thisnam."'></td></tr>";
+		$a .= "<tr><td>Type</td><td><select name=l_type style='width:100px'><option value=0></option>".$ltypes."</select></td><td>Address</td><td><input type=text name=l_address size=19 value='".$r['l_address']."'></td></tr>";
+		$a .= "<tr><td>Tac Call</td><td><input type=text size=12 name=l_tactical value='".$r['l_tactical']."'></td><td>City</td><td><input type=text size=19 name=l_city value='".$r['l_city']."'></td></tr>";
+		$a .= "<tr><td>Trauma Level</td><td><input type=text size=12 name=l_trauma_level value='".$r['l_trauma_level']."'></td><td>State, Zip</td><td><select name=l_state style='width:50px'><option value=CA>CA</option></select>&nbsp;<input type=text size=10 name=l_zip value='".$r['l_zip']."'></td></tr>";
+		$a .= "<tr><td>Admin Name</td><td><input type=text size=12 id=l_admin_name name=l_admin_name value='".$r['l_admin_name']."'></td><td>Svc. Area</td><td><input type=text size=19 name=l_svc_area id=l_svc_area value='".$r['l_svc_area']."'></td></tr>";
+		$a .= "<tr><td>Desk Phone <a href='tel:".$r['l_desk_phone']."' title='Click to launch your phone dialer'><img src='images/icon-phone.svg' alt='phone icon' border=0 width=14 align=absmiddle></a></td><td><input type=text size=12 name=l_desk_phone value='".$r['l_desk_phone']."'></td><td>GPS <a href='https://maps.google.com/?q=".$r['l_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td><td><input type=text size=21 name=l_gps value='".$r['l_gps']."'></td></tr>";
+		$a .= "<tr><td>Base Hospital</td><td><input type=checkbox name=l_isbase is=l_isbase></td><td>Helipad</td><td><input type=checkbox name=l_helipad id=l_helipad></td></tr>
+<tr valign=top><td>Special Services</td><td colspan=3><textarea name=l_special style='width:403px;height:48px' placeholder='i.e. limited service, special services'></textarea></td></tr>";
 		$a .= "<tr valign=top><td>Location Notes</td><td colspan=3><textarea name='l_note' style='width:403px;height:48px' placeholder='i.e. cross street, parking, hazards in the area'>".$r['l_note']."</textarea></td></tr>\n";
+		$a .= "<tr valign=top><th colspan=4 align=center>";
+		$a .= "<table border=1 cellpadding=2 cellspacing=0 style='width:100%;border-color:white'>";
+		$a .= "<tr><th width='14%' class='c'>EDAP</th><th width='14%' class='c'>Perinatal</th><th width='14%' class='c'>NICU</th><th width='14%' class='c'>SRC</th><th width='14%' class='c'>PSC</th><th width='14%' class='c'>CSC</th><th width='14%' class='c'>Burn</th></tr>";
+		$a .= "<tr><th class='c'><input type=checkbox name=l_edap value=1".$edapchk."></th><th class='c'><input type=checkbox name=l_perinatal value=1".$perinatalchk."></th><th class='c'><input type=checkbox name=l_nicu value=1".$nicuchk."></th><th class='c'><input type=checkbox name=l_src value=1".$srcchk."></th><th class='c'><input type=checkbox name=l_psc value=1".$pscchk."></th><th class='c'><input type=checkbox name=l_csc value=1".$cscchk."></th><th class='c'><input type=checkbox name=l_burn value=1".$burnchk."></th></tr>";
+		$a .= "<tr><th class='a'>ACTIVE</th><th class='a'>Bed Total</th><th class='b'>Med/Surg</th><th class='b'>Tele</th><th class='b'>ICU</th><th class='b'>PICU</th><th class='b'>NICU</th></tr>";
+		$a .= "<tr><th class='a'><input type=checkbox name=l_active value=1".$activechk."></th><th class='a'><input type=text size=8 style='text-align:center' name=l_total_beds value='".$r['l_total_beds']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_medsurg".$r['l_id']." value='".$r['l_cnt_medsurg']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_tele".$r['l_id']." value='".$r['l_cnt_tele']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_icu".$r['l_id']." value='".$r['l_cnt_icu']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_picu".$r['l_id']." value='".$r['l_cnt_picu']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_nicu".$r['l_id']." value='".$r['l_cnt_nicu']."'></th></tr>
+<tr><th class='b'>Peds</th><th class='b'>Ob/Gyn</th><th class='b'>Trauma</th><th class='b'>Burn</th><th class='b'>ISO</th><th class='b'>Psych</th><th class='b'>OR</th></tr>";
+		$a .= "<tr><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_peds".$r['l_id']." value='".$r['l_cnt_peds']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_obgyn".$r['l_id']." value='".$r['l_cnt_obgyn']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_trauma".$r['l_id']." value='".$r['l_cnt_trauma']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_burn".$r['l_id']." value='".$r['l_cnt_burn']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_iso".$r['l_id']." value='".$r['l_cnt_iso']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_psych".$r['l_id']." value='".$r['l_cnt_psych']."'></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_or".$r['l_id']." value='".$r['l_cnt_or']."'></th></tr>";
+		$a .= "</table></th></tr>";
+
 		$a .= "<tr><th colspan=4 style='border-bottom:solid 1px black'><input type=submit value='Update This Location Info'></th></tr>\n";
 		$a .= "</table>\n</form>\n";
 	}
@@ -297,6 +332,11 @@ function updateType(tid,val) {
 	});
 }
 </script>
+<style type="text/css">
+.a { background-color: rgb(255,200,200); }
+.b { background-color: rgb(220,220,255);font-weight: normal; }
+.c { background-color: rgb(255,255,220); }
+</style>
 
 </head>
 <body>
@@ -333,8 +373,21 @@ echo "<tr><td><input type=text size=14 id=lt_title_new placeholder='Add New Type
 <tr><td>Type</td><td><select name=l_type style="width:100px"><?=$ltypes?></select></td><td>Address</td><td><input type=text name=l_address id=l_address size=19></td></tr>
 <tr><td>Tac Call</td><td><input type=text size=12 id=l_tactical name=l_tactical></td><td>City</td><td><input type=text size=19 id=l_city name=l_city></td></tr>
 <tr><td>Trauma Level</td><td><input type=text size=12 id=l_trauma_level name=l_trauma_level></td><td>State, Zip</td><td><select id=l_state name=l_state style="width:50px"><option value=CA>CA</option></select>&nbsp;<input type=text size=10 id=l_zip name=l_zip></td></tr>
+<tr><td>Admin Name</td><td><input type=text size=12 id=l_admin_name name=l_admin_name></td><td>Svc. Area</td><td><input type=text size=19 name=l_svc_area id=l_svc_area></td></tr>
 <tr><td>Desk Phone</td><td><input type=text size=12 id=l_desk_phone name=l_desk_phone></td><td>GPS</td><td><input type=text size=21 id=l_gps name=l_gps></td></tr>
-<tr valign=top><td>Location Notes</td><td colspan=3><textarea name='l_note' style='width:394px;height:48px' placeholder='i.e. cross street, parking, hazards in the area'></textarea></td></tr>
+<tr><td>Base Hospital</td><td><input type=checkbox name=l_isbase is=l_isbase></td><td>Helipad</td><td><input type=checkbox name=l_helipad id=l_helipad></td></tr>
+<tr valign=top><td>Special Services</td><td colspan=3><textarea name=l_special style='width:394px;height:48px' placeholder='i.e. limited service, special services'></textarea></td></tr>
+<tr valign=top><td>Location Notes</td><td colspan=3><textarea name=l_note style='width:394px;height:48px' placeholder='i.e. cross street, parking, hazards in the area'></textarea></td></tr>
+<tr valign=top><th colspan=4 align=center>
+<table border=1 cellpadding=2 cellspacing=0 style="width:100%;border-color:white">
+<tr><th width='14%' class='c'>EDAP</th><th width='14%' class='c'>Perinatal</th><th width='14%' class='c'>NICU</th><th width='14%' class='c'>SRC</th><th width='14%' class='c'>PSC</th><th width='14%' class='c'>CSC</th><th width='14%' class='c'>Burn</th></tr>
+<tr><th class='c'><input type=checkbox name=l_edap value=1></th><th class='c'><input type=checkbox name=l_perinatal value=1></th><th class='c'><input type=checkbox name=l_nicu value=1></th><th class='c'><input type=checkbox name=l_src value=1></th><th class='c'><input type=checkbox name=l_psc value=1></th><th class='c'><input type=checkbox name=l_csc value=1></th><th class='c'><input type=checkbox name=l_burn value=1></th></tr>
+<tr><th class='a'>ACTIVE</th><th class='a'>Bed Total</th><th class='b'>Med/Surg</th><th class='b'>Tele</th><th class='b'>ICU</th><th class='b'>PICU</th><th class='b'>NICU</th></tr>
+<tr><th class='a'><input type=checkbox name=l_active value=1 checked></th><th class='a'><input type=text size=8 style='text-align:center' name=l_total_beds></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_medsurg></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_tele></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_icu></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_picu></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_nicu></th></tr>
+<tr><th class='b'>Peds</th><th class='b'>Ob/Gyn</th><th class='b'>Trauma</th><th class='b'>Burn</th><th class='b'>ISO</th><th class='b'>Psych</th><th class='b'>OR</th></tr>
+<tr><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_peds></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_obgyn></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_trauma></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_burn></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_iso></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_psych></th><th class='b'><input type=text size=6 style='text-align:center' name=l_cnt_or></th></tr>
+</table>
+</th></tr>
 <tr><th colspan=4><input type=submit value="Save This New Location"></th></tr>
 </table>
 </form>
