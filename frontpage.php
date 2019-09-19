@@ -12,6 +12,9 @@ include "common_includes.php";
 function popIRC() {
 	window.open('aresircchat.php','ircwin','width=360,height=380,scrollbars=no');
 }
+function popCheckin() {
+        window.open('ARES_Operator_Status.php','checkinwin','width=800,height=600,scrollbars=auto');
+}
 </script>
 <style type="text/css">
 * { font-family:Verdana,Arial,Helvetica,sans-serif }
@@ -56,14 +59,16 @@ BODY { padding:40px; }
 <br>
 <!-- put new entries here -->
 <?php
+$checkin = "";
 if (!empty($_GET['admin'])) {
 ?>
 <p style="margin:6px">
 <b>Manage:</b>&nbsp;&nbsp;&nbsp; <a href="ARES_Alert_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Alerts</a> &nbsp;|&nbsp; <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Incidents</a> &nbsp;|&nbsp; <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Net Controls</a> &nbsp;|&nbsp; <a href="ARES_Member_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Operators</a> &nbsp;|&nbsp; <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Locations</a><br><br>
 <?php
+	$checkin = "<a href='javascript:popCheckin()' class='colhead'>Operator Check In</a>&nbsp;|&nbsp;";
 }
 ?>
-<a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead"><big>ARES Net Control Comms Log</big></a><br><br>
+<?=$checkin?><a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead"><big>ARES Net Control Comms Log</big></a><br><br>
 <!--/p-->
 <p style="border-top:solid 1px #900;margin-top:0px;margin-bottom:0px;padding-top:20px;">
 <?php
@@ -108,7 +113,7 @@ if (!empty($_GET['admin'])) {
 <!--a href="javascript:void addIcon()" style="font-size:9pt;color:#99d">Click here to add an icon to your Desktop</a-->
 </p>
 
-<?include "footer.html"?>
+<?php include "footer.html"?>
 
 <iframe id=modal style="position:fixed;top:10px;left:50%;width:800px;margin-left:-400px;height:90%;padding:10px;background-color:white;border:solid 1px black;border-radius:6px;display:none;"</iframe>
 
