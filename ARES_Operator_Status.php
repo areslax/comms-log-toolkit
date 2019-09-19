@@ -103,6 +103,7 @@ function setDeploysTo(mid,lid) {
 		data: datastr,
 		success: function(a,b,c){
 			console.log(a);
+			jQuery("#lgps"+mid).attr("href","https://maps.google.com/?q="+a);
 		}
 	});
 }
@@ -141,7 +142,7 @@ foreach($mems as $mid => $data) {
 		$locs .= "<option value=".$lr['l_id'].$sel.">".$lr['l_tactical'].": ".$lr['l_name']."</option>";
 	}
 	$locs .= "</select>";
-	echo "<tr id=row".$mid." style='background-color:".$rbg."'><td>".$chkbut."</td><td>".strtoupper($data['callsign'])."</td><td>".$data['fname']." ".$data['lname']."</td><td>".$statuses."</td><td>".$locs." <a href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td></tr>\n";
+	echo "<tr id=row".$mid." style='background-color:".$rbg."'><td>".$chkbut."</td><td>".strtoupper($data['callsign'])."</td><td>".$data['fname']." ".$data['lname']."</td><td>".$statuses."</td><td>".$locs." <a id=lgps".$mid." href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td></tr>\n";
 }
 
 echo "</table>";
