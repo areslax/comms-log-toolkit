@@ -117,7 +117,5 @@ if (!empty($_GET['admin'])) {
 
 <br /><div class="ruleyelo" style="width:144px"><br /></div -->
 
-<?include "footer_menu.html"?>
-
 </body>
 </html>
