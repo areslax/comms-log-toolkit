@@ -78,7 +78,7 @@ if (!empty($_GET['admin'])) {
 <p style="border-top:solid 1px #900;margin-top:20px;margin-bottom:0px;padding-top:20px;">
 <b>Download or Fill &amp; Print:</b><br><br>
 <table border=0 cellpadding=6 cellspacing=0>
-<tr><td align=center>
+<tr valign=top><td align=center>
 <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead">ARES MCI Poll</a><br>
 <a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead">ARES HSA Poll</a><br>
 <a href="files/20190703_ARES_EVENT_Log_rev_4_form.pdf" class="colhead">ARES Event Log</a><br>
@@ -89,6 +89,7 @@ if (!empty($_GET['admin'])) {
 <a href="https://training.fema.gov/icsresource/icsforms.aspx" class="colhead" target="_blank">FEMA.gov: ICS Forms</a><br>
 <a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead">Hospital Abbreviations</a><br>
 </td></tr>
+<tr><td colspan=2 align=center><a href="http://file.lacounty.gov/SDSInter/dhs/206720_DisasterOrgChart.pdf" class="colhead" target="_blank">LA County Disaster Org Chart</a></td></tr>
 </table>
 </p>
 
