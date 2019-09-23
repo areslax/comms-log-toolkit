@@ -12,8 +12,8 @@ $sq = $conn->prepare("select l_id from Locations where l_tactical=:ltac limit 1"
 $sq->execute(array(":ltac"=>$stationcode));
 $r = $sq->fetchAll(PDO::FETCH_ASSOC);
 $locid = $r['l_id'];
-$loccode = substr($_GET['fld'],0,4);
-$locname = substr($_GET['fld'],5,strlen($_GET['fld']));
+$loccode = substr($_GET['fld'],0,strpos($_GET['fld']," "));
+$locname = substr($_GET['fld'],strpos($_GET['fld']," "),strlen($_GET['fld']));
 $inid = (empty($_GET['inid']) || !is_numeric($_GET['inid'])) ? "":$_GET['inid'];
 $stid = (empty($_GET['sid']) || !is_numeric($_GET['sid'])) ? "":$_GET['sid'];
 $msgfld = (empty($_GET['rfld'])) ? "":"msg".substr($_GET['rfld'],3,strlen($_GET['rfld']));
