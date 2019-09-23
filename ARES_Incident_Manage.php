@@ -367,6 +367,7 @@ foreach($ops as $cs => $data) {
 }
 ?>
 </table>
+<div style='margin-top:6px;font-size:11px'><a href='ARES_Operator_Status.php' target='_blank'>Operator Check In</a> | <a href='ARES_Member_Manage.php?admin=1' target='_blank'>Member Manage</a></div>
 </div>
 
 <div id=inctypes style='position:fixed;top:10px;right:10px;padding:8px;background-color:white;border:solid 1px grey;border-radius:3px;text-align:center;'>
