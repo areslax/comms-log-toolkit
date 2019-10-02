@@ -79,14 +79,15 @@ if (!empty($_GET['admin'])) {
 <?php
 #}
 ?>
- <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead" target="_main">ARES MCI Poll</a><br>
- <a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead" target="_main">ARES HSA Poll</a><br>
- <a href="files/20190703_ARES_EVENT_Log_rev_4_form.pdf" class="colhead" target="_main">ARES Event Log</a><br>
- <a href="files/20190703_ARES_Message_Log_rev_6_form.pdf" class="colhead" target="_main">ARES Message Log</a><br>
- <a href="files/20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf" class="colhead" target="_main">Resource Request</a><br>
+ <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead" target="_blank">ARES MCI Poll</a><br>
+ <a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead" target="_blank">ARES HSA Poll</a><br>
+ <a href="files/20190703_ARES_EVENT_Log_rev_4_form.pdf" class="colhead" target="_blank">ARES Event Log</a><br>
+ <a href="files/20190703_ARES_Message_Log_rev_6_form.pdf" class="colhead" target="_blank">ARES Message Log</a><br>
+ <a href="files/20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf" class="colhead" target="_blank">Resource Request</a><br>
  <a href="files/20190716_RADIOGRAM_Form-2011.pdf" class="colhead" target="_main">Radiogram Form</a><br>
  <a href="https://training.fema.gov/icsresource/icsforms.aspx" class="colhead" target="_blank">FEMA.gov: ICS Forms</a><br>
- <a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead" target="_main">Hospital Abbreviations</a><br>
+ <a href="files/20191001_LAFD_Dispatch_Form_F-27A-ACS_form.pdf" class="colhead" target="_blank">LAFD F-27A-ACS Form</a><br>
+<a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead" target="_main">Hospital Abbreviations</a><br>
 <br>
 </div>
 <div class="ruleyelo" style="width:154px"></div>

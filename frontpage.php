@@ -87,7 +87,7 @@ if (!empty($_GET['admin'])) {
 <a href="files/20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf" class="colhead">Resource Request Form</a><br>
 <a href="files/20190716_RADIOGRAM_Form-2011.pdf" class="colhead">Radiogram Form</a><br>
 <a href="https://training.fema.gov/icsresource/icsforms.aspx" class="colhead" target="_blank">FEMA.gov: ICS Forms</a><br>
-<a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead">Hospital Abbreviations</a><br>
+<a href="files/20191001_LAFD_Dispatch_Form_F-27A-ACS_form.pdf" class="colhead">LAFD F-27A-ACS Form</a><br>
 </td></tr>
 <tr><td colspan=2 align=center><a href="http://file.lacounty.gov/SDSInter/dhs/206720_DisasterOrgChart.pdf" class="colhead" target="_blank">LA County Disaster Org Chart</a></td></tr>
 </table>
@@ -116,7 +116,7 @@ if (!empty($_GET['admin'])) {
 
 <?php include "footer.html"?>
 
-<iframe id=modal style="position:fixed;top:10px;left:50%;width:800px;margin-left:-400px;height:90%;padding:10px;background-color:white;border:solid 1px black;border-radius:6px;display:none;"</iframe>
+<iframe id=modal style="position:fixed;top:10px;left:50%;width:800px;margin-left:-400px;height:90%;padding:10px;background-color:white;border:solid 1px black;border-radius:6px;display:none;"></iframe>
 
 </body>
 </html>
