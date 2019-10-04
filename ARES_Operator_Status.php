@@ -107,6 +107,19 @@ function setDeploysTo(mid,lid) {
 		}
 	});
 }
+function addOperator() {
+	var datastr = "callsign="+jQuery("#newcallsign").val()+"&name="+jQuery("#newname").val()+"&status="+jQuery("#newstatus").val()+"&deploysto="+jQuery("#newdeploysto").val();
+//alert(datastr);return false;
+	jQuery.ajax({
+		type: "POST",
+		url: "ajax_add_checkin_operator.php",
+		data: datastr,
+		success: function(a,b,c){
+			console.log(a);
+			location.href = location.href;
+		}
+	});
+}
 </script>
 <style type="text/css">
 .hed { background-color: lightgrey; }
@@ -118,6 +131,12 @@ function setDeploysTo(mid,lid) {
 echo "<table border=1 cellpadding=4 cellspacing=0 style='border-color:white'>\n";
 echo "<tr class='hed'><th colspan=5><h2 style='margin:0px'>Operator Status</h2></th></tr>\n";
 echo "<tr class='hed'><th>Check In</th><th>Callsign</th><th>Name</th><th>Set Status</th><th>Deploys To</th></tr>\n";
+echo "<tr><th><button id=sbutton type=button onclick='addOperator()' style='display:block'>Check In</button></th><th><input type=text name=newcallsign id=newcallsign size=11></th><th><input type=text name=newname id=newname size=26></th><th><select name=newstatus id=newstatus>";
+$GetOperatorStatusPS->execute();
+while($sr=$GetOperatorStatusPS->fetch(PDO::FETCH_ASSOC)) {
+	echo "<option value=".$sr['s_id'].">".$sr['s_title']."</option>";
+}
+echo "</select></th><td><input type=text name=newdeploysto id=newdeploysto size=27></td></tr>\n";
 
 foreach($mems as $mid => $data) {
 	//operator status and color
@@ -138,8 +157,9 @@ foreach($mems as $mid => $data) {
 	$locs = "<select name=locations".$mid." id=locations".$mid." style='width:160px' onchange='setDeploysTo(".$mid.",this[this.selectedIndex].value)'>";
 	while($lr=$GetLocationsPS->fetch(PDO::FETCH_ASSOC)) {
 		$sel = ($lr['l_id'] == $data['prestage_lid']) ? " selected":"";
+		$valu = (isset($data['prestage_id']) && strlen($data['prestage_id'])>3) ? $data['prestage_id']:$lr['l_tactical'].": ".$lr['l_name'];
 		$lgps = (empty($sel)) ? $lgps:$lr['l_gps'];
-		$locs .= "<option value=".$lr['l_id'].$sel.">".$lr['l_tactical'].": ".$lr['l_name']."</option>";
+		$locs .= "<option value=".$lr['l_id'].$sel.">".$valu."</option>";
 	}
 	$locs .= "</select>";
 	echo "<tr id=row".$mid." style='background-color:".$rbg."'><td>".$chkbut."</td><td>".strtoupper($data['callsign'])."</td><td>".$data['fname']." ".$data['lname']."</td><td>".$statuses."</td><td>".$locs." <a id=lgps".$mid." href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td></tr>\n";
