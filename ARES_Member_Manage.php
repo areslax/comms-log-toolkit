@@ -112,7 +112,9 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 			$sel = ($r['m_access_level']==$mr['mt_id']) ? " selected":"";
 			$mtypes .= "<option value=".$mr['mt_id'].$sel.">".$mr['mt_title']."</option>";
 		}
-		$a = "<form method=post>
+		//deploys to string might be empty
+		$depto = (empty($r['m_prestage_lid'])) ? "":$r['l_tactical'].": ".$r['l_name'];
+		$a = "<form method=post autocomplete='off'>
 <input type=hidden name=updatemember value=1>
 <input type=hidden name=mid value='".$mid."'>
 <table border=0 cellpadding=6 cellspacing=0>
@@ -121,7 +123,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 <tr><td>Active</td><td><input type=checkbox name=m_active value=1";
 		if ($r['m_active']) { $a .= " checked"; }
 		$a .= "> <span style='font-size:10px'>".date("m/d/Y",strtotime($r['m_start_date']))."</span></td><td>Access</td><td><select name=m_access_level style='width:130px'><option value=0></option>".$mtypes."</select></td></tr>
-<tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid value='".$r['m_prestage_lid']."'><input name=m_prestage_lid_name class='location' style='width:400px;text-align:left;' value='".$r['l_tactical'].": ".$r['l_name']."' onfocus='this.select()'></td></tr>
+<tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid value='".$r['m_prestage_lid']."'><input name=m_prestage_lid_name class='location' style='width:400px;text-align:left;' value='".$depto."' onfocus='this.select()'></td></tr>
 <tr valign=top><td>Notes</td><td colspan=3><textarea name=m_note style='width:400px;height:60px;'>".$r['m_note']."</textarea></td></tr>";
 
 	}
@@ -181,9 +183,9 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 	foreach($ctyps as $k => $v) {
 		$a .= "<option value=".$k.">".$v."</option>";
 	}
-	$a .= "</select></td><td colspan=3><input type=text name=new_mc_data size=44 placeholder='Choose Contact Type then enter data, here'></td></tr>\n";
+	$a .= "</select></td><td colspan=3><input type=text name=new_mc_data size=44 autocomplete='ac_123' placeholder='Choose Contact Type then enter data, here'></td></tr>\n";
 
-	$a .= "<tr><td colspan=2 align=right><b>New Password</b></td><td colspan=2><input type=password size=12 name=m_password></td></tr>";
+	$a .= "<tr><td colspan=2 align=right><b>New Password</b></td><td colspan=2><input type=password size=12 name=m_password autocomplete='new-password'></td></tr>";
 
 	$a .= "<tr><th colspan=4><input type=submit value='Update This Member Info'></th></tr>
 </table>
@@ -351,13 +353,13 @@ echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Leve
 
 <div onclick="showAddNew(document.getElementById('addnew').style.visibility)" style="padding:4px;font-size:13px;margin-top:16px;width:500px;text-align:center;background-color:lightgrey;cursor:pointer;">or Click here to Show the New Member Form</div><br>
 <div id=addnew style="visibility:hidden;display:none;">
-<form method=post>
+<form method=post autocomplete='off'>
 <input type=hidden name=addmember value=1>
 <table border=0 cellpadding=6 cellspacing=0>
 <tr><td>Call Sign</td><td><input type=text size=8 id=m_callsign name=m_callsign class="people"></td><td>Status</td><td><select name=m_status style="width:100px"><option value=1>Idle</option><option value=2>Checked In</option><option value=3>En Route</option><option value=4>On Location</option></select></td></tr>
-<tr><td>Password</td><td><input type=password size=12 id=m_password name=m_password></td><td>Home Phone</td><td><input type=text size=12 id=home_phone name=mc_type_home_phone></td></tr>
+<tr><td>Password</td><td><input type=password size=12 id=m_password name=m_password autocomplete="new-password"></td><td>Home Phone</td><td><input type=text size=12 id=home_phone name=mc_type_home_phone></td></tr>
 <tr><td>First Name</td><td><input type=text size=12 id=m_fname name=m_fname></td><td>Cell Phone</td><td><input type=text size=12 id=cell_phone name=mc_type_cell_phone><select name=mc_carrier style="width:80px;height:21px;"><option value=0>Carrier</option><?=$carriers?></select></td></tr>
-<tr><td>Last Name</td><td><input type=text size=12 id=m_lname name=m_lname></td><td>Email</td><td><input type=text size=22 id=email name=mc_type_email></td></tr>
+<tr><td>Last Name</td><td><input type=text size=12 id=m_lname name=m_lname></td><td>Email</td><td><input type=text size=22 id=email name=mc_type_email autocomplete="ac234"></td></tr>
 <tr><td>Active</td><td><input type=checkbox name=m_active value=1> <span style="font-size:10px"><?=date("m/d/Y")?></span></td><td>Access</td><td><select name=m_access_level style="width:100px"><option value=1>Operator</option><option value=2>Net Control</option><option value=3>Administrator</option></select></td></tr>
 <tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid><input name=m_prestage_lid_name class="location" style="width:400px;text-align:left;"></td></tr>
 <tr valign=top><td>Notes</td><td colspan=3><textarea name=m_note style="width:400px;height:60px;"></textarea></td></tr>
