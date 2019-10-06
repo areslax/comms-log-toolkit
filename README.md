@@ -1,4 +1,3 @@
-# comms-log-toolkit
 # ARESS LAX Comms Log Toolkit
 
 A framework for emergency comms and comms logging.
