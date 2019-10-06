@@ -7,8 +7,6 @@ if (empty($_GET['alert'])) { exit; }
 
 $alert = htmlspecialchars(urldecode($_GET['alert']),ENT_QUOTES);
 
-#$alert = $alert." ".$alert." ".$alert." ".$alert." ".$alert." ".$alert." ".$alert;
-
 include "common_includes.php";
 ?>
 <script type="text/javascript" src="plugins/jquery.autoScrollTextTape.min.js"></script>

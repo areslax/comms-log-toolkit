@@ -179,10 +179,29 @@ function checkAction(idn,idx) {
 	}
 }
 
-function markDone(idn) {
-	document.getElementById("act"+idn).style.display = "none";
-	document.getElementById("actdiv"+idn).innerHTML = "<textarea id='actdone"+idn+"' name='actdone_"+idn+"' style='resize:none;text-align:center;font-size:10px;width:80px;height:22px;background:none;border:none;'></textarea>";
-	getTimestamp("actdone"+idn);
+function checkAdminAlert() {
+	jQuery.ajax({
+		type: "POST",
+		url: "ajax_admin_alert.php",
+		data: "",
+		success: function(a,b,c){
+//		      console.log(a);
+			if (a.length>0) {
+				if (!gotalert) {
+					jQuery("#alertmsg").attr("src","admin_alert_page.php?alert="+encodeURIComponent(a));
+					jQuery("#alertmsg").css("display","block");
+					jQuery("#alertmsg").css("top","10px");
+					gotalert = 1;
+				}
+			}
+			else {
+				jQuery("#alertmsg").attr("src","");
+				jQuery("#alertmsg").css("top","-60px");
+				jQuery("#alertmsg").css("display","none");
+				gotalert = 0;
+			}
+		}
+	});
 }
 
 function checkType(rtyp,rfld,doit,inid,sid) {
@@ -261,6 +280,12 @@ function getRelayOpts(val,itr) {
 			jQuery("#msg"+(itr-1)).focus();
 		}
 	});
+}
+
+function markDone(idn) {
+	document.getElementById("act"+idn).style.display = "none";
+	document.getElementById("actdiv"+idn).innerHTML = "<textarea id='actdone"+idn+"' name='actdone_"+idn+"' style='resize:none;text-align:center;font-size:10px;width:80px;height:22px;background:none;border:none;'></textarea>";
+	getTimestamp("actdone"+idn);
 }
 
 function relayMessage(itr) {

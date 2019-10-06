@@ -87,45 +87,10 @@ function saveData(frm) {
 		}
 	});
 }
+
 var gotalert = 0;
-function checkAdminAlert() {
-	jQuery.ajax({
-		type: "POST",
-		url: "ajax_admin_alert.php",
-		data: "",
-		success: function(a,b,c){
-//			console.log(a);
-			if (a.length>0) {
-				if (!gotalert) {
-					jQuery("#alertmsg").attr("src","admin_alert_page.php?alert="+encodeURIComponent(a));
-					jQuery("#alertmsg").css("display","block");
-					jQuery("#alertmsg").css("top","10px");
-					gotalert = 1;
-				}
-			}
-			else {
-				jQuery("#alertmsg").attr("src","");
-				jQuery("#alertmsg").css("top","-60px");
-				jQuery("#alertmsg").css("display","none");
-				gotalert = 0;
-			}
-		}
-	});
-}
 var chkmsgs = setInterval("checkAdminAlert()",10000);
 </script>
-
-<style type="text/css">
-#alertmsg {
-	position: fixed;
-	top: -60px;
-	left: -3px;
-	width: 100%;
-	height: 50px;
-	border: solid 2px red;
-	overflow: hidden;
-}
-</style>
 
 </head>
 

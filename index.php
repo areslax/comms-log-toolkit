@@ -10,8 +10,15 @@ if (!isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on") {
 <html>
 <head><title>ARES Toolkit</title>
 <link rel="icon" type="image/png" href="favicon.ico">
+
+<?php
+include "common_includes.php";
+?>
+
 <script type="text/javascript">
 var curr_callsign = "";
+var gotalert = 0;
+var chkmsgs = setInterval("checkAdminAlert()",10000);
 </script>
 <style type="text/css">
 .menu {
@@ -35,6 +42,8 @@ var curr_callsign = "";
 
 </head>
 <body>
+
+<iframe id=alertmsg></iframe>
 
 <iframe class="menu" name="_menu" id="_menu" src="menu.php<?=$isadmin?>"></iframe>
 <iframe class="main" name="_main" id="_main" src="frontpage.php<?=$isadmin?>"></iframe>
