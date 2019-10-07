@@ -6,7 +6,8 @@
 if (empty($_GET['admin'])) { header("Location: https://www.km6wka.net/ares");exit; }
 
 require "db_conn.php";
-$searchresuts = "";
+$thismem = "";
+$searchresults = "";
 
 #debug
 #echo "<pre>";print_r($_POST);exit;
@@ -16,21 +17,37 @@ if (!empty($_POST['addmember'])) {
 	$tdate = date("Ymd");
 	$pword = md5($_POST['m_password']);
 	$q = $conn->prepare("insert into Members (m_access_level,m_callsign,m_fname,m_lname,m_note,m_active,m_start_date,m_last_login,m_status,m_prestage_lid,m_password) values (:accesslevel,:callsign,:fname,:lname,:note,:active,:startdate,:lastlogin,:status,:prestage,:password)");
-	$q->execute(array(':accesslevel'=>$_POST['m_access_level'],':callsign'=>strtolower($_POST['m_callsign']),':fname'=>$_POST['m_fname'],':lname'=>$_POST['m_lname'],':note'=>$_POST['m_note'],':active'=>$_POST['m_active'],':startdate'=>$tdate,':lastlogin'=>NULL,':status'=>$_POST['m_status'],':prestage'=>$_POST['m_prestage_lid'],':password'=>$pword));
+	try{
+	 $q->execute(array(':accesslevel'=>$_POST['m_access_level'],':callsign'=>$_POST['m_callsign'],':fname'=>$_POST['m_fname'],':lname'=>$_POST['m_lname'],':note'=>$_POST['m_note'],':active'=>$_POST['m_active'],':startdate'=>$tdate,':lastlogin'=>NULL,':status'=>$_POST['m_status'],':prestage'=>$_POST['m_prestage'],':password'=>$pword));
+	}catch(PDOException $e){
+	 echo "oops: ".$e->getMessage();
+	 exit;
+	}
+	if ($q->errorInfo()[0]>1) {
+	 echo "err:<pre>";print_r($q->errorInfo());exit;
+	}
 	$mid = $conn->lastInsertId();
-	if (!empty($_POST['mc_type_cell_phone'])) {
+	if (!empty($_POST['mc_type_cell_phone']) || !empty($_POST['mc_type_home_phone'])) {
 		$togo = array("(",")"," ","-","_",".","/");
-		$pno = ltrim(str_replace($togo,'',$_POST['mc_type_cell_phone']),'1');
-		$phoneno = substr($pno,0,3)."-".substr($pno,3,3)."-".substr($pno,-4,strlen($pno));
-		$q = $conn->prepare("insert into Member_Contacts (m_id,mc_type,mc_data,mc_carrier) values (:mid,:type,:data,:carr)");
-		$q->execute(array(':mid'=>$mid,':type'=>3,':data'=>$phoneno,':carr'=>$_POST['mc_carrier']));
+		if (!empty($_POST['mc_type_cell_phone'])) {
+			$pno = ltrim(str_replace($togo,'',$_POST['mc_type_cell_phone']),'1');
+			$phoneno = substr($pno,0,3)."-".substr($pno,3,3)."-".substr($pno,-4,strlen($pno));
+			$q = $conn->prepare("insert into Member_Contacts (m_id,mc_type,mc_data,mc_carrier) values (:mid,:type,:data,:carr)");
+			$q->execute(array(':mid'=>$mid,':type'=>4,':data'=>$phoneno,':carr'=>$_POST['mc_carrier']));
+		}
+		if (!empty($_POST['mc_type_home_phone'])) {
+                        $pno = ltrim(str_replace($togo,'',$_POST['mc_type_home_phone']),'1');
+                        $phoneno = substr($pno,0,3)."-".substr($pno,3,3)."-".substr($pno,-4,strlen($pno));
+                        $q = $conn->prepare("insert into Member_Contacts (m_id,mc_type,mc_data,mc_carrier) values (:mid,:type,:data,:carr)");
+                        $q->execute(array(':mid'=>$mid,':type'=>2,':data'=>$phoneno,':carr'=>$_POST['mc_carrier']));
+		}
 	}
 	if (!empty($_POST['mc_type_email'])) {
 		$q = $conn->prepare("insert into Member_Contacts (m_id,mc_type,mc_data) values (:mid,:type,:data)");
 		$q->execute(array(':mid'=>$mid,':type'=>1,':data'=>$_POST['mc_type_email']));
 	}
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	system("php scripts/generateNewLocations.php");
 }
 $ctyps = array(0=>"",1=>"Email",2=>"Home Phone",3=>"Work Phone",4=>"Cell Phone",5=>"Account");
 
@@ -81,7 +98,7 @@ if (!empty($_POST['updatemember'])) {
 		$q3->execute(array(':mid'=>$_POST['mid'],':type'=>$_POST['new_mc_type'],':data'=>$data));
 	}
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	system("php scripts/generateNewLocations.php");
 }
 //got mid so show member info
 if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
