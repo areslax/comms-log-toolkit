@@ -204,7 +204,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 
 	$a .= "<tr><td colspan=2 align=right><b>New Password</b></td><td colspan=2><input type=password size=12 name=m_password autocomplete='new-password'></td></tr>";
 
-	$a .= "<tr><th colspan=4><input type=submit value='Update This Member Info'></th></tr>
+	$a .= "<tr><th colspan=4><input type=submit value='Update This Operator Info'></th></tr>
 </table>
 </form>
 </div>";
@@ -223,7 +223,7 @@ foreach($carr as $c) {
 ?>
 <!doctype html>
 <html>
-<head><title>ARES Member Management</title>
+<head><title>ARES Operator Management</title>
 
 <?php
 include "common_includes.php";
@@ -333,7 +333,7 @@ function updateStatus(tid,val) {
 <body>
 <center>
 
-<h2>ARES Member Management</h2>
+<h2>ARES Operator Management</h2>
 
 <div id=memcodes style='position:fixed;top:10px;right:10px;padding:8px;background-color:white;border:solid 1px grey;border-radius:3px;text-align:center;'>
 <table border=0 cellpadding=3 cellspacing=0>
@@ -363,12 +363,12 @@ echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Leve
 </table>
 </div>
 
-<input type=text name=m_lookup id=m_lookup class='people' placeholder="To look up a Member, Click here and Start Typing ..." style="font-weight:bold;width:500px;text-align:center;" onfocus="this.select()" value="<?=$thismem?>">
+<input type=text name=m_lookup id=m_lookup class='people' placeholder="To look up an Operator, Click here and Start Typing ..." style="font-weight:bold;width:500px;text-align:center;" onfocus="this.select()" value="<?=$thismem?>">
 <div id=results>
 <?=$searchresults?>
 </div>
 
-<div onclick="showAddNew(document.getElementById('addnew').style.visibility)" style="padding:4px;font-size:13px;margin-top:16px;width:500px;text-align:center;background-color:lightgrey;cursor:pointer;">or Click here to Show the New Member Form</div><br>
+<div onclick="showAddNew(document.getElementById('addnew').style.visibility)" style="padding:4px;font-size:13px;margin-top:16px;width:500px;text-align:center;background-color:lightgrey;cursor:pointer;">or Click here to Show the New Operator Form</div><br>
 <div id=addnew style="visibility:hidden;display:none;">
 <form method=post autocomplete='off'>
 <input type=hidden name=addmember value=1>
@@ -380,7 +380,7 @@ echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Leve
 <tr><td>Active</td><td><input type=checkbox name=m_active value=1 checked> <span style="font-size:10px"><?=date("m/d/Y")?></span></td><td>Access</td><td><select name=m_access_level style="width:100px"><option value=1>Operator</option><option value=2>Net Control</option><option value=3>Administrator</option></select></td></tr>
 <tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid><input name=m_prestage_lid_name class="location" style="width:400px;text-align:left;"></td></tr>
 <tr valign=top><td>Notes</td><td colspan=3><textarea name=m_note style="width:400px;height:60px;"></textarea></td></tr>
-<tr><th colspan=4><input type=submit value="Save This New Member"></th></tr>
+<tr><th colspan=4><input type=submit value="Save This New Operator"></th></tr>
 </table>
 </form>
 </div>
