@@ -130,7 +130,7 @@ function addOperator() {
 <?php
 echo "<table border=1 cellpadding=4 cellspacing=0 style='border-color:white'>\n";
 echo "<tr class='hed'><th colspan=5><h2 style='margin:0px'>Operator Status</h2></th></tr>\n";
-echo "<tr class='hed'><th>Check In</th><th>Callsign</th><th>Name</th><th>Set Status</th><th>Deploys To</th></tr>\n";
+echo "<tr class='hed'><th>Check In</th><th>Call/Tac</th><th>Name</th><th>Set Status</th><th>Deploys To</th></tr>\n";
 echo "<tr><th><button id=sbutton type=button onclick='addOperator()' style='display:block'>Check In</button></th><th><input type=text name=newcallsign id=newcallsign size=11></th><th><input type=text name=newname id=newname size=26></th><th><select name=newstatus id=newstatus>";
 $GetOperatorStatusPS->execute();
 while($sr=$GetOperatorStatusPS->fetch(PDO::FETCH_ASSOC)) {

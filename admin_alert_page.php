@@ -20,4 +20,6 @@ jQuery("#alertwin").autoTextTape({
 	speed: 'fast'
 });
 </script>
-<embed src="alert.mp3" type="audio/mpeg" width=1 height=1 hidden=true autostart=true>
+<!--embed src="alert.mp3" type="audio/mpeg" width=1 height=1 hidden=true autostart=true-->
+<!--embed src="beep.mp3" type="audio/mpeg" width=1 height=1 hidden=true autostart=true-->
+<embed src="bosunwhistle.mp3" type="audio/mpeg" width=1 height=1 hidden=true autostart=true>
