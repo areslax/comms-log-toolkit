@@ -63,8 +63,8 @@ while ($r=$GetMembersPS->fetch(PDO::FETCH_ASSOC)) {
 	$autocall .= "{label:'".$r['m_callsign']."',value:'".$r['m_callsign']."',mid:'".$mid."'},";
 	$autoname .= "{label:'".$r['m_fname']." ".$r['m_lname']."',value:'".$r['m_fname']." ".$r['m_lname']."',mid:'".$mid."'},";
 }
-$autocall = rtrim(",",$autocall);
-$autoname = rtrim(",",$autoname);
+$autocall = rtrim($autocall,",");
+$autoname = rtrim($autoname,",");
 //debug
 //echo "<pre>";print_r($mems);exit;
 //location query
