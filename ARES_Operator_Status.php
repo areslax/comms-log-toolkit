@@ -143,7 +143,7 @@ $GetOperatorStatusPS->execute();
 while($sr=$GetOperatorStatusPS->fetch(PDO::FETCH_ASSOC)) {
 	echo "<option value=".$sr['s_id'].">".$sr['s_title']."</option>";
 }
-echo "</select></th><td><input type=text name=newdeploysto id=newdeploysto class='location' size=27></td></tr>\n";
+echo "</select></th><td><input type=text name=newdeploysto id=newdeploysto class='location' style='width:185px'></td></tr>\n";
 
 foreach($mems as $mid => $data) {
 	//operator status and color
@@ -171,16 +171,17 @@ foreach($mems as $mid => $data) {
 	}
 	$locs .= "</select>";
 /**/
-	$locs = "<input name=loca".$mid." id=loca".$mid." class='location' style='width:160px' onchange='setDeploysTo(".$mid.",this[this.selectedIndex].value)'";
+	$locs = "<input name=loca".$mid." id=loca".$mid." class='location' style='width:160px' onfocus='this.select()'";
 	while($lr=$GetLocationsPS->fetch(PDO::FETCH_ASSOC)) {
 		if ($lr['l_id'] == $data['prestage_lid']) {
 			$valu = (isset($data['prestage_id']) && strlen($data['prestage_id'])>3) ? $data['prestage_id']:$lr['l_tactical'].": ".$lr['l_name'];
 			$lgps = $lr['l_gps'];
-			$locid = "<input type='hidden' name=locations".$mid." id=locations".$mid." value=".$lf['l_id'].">";
+			$l_id = $lr['l_id'];
+			$locid = "<input type='hidden' name=locations".$mid." id=locations".$mid." value=".$l_id.">";
 			break;
 		}
 	}
-	$locs .= " value='".$valu."'>".$locid."  <a id=lgps".$mid." href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a>";
+	$locs .= " value='".$valu."' onchange='setDeploysTo(".$mid.",".$l_id.")'>".$locid."  <a id=lgps".$mid." href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a>";
 
 	echo "<tr id=row".$mid." style='background-color:".$rbg."'><td>".$chkbut."</td><td>".strtoupper($data['callsign'])."</td><td>".$data['fname']." ".$data['lname']."</td><td>".$statuses."</td><td>".$locs."</td></tr>\n";
 }
