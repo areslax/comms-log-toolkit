@@ -230,6 +230,6 @@ function initAuto() {
 }
 jQuery(function(){
 	initAuto();
-}
+});
 </script>
 
