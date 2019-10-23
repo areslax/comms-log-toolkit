@@ -76,7 +76,8 @@ if (!empty($_GET['admin'])) {
 ?>
 <a href="https://www.freelists.org/list/arestoolkit" target="_blank">ARES Toolkit Mailing List</a> | <a href="forum/index.php" target="_blank">ARES Toolkit Forum</a> &nbsp;|&nbsp; <a href="javascript:popIRC()" class="colhead">ARESLAX IRC Chat</a>
 <p style="border-top:solid 1px #900;margin-top:20px;margin-bottom:0px;padding-top:20px;">
-<b>Download or Fill &amp; Print:</b><br><br>
+<span onclick="javascript:divVis('forms')" style="cursor:pointer;font-weight:bold;">Download or Fill &amp; Print:</span><br><br>
+<div id="forms" style="display:none">
 <table border=0 cellpadding=6 cellspacing=0>
 <tr valign=top><td align=center>
 <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead">ARES MCI Poll</a><br>
@@ -91,6 +92,7 @@ if (!empty($_GET['admin'])) {
 </td></tr>
 <tr><td colspan=2 align=center><a href="http://file.lacounty.gov/SDSInter/dhs/206720_DisasterOrgChart.pdf" class="colhead" target="_blank">LA County Disaster Org Chart</a></td></tr>
 </table>
+</div>
 </p>
 
 <br></td></tr>

@@ -47,8 +47,8 @@ A:hover { border-bottom:1px dotted blue; }
 if (!empty($_GET['admin'])) {
 ?>
 <div class="ruleyelo" style="width:154px"><br /></div>
-
-<div id=menumgmt style="margin-left:10px;line-height:16px;">
+<span onclick="divVis('menumgmt')" style="cursor:pointer;font-weight:bold;">MANAGE</span>
+<div id=menumgmt style="margin-left:10px;line-height:16px;display:none;">
  <a href="ARES_Alert_Manage.php" target="_blank" style="color:rgb(180,180,200)">Manage Admin Alerts</a><br>
  <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" style="color:rgb(180,180,200)">Manage Incidents</a><br>
  <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" style="color:rgb(180,180,200)">Manage Net Controls</a><br>
@@ -79,6 +79,8 @@ if (!empty($_GET['admin'])) {
 <?php
 #}
 ?>
+<span onclick="divVis('forms')" style="cursor:pointer;font-weight:bold;">FORMS</span>
+<div id="forms" style="display:none">
  <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead" target="_blank">ARES MCI Poll</a><br>
  <a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead" target="_blank">ARES HSA Poll</a><br>
  <a href="files/20190703_ARES_EVENT_Log_rev_4_form.pdf" class="colhead" target="_blank">ARES Event Log</a><br>
@@ -87,7 +89,8 @@ if (!empty($_GET['admin'])) {
  <a href="files/20190716_RADIOGRAM_Form-2011.pdf" class="colhead" target="_main">Radiogram Form</a><br>
  <a href="https://training.fema.gov/icsresource/icsforms.aspx" class="colhead" target="_blank">FEMA.gov: ICS Forms</a><br>
  <a href="files/20191001_LAFD_Dispatch_Form_F-27A-ACS_form.pdf" class="colhead" target="_blank">LAFD F-27A-ACS Form</a><br>
-<a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead" target="_main">Hospital Abbreviations</a><br>
+ <a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead" target="_main">Hospital Abbreviations</a><br>
+</div>
 <br>
 </div>
 <div class="ruleyelo" style="width:154px"></div>
