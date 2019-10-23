@@ -296,8 +296,8 @@ function relayMessage(itr) {
 }
 
 function divVis(div) {
-	var vis = (jQuery(div).css('display','block') ? 'none':'block';
-	jQuery(div).css('display',vis);
+	var vis = (document.getElementById(div).style.display=='block') ? 'none':'block';
+	document.getElementById(div).style.display=vis;
 }
 
 function showModal(mloc,mdis) {

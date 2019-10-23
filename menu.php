@@ -46,9 +46,9 @@ A:hover { border-bottom:1px dotted blue; }
 <?php
 if (!empty($_GET['admin'])) {
 ?>
-<div class="ruleyelo" style="width:154px"><br /></div>
-<span onclick="divVis('menumgmt')" style="cursor:pointer;font-weight:bold;">MANAGE</span>
-<div id=menumgmt style="margin-left:10px;line-height:16px;display:none;">
+<div class="ruleyelo" style="width:154px"></div>
+<div onclick="divVis('menumgmt')" style="cursor:pointer;font-weight:bold;font-size:13px;margin:4px 0 4px 0;">MANAGE</div>
+<div id=menumgmt style="margin-left:10px;line-height:16px;display:none;margin:2px 0 6px 0;">
  <a href="ARES_Alert_Manage.php" target="_blank" style="color:rgb(180,180,200)">Manage Admin Alerts</a><br>
  <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" style="color:rgb(180,180,200)">Manage Incidents</a><br>
  <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" style="color:rgb(180,180,200)">Manage Net Controls</a><br>
@@ -56,7 +56,6 @@ if (!empty($_GET['admin'])) {
  <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" style="color:rgb(180,180,200)">Manage Locations</a><br>
 </div>
 
-<br />
 <?php
 }
 ?>
@@ -79,8 +78,11 @@ if (!empty($_GET['admin'])) {
 <?php
 #}
 ?>
-<span onclick="divVis('forms')" style="cursor:pointer;font-weight:bold;">FORMS</span>
-<div id="forms" style="display:none">
+
+<div class="ruleyelo" style="margin-left:-8px;width:154px"></div>
+
+<div onclick="divVis('forms')" style="cursor:pointer;font-weight:bold;font-size:13px;margin:4px 0 4px 0;">FORMS</div>
+<div id="forms" style="display:none;margin:2px 0 6px 0;">
  <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead" target="_blank">ARES MCI Poll</a><br>
  <a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead" target="_blank">ARES HSA Poll</a><br>
  <a href="files/20190703_ARES_EVENT_Log_rev_4_form.pdf" class="colhead" target="_blank">ARES Event Log</a><br>
@@ -91,10 +93,10 @@ if (!empty($_GET['admin'])) {
  <a href="files/20191001_LAFD_Dispatch_Form_F-27A-ACS_form.pdf" class="colhead" target="_blank">LAFD F-27A-ACS Form</a><br>
  <a href="files/20190703_Hospital_Terms_Abbreviations_Ver_4.doc" class="colhead" target="_main">Hospital Abbreviations</a><br>
 </div>
-<br>
+
 </div>
-<div class="ruleyelo" style="width:154px"></div>
-<br />
+<div class="ruleyelo" style="width:154px;"></div>
+<br>
 
 <!--
 <div style="margin-left:10px;line-height:18px;">
