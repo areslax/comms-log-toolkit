@@ -78,23 +78,23 @@ $GetOperatorStatusPS = $conn->prepare("select * from Status_Codes order by s_id"
 <head><title>ARES Operator Status</title>
 <?php include "common_includes.php";?>
 <script type="text/javascript">
-var stats = new Array('white',<?php
+<?php
 $stats = "";
 $GetOperatorStatusPS->execute();
 while($sr=$GetOperatorStatusPS->fetch(PDO::FETCH_ASSOC)) {
-	$stats .= "'".$sr['s_color']."',";
+        $stats .= "'".$sr['s_color']."',";
 }
 $stats = rtrim($stats,",");
-echo $stats;
 ?>
-);
-function setStatus(mid,st) {
-	var datastr = "mid="+mid+"&status="+st;
+var stats = new Array('white',<?=$stats?>);
+function setStatus(mid,st,lid) {
+	var datastr = "mid="+mid+"&status="+st+"&lid="+lid;
 	jQuery.ajax({
 		type: "POST",
 		url: "ajax_set_operator_status.php",
 		data: datastr,
 		success: function(a,b,c){
+			console.log(a);
 			var bshow = (st>1) ? "none":"block";
 			jQuery("#sbutton"+mid).css("display",bshow);
 			jQuery("#row"+mid).css("background-color",stats[st]);
@@ -115,7 +115,7 @@ function setDeploysTo(mid,lid) {
 	});
 }
 function addOperator() {
-	var datastr = "callsign="+jQuery("#newcallsign").val()+"&name="+jQuery("#newname").val()+"&status="+jQuery("#newstatus").val()+"&deploysto="+jQuery("#newdeploysto").val();
+	var datastr = "callsign="+jQuery("#newcallsign").val()+"&name="+jQuery("#newname").val()+"&status="+jQuery("#newstatus").val()+"&deploysto="+jQuery("#locations0").val();
 //alert(datastr);return false;
 	jQuery.ajax({
 		type: "POST",
@@ -123,6 +123,7 @@ function addOperator() {
 		data: datastr,
 		success: function(a,b,c){
 			console.log(a);
+			jQuery.get("scripts/cron_generateNewLocations.php");
 			location.href = location.href;
 		}
 	});
@@ -143,34 +144,12 @@ $GetOperatorStatusPS->execute();
 while($sr=$GetOperatorStatusPS->fetch(PDO::FETCH_ASSOC)) {
 	echo "<option value=".$sr['s_id'].">".$sr['s_title']."</option>";
 }
-echo "</select></th><td><input type=text name=newdeploysto id=newdeploysto class='location' style='width:185px'></td></tr>\n";
+echo "</select></th><td><input type=text name=loca0 id=loca0 class='location' style='width:185px' onfocus='this.select()'><input type='hidden' name=locations0 id=locations0 value=''></td></tr>\n";
 
 foreach($mems as $mid => $data) {
-	//operator status and color
-	$GetOperatorStatusPS->execute();
-	$rbg = "";
-	$statuses = "<select name=statuscode".$mid." id=statuscode".$mid." onchange='setStatus(".$mid.",this[this.selectedIndex].value)'>";
-	while($sr=$GetOperatorStatusPS->fetch(PDO::FETCH_ASSOC)) {
-		$sel = ($sr['s_id'] == $data['status']) ? " selected":"";
-		$rbg = (empty($sel)) ? $rbg:$sr['s_color'];
-		$statuses .= "<option value=".$sr['s_id'].$sel.">".$sr['s_title']."</option>";
-	}
-	$statuses .= "</select>";
-	$bshow = ($data['status']>1) ? "none":"block";
-	$chkbut = "<button id=sbutton".$mid." type=button onclick='setStatus(".$mid.",2)' style='display:".$bshow."'>Check In</button>";
-	//location
+        //location
 	$GetLocationsPS->execute();
 	$lgps = "";
-/*
-	$locs = "<select name=locations".$mid." id=locations".$mid." style='width:160px' onchange='setDeploysTo(".$mid.",this[this.selectedIndex].value)'>";
-	while($lr=$GetLocationsPS->fetch(PDO::FETCH_ASSOC)) {
-		$sel = ($lr['l_id'] == $data['prestage_lid']) ? " selected":"";
-		$valu = (isset($data['prestage_id']) && strlen($data['prestage_id'])>3) ? $data['prestage_id']:$lr['l_tactical'].": ".$lr['l_name'];
-		$lgps = (empty($sel)) ? $lgps:$lr['l_gps'];
-		$locs .= "<option value=".$lr['l_id'].$sel.">".$valu."</option>";
-	}
-	$locs .= "</select>";
-/**/
 	$locs = "<input name=loca".$mid." id=loca".$mid." class='location' style='width:160px' onfocus='this.select()'";
 	while($lr=$GetLocationsPS->fetch(PDO::FETCH_ASSOC)) {
 		if ($lr['l_id'] == $data['prestage_lid']) {
@@ -181,8 +160,35 @@ foreach($mems as $mid => $data) {
 			break;
 		}
 	}
-	$locs .= " value='".$valu."' onchange='setDeploysTo(".$mid.",".$l_id.")'>".$locid."  <a id=lgps".$mid." href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a>";
-
+	$locs .= " value='".$valu."'>".$locid."  <a id=lgps".$mid." href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a>";
+	//operator status and color
+	$GetOperatorStatusPS->execute();
+	$rbg = "";
+	$statuses = "<select name=statuscode".$mid." id=statuscode".$mid." onchange='setStatus(".$mid.",this[this.selectedIndex].value,jQuery(\"#locations".$mid."\").val())'>";
+	while($sr=$GetOperatorStatusPS->fetch(PDO::FETCH_ASSOC)) {
+		$sel = ($sr['s_id'] == $data['status']) ? " selected":"";
+		$rbg = (empty($sel)) ? $rbg:$sr['s_color'];
+		$statuses .= "<option value=".$sr['s_id'].$sel.">".$sr['s_title']."</option>";
+	}
+	$statuses .= "</select>";
+	$bshow = ($data['status']>1) ? "none":"block";
+	$chkbut = "<button id=sbutton".$mid." type=button onclick='setStatus(".$mid.",2,jQuery(\"#locations".$mid."\").val())' style='display:".$bshow."'>Check In</button>";
+/*
+	//location
+	$GetLocationsPS->execute();
+	$lgps = "";
+	$locs = "<input name=loca".$mid." id=loca".$mid." class='location' style='width:160px' onfocus='this.select()'";
+	while($lr=$GetLocationsPS->fetch(PDO::FETCH_ASSOC)) {
+		if ($lr['l_id'] == $data['prestage_lid']) {
+			$valu = (isset($data['prestage_id']) && strlen($data['prestage_id'])>3) ? $data['prestage_id']:$lr['l_tactical'].": ".$lr['l_name'];
+			$lgps = $lr['l_gps'];
+			$l_id = $lr['l_id'];
+			$locid = "<input type='hidden' name=locations".$mid." id=locations".$mid." value=".$l_id.">";
+			break;
+		}
+	}
+	$locs .= " value='".$valu."'>".$locid."  <a id=lgps".$mid." href='https://maps.google.com/?q=".$lgps."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a>";
+/**/
 	echo "<tr id=row".$mid." style='background-color:".$rbg."'><td>".$chkbut."</td><td>".strtoupper($data['callsign'])."</td><td>".$data['fname']." ".$data['lname']."</td><td>".$statuses."</td><td>".$locs."</td></tr>\n";
 }
 
@@ -193,9 +199,6 @@ echo "</table>";
 
 <script type="text/javascript">
 //autocomplete
-var locfld = new Array();
-var callfld = new Array();
-var namefld = new Array();
 //callsign lookup
 var calllookup = new Array(<?=$autocall?>);
 //name lookup
@@ -208,12 +211,14 @@ function initAuto() {
 		source: calllookup,
 		focus: function(event, ui) {
 			event.preventDefault();
-			jQuery(this).val(ui.item.label);
+//			jQuery(this).val(ui.item.label);
 		},
 		select: function(event, ui) {
 			event.preventDefault();
-			jQuery(this).val(ui.item.value);
-			callfld[this.id]=ui.item.label;
+			jQuery('TR').css('background-color','white');
+			jQuery('#row'+ui.item.mid).css('background-color','yellow');
+			jQuery(this).val('');
+			jQuery(this).blur();
 		}
 	});
 
@@ -221,12 +226,14 @@ function initAuto() {
 		source: namelookup,
 		focus: function(event, ui) {
 			event.preventDefault();
-			jQuery(this).val(ui.item.label);
+//			jQuery(this).val(ui.item.label);
 		},
 		select: function(event, ui) {
 			event.preventDefault();
-			jQuery(this).val(ui.item.value);
-			namefld[this.id]=ui.item.mid;
+			jQuery('TR').css('background-color','white');
+			jQuery('#row'+ui.item.mid).css('background-color','yellow');
+			jQuery(this).val('');
+			jQuery(this).blur();
 		}
 	});
 	jQuery(".location").autocomplete({
@@ -237,8 +244,12 @@ function initAuto() {
 		},
 		select: function(event, ui) {
 			event.preventDefault();
-			jQuery(this).val(ui.item.value);
-			locfld[this.id]=ui.item.label;
+			//get mid, if exists
+			var thisid = jQuery(this).attr('id');
+			var thismid = thisid.substr(4,this.length);
+			jQuery(this).val(ui.item.label);
+			jQuery("#locations"+thismid).val(ui.item.lid);
+			setDeploysTo(thismid,ui.item.lid);
 		}
 	});
 }

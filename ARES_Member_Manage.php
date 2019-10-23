@@ -3,7 +3,7 @@
  * ARES_Member_Manage.php
  * Interface for managing members
  * ############################## */
-if (empty($_GET['admin'])) { header("Location: https://www.km6wka.net/ares");exit; }
+//if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
 
 require "db_conn.php";
 $thismem = "";
@@ -204,7 +204,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 
 	$a .= "<tr><td colspan=2 align=right><b>New Password</b></td><td colspan=2><input type=password size=12 name=m_password autocomplete='new-password'></td></tr>";
 
-	$a .= "<tr><th colspan=4><input type=submit value='Update This Operator Info'></th></tr>
+	$a .= "<tr><th colspan=4><input type=submit value='Update This Operator Info'> <button type=button onclick='deleteOp(".$mid.")'>Delete Operator</button></th></tr>
 </table>
 </form>
 </div>";
@@ -244,6 +244,19 @@ function showAddNew(vis) {
 	var vis = (vis=="hidden") ? "visible":"hidden";
 	jQuery("#addnew").css("visibility",vis).fadeIn(900);
 	jQuery("#callsign").focus();
+}
+function deleteOp(mid) {
+	var datastr = "mid="+mid;
+	jQuery.ajax({
+		type: "POST",
+		url: "ajax_delete_member.php",
+		data: datastr,
+		success: function(a,b,c){
+			console.log(a);
+			jQuery.get("scripts/cron_generateNewLocations.php");
+			location.href = 'ARES_Member_Manage.php';
+		}
+	});
 }
 function deleteMe(mid,data,rid) {
 	var datastr = "mid="+mid+"&data="+encodeURIComponent(data);

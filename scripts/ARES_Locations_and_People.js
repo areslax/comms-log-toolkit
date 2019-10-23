@@ -2,7 +2,7 @@
  * ARES_Locations_and_People.js
  * List of deployment locations
  * and ARESLAX scribes
- * Auto-updated: 2019-10-14
+ * Auto-updated: 2019-10-23
  * ############################ */
 
 var loclookup = new Array(
