@@ -295,6 +295,11 @@ function relayMessage(itr) {
 	jQuery("#msgbut_"+itr).attr("disabled",true);
 }
 
+function divVis(div) {
+	var vis = (jQuery(div).css('display','block') ? 'none':'block';
+	jQuery(div).css('display',vis);
+}
+
 function showModal(mloc,mdis) {
 	document.getElementById("modal").src = mloc;
 	document.getElementById("modal").style.display = mdis;
