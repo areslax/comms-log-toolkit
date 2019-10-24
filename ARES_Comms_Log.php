@@ -187,9 +187,15 @@ function initAuto() {
 		},
 		select: function(event, ui) {
 			event.preventDefault();
-			jQuery(this).val(ui.item.value);
-			jQuery("#incidentid").val(ui.item.iid);
-			iid = ui.item.iid;
+			if (ui.item.iid>0) {
+				jQuery(this).val(ui.item.value);
+				jQuery("#incidentid").val(ui.item.iid);
+				iid = ui.item.iid;
+			}
+			else {
+				jQuery("#modal").src = "ARES_New_Incident.php?gps="+gps;
+				jQuery("#modal").css("display","block");
+			}
 		}
 	});
 }
