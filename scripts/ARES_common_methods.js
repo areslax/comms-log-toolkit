@@ -23,13 +23,15 @@ function startNewLog() {
 	location.href = location.href;
 }
 //https://developers.google.com/web/fundamentals/native-hardware/user-location/
+var gps = '';
 function getGeoLoc(){
 	// check for Geolocation support
 	if (navigator.geolocation) {
 		var geoSuccess = function(position) {
 		// Do magic with location
-		startPos = position;
-		document.getElementById('stationgeo').value = startPos.coords.latitude+","+startPos.coords.longitude;
+		thisPos = position;
+		jQuery('#stationgeo').val(thisPos.coords.latitude+","+thisPos.coords.longitude);
+		gps = jQuery('#stationgeo').val();
 		};
 		var geoError = function(error) {
 			switch(error.code) {

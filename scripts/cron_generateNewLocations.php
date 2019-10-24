@@ -8,14 +8,14 @@ include "../db_conn.php";
 
 $locs = "";
 $peep = "";
-$incids = "";
+$incids = "{label:'',value:'New Incident',iid:0},";
 $ncids = "";
 $typs = "";
 
 //get locations and dump to js string
 $lq = $conn->prepare("select l_id,l_tactical,l_name from Locations order by l_name");
 $lq->execute();
-$lr = $lq->fetchAll(PDO::FETCH_ASSOC);
+$lr = $lq->fetch(PDO::FETCH_ASSOC);
 foreach($lr as $r) {
 	$thisl = strtoupper($r['l_tactical'])." ".stripslashes($r['l_name']);
 	$locs .= "{label:'".str_replace("'","\'",$thisl)."',value:'".$r['l_tactical']."',lid:'".$r['l_id']."'},";
@@ -25,7 +25,7 @@ $locs = rtrim($locs,",")."\n";
 //get people
 $pq = $conn->prepare("select m_id,m_callsign,m_fname,m_lname from Members where m_active='1' order by m_callsign");
 $pq->execute();
-$pr = $pq->fetchAll(PDO::FETCH_ASSOC);
+$pr = $pq->fetch(PDO::FETCH_ASSOC);
 foreach($pr as $r) {
 	$thisp = strtoupper($r['m_callsign'])." ".$r['m_fname']." ".$r['m_lname'];
 	$peep .= "{label:'".$thisp."',value:'".$thisp."',mid:'".$r['m_id']."'},";
@@ -35,7 +35,7 @@ $peep = rtrim($peep,",")."\n";
 //get incidents
 $iq = $conn->prepare("select Incidents.i_id,i_type,i_tactical,i_name,it_data from Incidents left outer join Incident_Types on Incident_Types.it_id=Incidents.i_type where i_status='1' order by i_name");
 $iq->execute();
-$ir = $iq->fetchAll(PDO::FETCH_ASSOC);
+$ir = $iq->fetch(PDO::FETCH_ASSOC);
 foreach($ir as $r) {
 	$thisia = $r['i_name'];
         $thisib = $r['it_data'].": ".strtoupper($r['i_tactical']).": ".$r['i_name'];
@@ -46,7 +46,7 @@ $incids = rtrim($incids,",")."\n";
 //get net controls
 $ncq = $conn->prepare("select nc_id,nc_callsign,nc_location from Net_Controls where nc_active='1' order by nc_callsign");
 $ncq->execute();
-$ncr = $ncq->fetchAll(PDO::FETCH_ASSOC);
+$ncr = $ncq->fetch(PDO::FETCH_ASSOC);
 foreach($ncr as $r) {
 	$thisia = $r['nc_callsign'].": ".$r['nc_location'];
 	$ncids .= "{label:'".$thisia."',value:'".$thisia."',ncid:'".$r['nc_id']."'},";
