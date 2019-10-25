@@ -12,18 +12,21 @@ if (!empty($_POST['addincident'])) {
 	$q = $conn->prepare("insert into Incidents (i_type,i_tactical,i_status,i_name,i_lead_id,i_gps) values (:type,:tactical,1,:name,:leadid,:gps)");
 	$q->execute(array(':type'=>$_POST['i_type'],':tactical'=>$_POST['i_tactical'],':name'=>$_POST['i_name'],':leadid'=>$_POST['i_lead_id_new'],':gps'=>$_POST['i_gps']));
 	$iid = $conn->lastInsertId();
+	$iname = urlencode($_POST['i_name']);
 	//update common js file
 	file_get_contents("scripts/cron_generateNewLocations.php");
 }
-//get incident types
-$itypes = "";
-$itarry = array();
-$iq = $conn->query("select * from Incident_Types order by it_id");
-$ires = $iq->fetchAll(PDO::FETCH_ASSOC);
-foreach($ires as $ir) {
-	$itypes .= "<option value=".$ir['it_id'].$sel.">".$ir['it_data'].": ".$ir['it_title']."</option>";
-	$itarry[$ir['it_id']]['title'] = $ir['it_title'];
-	$itarry[$ir['it_id']]['data'] = $ir['it_data'];
+if (empty($iid)) {
+	//get incident types
+	$itypes = "";
+	$itarry = array();
+	$iq = $conn->query("select * from Incident_Types order by it_id");
+	$ires = $iq->fetchAll(PDO::FETCH_ASSOC);
+	foreach($ires as $ir) {
+		$itypes .= "<option value=".$ir['it_id'].$sel.">".$ir['it_data'].": ".$ir['it_title']."</option>";
+		$itarry[$ir['it_id']]['title'] = $ir['it_title'];
+		$itarry[$ir['it_id']]['data'] = $ir['it_data'];
+	}
 }
 ?>
 <!doctype html>
@@ -31,20 +34,66 @@ foreach($ires as $ir) {
 <head><title>New Incident</title>
 
 <?php
-include "common_includes.php";
+if (empty($iid)) { include "common_includes.php"; }
 ?>
 <style type="text/css">
 #table_memstatus TD { font-size: 11px; }
+/* Tooltip container */
+.tooltip {
+	position: relative;
+	display: inline-block;
+}
+/* Tooltip text */
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 120px;
+	background-color: black;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+	position: absolute;
+	z-index: 1;
+	width: 120px;
+	top: 100%;
+	left: 50%;
+	margin-left: -60px;
+}
+.tooltip .tooltiptext::after {
+	content: " ";
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: black transparent transparent transparent;
+}
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+}
 </style>
 
 <script type="text/javascript">
 function openMap() {
 	window.open("https://google.com/maps?q="+encodeURIComponent(gps),"width=500;height=500;");
 }
+<?php
+if (!empty($iid)) {
+?>
+parent.incidentid.value = '<?=$iid?>';
+parent.incidentname.value = '<?=$iname?>';
+parent.modal.style.display = 'none';
+<?php
+	exit;
+}
+?>
 </script>
 
 </head>
 <body>
+
 <center>
 
 <h2>New Incident</h2>
@@ -53,7 +102,7 @@ function openMap() {
 <input type=hidden name=addincident value=1>
 <table border=0 cellpadding=6 cellspacing=0>
 <tr><td>Name</td><td colspan=3><input type=text id=i_name name=i_name class="incident" style="width:380px;text-align:left;" placeholder="i.e. Mojave Earthquake"></td></tr>
-<tr><td>Type</td><td><select name=i_type style="width:100px"><option value=0></option><?=$itypes?></select></td><td>GPS</td><td><input type=text name=i_gps id=i_gps size=21 onclick="openMap();this.select();"></td></tr>
+<tr><td>Type</td><td><select name=i_type style="width:100px"><option value=0></option><?=$itypes?></select></td><td>GPS</td><td><input type=text name=i_gps id=i_gps size=21 onclick="openMap();this.select();" placeholder="Copy & Paste from Map">&nbsp;<div class="tooltip"><img src="images/icon-help.png" width=16 alt="GPS Help" style="cursor:pointer;"><span class="tooltiptext"><ol><li>Click to Open Google Maps</li><li>Right-click Incident Location</li><li>Choose 'What is Here?'</li><li>Copy GPS from Maps, then close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
 <tr><td>Tac Call</td><td><input type=text size=12 id=i_tactical name=i_tactical></td><td>Incident Lead</td><td><input type=hidden name=i_lead_id_new id=i_lead_id_new><input type=text class='people' size=21 name=i_lead></td></tr>
 <tr><th colspan=4><input type=submit value="Save This New Incident"></th></tr>
 </table>
