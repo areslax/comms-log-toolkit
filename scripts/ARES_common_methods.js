@@ -28,10 +28,10 @@ function getGeoLoc(){
 	// check for Geolocation support
 	if (navigator.geolocation) {
 		var geoSuccess = function(position) {
-		// Do magic with location
-		thisPos = position;
-		jQuery('#stationgeo').val(thisPos.coords.latitude+","+thisPos.coords.longitude);
-		gps = jQuery('#stationgeo').val();
+			// Do magic with location
+			thisPos = position;
+			jQuery('#stationgeo').val(thisPos.coords.latitude+","+thisPos.coords.longitude);
+			gps = encodeURIComponent(thisPos.coords.latitude+","+thisPos.coords.longitude);
 		};
 		var geoError = function(error) {
 			switch(error.code) {

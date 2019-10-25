@@ -10,7 +10,7 @@ $thisloc = "";
 if (!empty($_POST['addincident'])) {
 	$togo = array("(",")"," ","-","_",".","/");
 	$q = $conn->prepare("insert into Incidents (i_type,i_tactical,i_status,i_name,i_lead_id,i_gps) values (:type,:tactical,1,:name,:leadid,:gps)");
-	$q->execute(array(':type'=>$_POST['i_type'],':tactical'=>$_POST['i_tactical'],':name'=>$_POST['i_name'],':leadid'=>$_POST['i_lead_id_new'],':gps'=>$_POST['i_gps']));
+	$q->execute(array(':type'=>$_POST['i_type'],':tactical'=>$_POST['i_tactical'],':name'=>$_POST['i_name'],':leadid'=>$_POST['i_lead_id_new'],':gps'=>str_replace(" ","",$_POST['i_gps'])));
 	$iid = $conn->lastInsertId();
 	$iname = urlencode($_POST['i_name']);
 	//update common js file
@@ -42,32 +42,33 @@ if (empty($iid)) { include "common_includes.php"; }
 .tooltip {
 	position: relative;
 	display: inline-block;
+	cursor: pointer;
 }
 /* Tooltip text */
 .tooltip .tooltiptext {
 	visibility: hidden;
-	width: 120px;
-	background-color: black;
-	color: #fff;
-	text-align: center;
-	padding: 5px 0;
+	width: 260px;
+	background-color: lightgrey;
+	color: black;
+	text-align: left;
+	font-size: 11px;
+	padding: 5px 5px;
 	border-radius: 6px;
 	position: absolute;
 	z-index: 1;
-	width: 120px;
 	top: 100%;
 	left: 50%;
-	margin-left: -60px;
+	margin-left: -130px;
 }
 .tooltip .tooltiptext::after {
 	content: " ";
 	position: absolute;
-	top: 100%;
+	bottom: 100%;
 	left: 50%;
 	margin-left: -5px;
 	border-width: 5px;
 	border-style: solid;
-	border-color: black transparent transparent transparent;
+	border-color: transparent transparent lightgrey transparent;
 }
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
@@ -77,13 +78,14 @@ if (empty($iid)) { include "common_includes.php"; }
 
 <script type="text/javascript">
 function openMap() {
-	window.open("https://google.com/maps?q="+encodeURIComponent(gps),"width=500;height=500;");
+	window.open("https://google.com/maps/@"+gps,"maps","width=500;height=500;");
 }
 <?php
 if (!empty($iid)) {
 ?>
 parent.incidentid.value = '<?=$iid?>';
 parent.incidentname.value = '<?=$iname?>';
+parent.initIncident();
 parent.modal.style.display = 'none';
 <?php
 	exit;
@@ -94,6 +96,8 @@ parent.modal.style.display = 'none';
 </head>
 <body>
 
+<div style="position:absolute;top:6px;right:6px;cursor:pointer;font-size:9px;" onclick="parent.modal.style.display='none';parent.mask.style.display='none';">CLOSE</div>
+
 <center>
 
 <h2>New Incident</h2>
@@ -102,7 +106,7 @@ parent.modal.style.display = 'none';
 <input type=hidden name=addincident value=1>
 <table border=0 cellpadding=6 cellspacing=0>
 <tr><td>Name</td><td colspan=3><input type=text id=i_name name=i_name class="incident" style="width:380px;text-align:left;" placeholder="i.e. Mojave Earthquake"></td></tr>
-<tr><td>Type</td><td><select name=i_type style="width:100px"><option value=0></option><?=$itypes?></select></td><td>GPS</td><td><input type=text name=i_gps id=i_gps size=21 onclick="openMap();this.select();" placeholder="Copy & Paste from Map">&nbsp;<div class="tooltip"><img src="images/icon-help.png" width=16 alt="GPS Help" style="cursor:pointer;"><span class="tooltiptext"><ol><li>Click to Open Google Maps</li><li>Right-click Incident Location</li><li>Choose 'What is Here?'</li><li>Copy GPS from Maps, then close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
+<tr><td>Type</td><td><select name=i_type style="width:100px"><option value=0></option><?=$itypes?></select></td><td>GPS</td><td><input type=text name=i_gps id=i_gps size=21 onclick="this.select();" placeholder="Copy & Paste from Map"><div class="tooltip" onclick="openMap()"><img src="images/icon-help.png" width=16 alt="GPS Help" style="cursor:pointer;margin:0 0 0 4px;" align=absmiddle><span class="tooltiptext"><ol style="margin-left:0px"><li>Click to Open Google Maps</li><li>Right-click Incident Location</li><li>Click "What's Here?"</li><li>Copy GPS from Maps, then<br>close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
 <tr><td>Tac Call</td><td><input type=text size=12 id=i_tactical name=i_tactical></td><td>Incident Lead</td><td><input type=hidden name=i_lead_id_new id=i_lead_id_new><input type=text class='people' size=21 name=i_lead></td></tr>
 <tr><th colspan=4><input type=submit value="Save This New Incident"></th></tr>
 </table>
