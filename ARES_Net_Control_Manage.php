@@ -3,7 +3,7 @@
  * ARES_Net_Control_Manage.php
  * Interface for managing net controls
  * ################################### */
-if (empty($_GET['admin'])) { header("Location: https://www.km6wka.net/ares");exit; }
+//if (empty($_GET['admin'])) { header("Location: https://www.km6wka.net/ares");exit; }
 
 require "db_conn.php";
 $searchresuts = "";
@@ -22,6 +22,7 @@ if (!empty($_POST['addnc'])) {
 
 //got update net control form submit
 if (!empty($_POST['updatenc'])) {
+
 	$nc_qury = "";
 	$nc_qury .= "nc_lead_id=:leadid,";
 	$nc_qury .= "nc_parent_id=:parentid,";
@@ -30,10 +31,15 @@ if (!empty($_POST['updatenc'])) {
 	$nc_qury .= "nc_gps=:gps,";
 	$nc_qury .= "nc_active=:active,";
 	$nc_qury .= "nc_note=:note";
+	$nc_qury .= " where nc_id=:ncid";
 
-	$qvars = array(':leadid'=>$_POST['nc_lead_id'],':parentid'=>$_POST['nc_parent_id'],':callsign'=>$_POST['nc_callsign'],':location'=>$_POST['nc_location'],':gps'=>$_POST['nc_gps'],':active'=>$_POST['nc_active'],':note'=>$_POST['nc_note'],':ncid'=>$_POST['ncid']);
+	foreach($_POST as $k => $v) {
+		$_POST[$k] = (empty($v)) ? NULL:$v;
+	}
 
-	$q = $conn->prepare("update Net_Controls set ".$nc_qury." where nc_id=:ncid");
+	$qvars = array(":leadid"=>$_POST['nc_lead_id'],":parentid"=>$_POST['nc_parent_id'],":callsign"=>$_POST['nc_callsign'],":location"=>$_POST['nc_location'],":gps"=>$_POST['nc_gps'],":active"=>$_POST['nc_active'],":note"=>$_POST['nc_note'],":ncid"=>$_POST['ncid']);
+
+	$q = $conn->prepare("update Net_Controls set ".$nc_qury);
 	$q->execute($qvars);
 	//update common js file
 	file_get_contents("scripts/cron_generateNewLocations.php");
@@ -41,6 +47,7 @@ if (!empty($_POST['updatenc'])) {
 
 //got ncid so show control info
 if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
+	$nc_leader = "";
 	$ncid = (!empty($ncid)) ? $ncid:$_GET['ncid'];
 	$q = $conn->prepare("select Net_Controls.*,i_tactical,i_name,l_tactical,l_name from Net_Controls left outer join Incidents on Incidents.i_id=Net_Controls.i_id left outer join Locations on Locations.nc_id=Net_Controls.nc_id where Net_Controls.nc_id=:ncid");
 	$q->execute(array(':ncid'=>$ncid));
@@ -49,7 +56,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 		foreach($r as $key => $val) {
 			$r[$key] = addslashes($val);
 		}
-		$thisnc = strtoupper($r['nc_callsign']).": ".$r['nc_location'];
+		$thisnc = strtoupper($r['nc_callsign']).": ".$r['i_name'];
 		$isactive = (!empty($r['nc_active'])) ? " checked":"";
 		//get leader callsign and name
 		$lq = $conn->prepare("select m_callsign,m_fname,m_lname from Members where m_id=:nclid limit 1");
@@ -60,7 +67,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 		}
 		//get parent net control call sign
 		$parentid = "";
-		$pq = $conn->prepare("select nc_callsign from Net_Controls where nc_id=:parentid limit 1");
+		$pq = $conn->prepare("select * from Net_Controls where nc_id=:parentid limit 1");
 		$pq->execute(array(':parentid'=>$r['nc_parent_id']));
 		$pres = $pq->fetchAll(PDO::FETCH_ASSOC);
 		foreach($pres as $pr) {
@@ -75,7 +82,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 <tr><td>Call Sign</td><td><input type=hidden name=nc_id value='".$r['nc_id']."'><input type=text class='netcontrol' size=10 name=nc_callsign value='".$r['nc_callsign']."'></td><td>Control Lead</td><td><input type=hidden name=nc_lead_id id=nc_lead_id value='".$r['nc_lead_id']."'><input type=text size=22 style='width:176px' class='people' name=nc_lead_name value='".$nc_leader."'></td></tr>
 <tr><td>Parent Control</td><td><input type=hidden name=nc_parent_id value='".$r['nc_parent_id']."'><input type=text size=10 class='netcontrol' name=nc_parent_callsign value='".$parentid."'></td><td>Location</td><td><input type=text size=22 class='location' style='width:176px' name=nc_location value='".$r['nc_location']."'></td></tr>
 <tr><td align=right>Active</td><td><input type=checkbox name=nc_active value=1".$isactive."></td><td>GPS".$gpsico."</td><td><input type=text name=nc_gps size=22  style='width:176px' value='".$r['nc_gps']."'></td></tr>
-<tr valign=top><td>Notes</td><td colspan=3><textarea name=nc_note style='width:400px;height:60px;'>".$r['nc_note']."</textarea></td></tr>";
+<tr valign=top><td>Notes</td><td colspan=3><textarea name=nc_note style='width:400px;height:60px;'>".stripslashes($r['nc_note'])."</textarea></td></tr>";
 
 	}
 
@@ -188,8 +195,8 @@ jQuery(function() {
                 select: function(event, ui) {
                         event.preventDefault();
                         jQuery(this).val(ui.item.label);
-                        location.href = "ARES_Net_Control_Manage.php?admin=1&ncid="+ui.item.ncid;
 			netfld[this.id]=ui.item.value;
+			location.href = "ARES_Net_Control_Manage.php?admin=1&ncid="+ui.item.ncid;
                 }
         });
 

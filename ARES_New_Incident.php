@@ -14,7 +14,13 @@ if (!empty($_POST['addincident'])) {
 	$iid = $conn->lastInsertId();
 	$iname = urlencode($_POST['i_name']);
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	exec("php scripts/cron_generateNewLocations.php");
+	echo "<script type='text/javascript'>\n";
+	echo "parent.incidentname.value = '".$_POST['i_name']."';\n";
+	echo "parent.incidentid.value = '".$iid."';\n";
+	echo "parent.modal.style.display = 'none';\n";
+	echo "parent.mask.style.display = 'none';\n";
+	echo "</script>\n";
 }
 if (empty($iid)) {
 	//get incident types

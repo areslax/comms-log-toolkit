@@ -4,7 +4,7 @@
  * Pulls from db to create fresh js include file
  * ############################################# */
 ini_set('display_errors','1');
-include "../db_conn.php";
+require "/var/www/html/ares/db_conn.php";
 
 $locs = "";
 $peep = "";
@@ -44,25 +44,25 @@ foreach($ir as $r) {
 $incids = rtrim($incids,",")."\n";
 
 //get net controls
-$ncq = $conn->prepare("select nc_id,nc_callsign,nc_location from Net_Controls where nc_active='1' order by nc_callsign");
+$ncq = $conn->prepare("select nc_id,nc_callsign,nc_location,i_name from Net_Controls left outer join Incidents on Incidents.i_id=Net_Controls.i_id where nc_active='1' order by nc_callsign");
 $ncq->execute();
 $ncr = $ncq->fetchAll(PDO::FETCH_ASSOC);
 foreach($ncr as $r) {
-	$thisia = $r['nc_callsign'].": ".$r['nc_location'];
+	$thisia = $r['nc_callsign'].": ".$r['i_name'];
+	if (!empty($r['nc_location'])) { $thisia .= ": ".$r['nc_location']; }
 	$ncids .= "{label:'".$thisia."',value:'".$thisia."',ncid:'".$r['nc_id']."'},";
 }
 $ncids = rtrim($ncids,",")."\n";
 
 //define types of entry
-$typs = "'',
-'MCI Poll',
-'HSA Poll',
-'Event',
-'Resource Request',
-'Relay Request',
-'Action',
-'Report'
-";
+$typs = "'',";
+$rqq = $conn->prepare("select rqt_title from Request_Types order by rqt_id");
+$rqq->execute();
+$rqr = $rqq->fetchAll(PDO::FETCH_ASSOC);
+foreach($rqr as $r) {
+	$typs .= "'".$r['rqt_title']."',";
+}
+$typs = rtrim($typs,",")."\n";
 
 $updated = "/* ############################
  * ARES_Locations_and_People.js

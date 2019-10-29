@@ -155,14 +155,16 @@ function setCallSign(id,cs) {
 //	}
 }
 var stationid = "";
-function setNetControl(ncid) {
-	var datastr = "ncid="+ncid;
+function setNetControl(nsid,ngps,niid) {
+	var datastr = "sid="+nsid+"&gps="+ngps+"&iid="+niid;
 	jQuery.ajax({
 		type: "POST",
 		url: "ajax_set_net_control.php",
 		data: datastr,
 		success: function(a,b,c){
 			console.log(a);
+			iid = niid;
+			sid = a;
 		}
 	});
 }
@@ -210,23 +212,23 @@ function checkType(rtyp,rfld,doit,inid,sid) {
 	if (rfld!='') {
 	//do in_array
 	//mci poll
-	if (rtyp=='1') {
+	if (rtyp=='4') {
 		showModal("ARES_MCI_Poll.php?fld="+locfld[rfld]+"&rfld="+rfld+"&inid="+inid+"&sid="+sid,"block");
 	}
 	//hsa poll
-	if (rtyp=='2') {
+	if (rtyp=='3') {
 		showModal("ARES_HSA_Poll.php?fld="+locfld[rfld]+"&rfld="+rfld+"&inid="+inid+"&sid="+sid,"block");
 	}
 	//event
-	if (rtyp=='3' && doit) {
+	if (rtyp=='2' && doit) {
 		showModal("ARES_Event_Log.php?fld="+locfld[rfld]+":"+jQuery("#eventid").val()+":"+callsign+"&rfld="+rfld+"&inid="+inid+"&sid="+sid,"block");
 	}
 	//resource request
-	if (rtyp=='4') {
+	if (rtyp=='5') {
 		showModal("file_wrapper.php?furl=20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf","block");
 	}
 	//relay request
-	if (rtyp=='5') {
+	if (rtyp=='6') {
 		var itr = rfld.substring(3,rfld.length);
 		document.getElementById('msgbox_'+itr).innerHTML = "<table border=0 cellpadding=2 cellspacing=0 style='background:none;margin-bottom:-6px;'><tr valign=top style='background:none !important'><td align=left style='background:none !important'><input type=hidden name=rmtyps_"+itr+" id=rmtyps"+itr+" value=''><input type=text name=msgfrom_"+itr+" id=msgfrom"+itr+" class='people' style='width:100px' onfocus='hiliteme("+itr+")' placeholder='Relay From'><br><input type=text name=msgto_"+itr+" id=msgto"+itr+" onfocus='hiliteme("+itr+")' class='people' onchange='getRelayOpts(this.value,"+itr+");' style='width:100px' placeholder='Relay To'><p style='text-align:center;margin-top:4px;' id=sentfld_"+itr+"><button type=button id=msgbut_"+itr+" style='font-size:11px;cursor:pointer;' onclick='relayMessage("+itr+")'>SEND NOW</button></p></td><td style='background:none !important'>\n<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=4 style='width:183px;padding:2px;' onfocus='hiliteme("+itr+")'></textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style='background:none !important'><tr id=butsms_"+itr+" style='display:none'><td style='padding:0px !important'><input type=checkbox name=sendvia_"+itr+"[] value=sms></td><td style='font-size:10px;text-align:left;'>SMS</td></tr><tr id=butemail_"+itr+" style='display:none'><td><input type=checkbox name=sendvia_"+itr+"[] value=email></td><td style='font-size:10px;text-align:left;'>Email</td></tr><tr id=butother_"+itr+"><td><input type=checkbox name=sendvia_"+itr+"[] value=other></td><td style='font-size:10px;text-align:left;'>Other</td></tr></table></tr></table>";
 		init();
@@ -242,16 +244,16 @@ function checkType(rtyp,rfld,doit,inid,sid) {
 	}//end if rfld
         else {
         //do in_array
-        if (rtyp=='1') {
+        if (rtyp=='4') {
                 showModal("ARES_MCI_Poll.php?fld=","block");
         }
-        if (rtyp=='2') {
+        if (rtyp=='3') {
                 showModal("ARES_HSA_Poll.php?fld=","block");
         }
-        if (rtyp=='3') {
+        if (rtyp=='2') {
                 showModal("ARES_Event_Log.php?fld=","block");
         }
-	if (rtyp=='4') {
+	if (rtyp=='5') {
 		showModal("files/20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf","block");
 	}
 	}//end else

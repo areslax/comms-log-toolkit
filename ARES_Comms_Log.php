@@ -115,7 +115,7 @@ $stationloc = (empty($stationloc)) ? "":$stationloc;
 $incidentid = (empty($incidentid)) ? "":$incidentid;
 $incidentname = (empty($incidentname)) ? "":$incidentname;
 
-$isave = (empty($stationid)) ? '<img src="images/icon-save.png" style="cursor:pointer;margin-bottom:-4px;" title="Save This Net Control" alt="Save This Net Control" width=16 border=0 onclick="setNetControl(sid,gps,iid);this.src=\'icon-check.png\';this.style.cursor=\'default\';this.onclick=\'\';">':'<img src="images/icon-check.png" style="margin-bottom:-4px" title="Net Control Saved" alt="Net Control Saved" width=16 border=0>'
+$isave = (empty($stationid)) ? '<img src="images/icon-save.png" style="cursor:pointer;margin-bottom:-4px;" title="Save This Net Control" alt="Save This Net Control" width=16 border=0 onclick="setNetControl(sid,document.getElementById(\'stationgeo\').value,document.getElementById(\'incidentid\').value);this.src=\'images/icon-check.png\';this.title=\'Net Control Saved\';this.alt=\'Net Control Saved\';this.style.cursor=\'default\';this.onclick=\'\';">':'<img src="images/icon-check.png" style="margin-bottom:-4px" title="Net Control Saved" alt="Net Control Saved" width=16 border=0>';
 ?>
 <form id=commslog method=post action="https://www.km6wka.net/ares/api/reports/save.php">
 <input type=hidden name=o_id value=<?=$oid?>>

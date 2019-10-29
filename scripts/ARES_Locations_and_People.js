@@ -2,7 +2,7 @@
  * ARES_Locations_and_People.js
  * List of deployment locations
  * and ARESLAX scribes
- * Auto-updated: 2019-10-24
+ * Auto-updated: 2019-10-28
  * ############################ */
 
 var loclookup = new Array(
@@ -14,22 +14,15 @@ var people = new Array(
 );
 
 var incidents = new Array(
-{label:'',value:'New Incident',iid:0}
+{label:'',value:'New Incident',iid:0},{label:'FIRE: OAKFIRE: Oak Fire',value:'Oak Fire',iid:'1'}
 );
 
 var netcontrols = new Array(
-
+{label:'n1hen: Oak Fire: Calabasas',value:'n1hen: Oak Fire: Calabasas',ncid:'1'}
 );
 
 var typs = new Array(
-'',
-'MCI Poll',
-'HSA Poll',
-'Event',
-'Resource Request',
-'Relay Request',
-'Action',
-'Report'
+'','A Action','E Event','H HSA Poll','M MCI Poll','R Resource Request','L Relay Request'
 );
 
 
