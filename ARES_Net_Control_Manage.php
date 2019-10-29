@@ -96,7 +96,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head><title>ARES Net Control Management</title>
 
 <?php

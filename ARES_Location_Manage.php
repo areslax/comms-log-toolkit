@@ -247,7 +247,7 @@ foreach($larr as $lr) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head><title>ARES Location Management</title>
 
 <?php

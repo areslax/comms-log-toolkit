@@ -221,7 +221,7 @@ foreach($ires as $ir) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head><title>ARES Incident Management</title>
 
 <?php

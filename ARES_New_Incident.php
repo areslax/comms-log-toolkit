@@ -36,7 +36,7 @@ if (empty($iid)) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head><title>New Incident</title>
 
 <?php

@@ -222,7 +222,7 @@ foreach($carr as $c) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head><title>ARES Operator Management</title>
 
 <?php

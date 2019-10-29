@@ -22,7 +22,7 @@ $stationcode = ($stationcode=="undefined") ? "":$stationcode;
 $msgfld = (empty($_GET['rfld'])) ? "":substr($_GET['rfld'],3,strlen($_GET['rfld']));
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <title>ARES Event Log Entry</title>
 

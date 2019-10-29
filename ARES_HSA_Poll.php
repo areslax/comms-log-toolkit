@@ -20,7 +20,7 @@ $bedcnts = $q->fetch(PDO::FETCH_ASSOC);
 ?>
 
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <title>ARES HSA Poll</title>
 

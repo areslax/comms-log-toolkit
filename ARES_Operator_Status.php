@@ -74,7 +74,7 @@ $GetOperatorStatusPS = $conn->prepare("select * from Status_Codes order by s_id"
 ?>
 
 <!doctype html>
-<html lang=en>
+<html lang="en">
 <head><title>ARES Operator Status</title>
 <?php include "common_includes.php";?>
 <script type="text/javascript">

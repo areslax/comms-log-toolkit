@@ -27,7 +27,7 @@ while($pr=$pq->fetch(PDO::FETCH_ASSOC)) {
 }
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 <title>ARES MCI Poll</title>
 

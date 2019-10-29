@@ -8,7 +8,7 @@ if (empty($_GET['furl'])) { exit; }
 $furl = "files/".$_GET['furl'];
 ?>
 <!doctype html>
-<html>
+<html lang="en">
 <head><title>File Wrapper</title>
 <script type="text/javascript">
 function closeWin() {

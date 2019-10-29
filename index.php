@@ -7,9 +7,8 @@ if (!isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on") {
 ?>
 
 <!doctype html>
-<html>
+<html lang="en">
 <head><title>ARES Toolkit</title>
-<link rel="icon" type="image/png" href="favicon.ico">
 
 <?php
 include "common_includes.php";

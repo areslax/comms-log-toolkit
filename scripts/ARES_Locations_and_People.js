@@ -2,7 +2,7 @@
  * ARES_Locations_and_People.js
  * List of deployment locations
  * and ARESLAX scribes
- * Auto-updated: 2019-10-28
+ * Auto-updated: 2019-10-29
  * ############################ */
 
 var loclookup = new Array(
@@ -10,19 +10,26 @@ var loclookup = new Array(
 );
 
 var people = new Array(
-{label:'AJ6DL Darren La Groe',value:'AJ6DL Darren La Groe',mid:'9'},{label:'K6AUR Alexander Auerbach',value:'K6AUR Alexander Auerbach',mid:'26'},{label:'K6OAT Dan Ruderman',value:'K6OAT Dan Ruderman',mid:'10'},{label:'K9SDS Stephen Smedberg',value:'K9SDS Stephen Smedberg',mid:'19'},{label:'KJ6UVQ Dennis Payne',value:'KJ6UVQ Dennis Payne',mid:'7'},{label:'KK6DA David Ahrendts',value:'KK6DA David Ahrendts',mid:'5'},{label:'KM6JWV Martin Rumpf',value:'KM6JWV Martin Rumpf',mid:'27'},{label:'KM6LFE Jessica Lee',value:'KM6LFE Jessica Lee',mid:'28'},{label:'KM6RWG Scott Spooner',value:'KM6RWG Scott Spooner',mid:'18'},{label:'KM6WKA James Butler',value:'KM6WKA James Butler',mid:'1'},{label:'N4XRO David Poole',value:'N4XRO David Poole',mid:'17'},{label:'NR6V Dan Tomlinson',value:'NR6V Dan Tomlinson',mid:'11'},{label:'W0DHG David Goldenberg',value:'W0DHG David Goldenberg',mid:'8'},{label:'W1EH Roozy Moabery',value:'W1EH Roozy Moabery',mid:'4'},{label:'W6AH Chris Mattia',value:'W6AH Chris Mattia',mid:'12'},{label:'WA6P Dean Cuadra',value:'WA6P Dean Cuadra',mid:'6'}
+{label:'AJ6DL Darren La Groe',value:'AJ6DL Darren La Groe',mid:'9'},{label:'K6AUR Alexander Auerbach',value:'K6AUR Alexander Auerbach',mid:'26'},{label:'K6OAT Dan Ruderman',value:'K6OAT Dan Ruderman',mid:'10'},{label:'K9SDS Stephen Smedberg',value:'K9SDS Stephen Smedberg',mid:'19'},{label:'KJ6UVQ Dennis Payne',value:'KJ6UVQ Dennis Payne',mid:'7'},{label:'KK6DA David Ahrendts',value:'KK6DA David Ahrendts',mid:'5'},{label:'KM6JWV Martin Rumpf',value:'KM6JWV Martin Rumpf',mid:'27'},{label:'KM6LFE Jessica Wood',value:'KM6LFE Jessica Wood',mid:'28'},{label:'KM6RWG Scott Spooner',value:'KM6RWG Scott Spooner',mid:'18'},{label:'KM6WKA James Butler',value:'KM6WKA James Butler',mid:'1'},{label:'N4XRO David Poole',value:'N4XRO David Poole',mid:'17'},{label:'NR6V Dan Tomlinson',value:'NR6V Dan Tomlinson',mid:'11'},{label:'W0DHG David Goldenberg',value:'W0DHG David Goldenberg',mid:'8'},{label:'W1EH Roozy Moabery',value:'W1EH Roozy Moabery',mid:'4'},{label:'W6AH Chris Mattia',value:'W6AH Chris Mattia',mid:'12'},{label:'WA6P Dean Cuadra',value:'WA6P Dean Cuadra',mid:'6'}
 );
 
 var incidents = new Array(
-{label:'',value:'New Incident',iid:0},{label:'FIRE: OAKFIRE: Oak Fire',value:'Oak Fire',iid:'1'}
+{label:'FIRE: OAKFIRE: Oak Fire',value:'Oak Fire',iid:'1'}
 );
 
 var netcontrols = new Array(
-{label:'n1hen: Oak Fire: Calabasas',value:'n1hen: Oak Fire: Calabasas',ncid:'1'}
+{label:'n1hen: Calabasas',value:'n1hen: Calabasas',ncid:'1'}
 );
 
 var typs = new Array(
-'','A Action','E Event','H HSA Poll','M MCI Poll','R Resource Request','L Relay Request'
+'',
+'MCI Poll',
+'HSA Poll',
+'Event',
+'Resource Request',
+'Relay Request',
+'Action',
+'Report'
 );
 
 
