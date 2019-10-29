@@ -225,7 +225,7 @@ function checkType(rtyp,rfld,doit,inid,sid) {
 	}
 	//resource request
 	if (rtyp=='5') {
-		showModal("file_wrapper.php?furl=20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf","block");
+		window.open("files/20191026_Resource_Request_Form.php");
 	}
 	//relay request
 	if (rtyp=='6') {
@@ -254,7 +254,7 @@ function checkType(rtyp,rfld,doit,inid,sid) {
                 showModal("ARES_Event_Log.php?fld=","block");
         }
 	if (rtyp=='5') {
-		showModal("files/20190703_Resource_Request_Medical_and_Health_FIELD_to_OPAREA_2011-05-11.pdf","block");
+		window.open("files/20191026_Resource_Request_Form.php");
 	}
 	}//end else
 }

@@ -231,7 +231,7 @@ function initIncident() {
 jQuery(function(){
 	initAuto();
 	//typlist defined in scripts/ARES_common_methods.js
-	var typdds = document.getElementsByClassName('typdd');
+	var typdds = jQuery(".typdd");
 	for(i=0;i<typdds.length;i++) {
 		if (typdds[i].selectedIndex<1) {
 			typdds[i].innerHTML = typlist;
