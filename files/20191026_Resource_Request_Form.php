@@ -4,6 +4,29 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Resource Request: Medical and Health FIELD/HCF</title>
 
+<script type="text/javascript">
+/*
+function addNewRow() {
+	var newrow = "<tr valign=top>\n";
+	newrow += "<td style='width:4%;text-align:center;'><input name='req_item[]' size=2 maxlength=3 style='text-align:center;border:none;' value=1></td>\n";
+	newrow += "<td style='width:5%'>\n";
+	newrow += "<select name='req_item_priority[]'>\n";
+	newrow += "<option value=0></option>\n";
+	newrow += "<option value='Sustainment'>Sustainment</option>\n";
+	newrow += "<option value='Urgent'>Urgent</option>\n";
+	newrow += "<option value='Emergent'>Emergent</option>\n";
+	newrow += "</select>\n";
+	newrow += "</td>\n";
+	newrow += "<td style='width:89%'>\n";
+	newrow += "<textarea name='req_item_desc[]' style='width:98%;height:1.1em;'></textarea></td>\n";
+	newrow += "<th style='width:5%'>\n";
+	newrow += "<input type=number name='req_item_qty[]' style='width:40px;text-align:center;'></td>\n";
+	newrow += "<td style='width:3%'>\n";
+	newrow += "<input type=text name='req_item_estdu[]' style='width:90px;text-align:center;' maxlength=40></td>\n";
+	newrow += "</tr>\n";
+}
+/**/
+</script>
 <style type="text/css">
 * { font-family: Arial,Helvetica,sans-serif; }
 INPUT { font-weight: normal; }
