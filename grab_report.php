@@ -14,14 +14,13 @@ $q->execute(array("%$ncid%"));
 $r=$q->fetch(PDO::FETCH_ASSOC);
 
 //define types of entry
-$typs = "'',";
+$typs = array(" ");
 $rqq = $conn->prepare("select rqt_title from Request_Types order by rqt_id");
 $rqq->execute();
 $rqr = $rqq->fetchAll(PDO::FETCH_ASSOC);
 foreach($rqr as $r) {
-        $typs .= "'".$r['rqt_title']."',";
+        $typs[] = $r['rqt_title'];
 }
-$typs = array(rtrim($typs,","));
 
 $operator = $oid;
 
