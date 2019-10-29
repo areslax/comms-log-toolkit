@@ -5,7 +5,7 @@ Current Known Issues, Core Feature Additions and Bugs
 All:
 
 [0] Core: PHP Encryption before public beta
-[1] Core: Re-build Minefield with PHM branding
+[1] Core: Re-build Minefield with ARES branding
 [2] Calendar: Timeline: Project length limited to 51 weeks
 [3] Calendar: Dynamic width
 [4] Calendar: Convert displayed 24-hour time to 12-hour time
