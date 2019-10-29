@@ -13,7 +13,15 @@ $q = $conn->prepare("select * from Reports where r_data like ? order by r_id des
 $q->execute(array("%$ncid%"));
 $r=$q->fetch(PDO::FETCH_ASSOC);
 
-$typs = array(0=>'',1=>'MCI Poll',2=>'HSA Poll',3=>'Event',4=>'Resource Request',5=>'Relay Request',6=>'Action',7=>'Report');
+//define types of entry
+$typs = "'',";
+$rqq = $conn->prepare("select rqt_title from Request_Types order by rqt_id");
+$rqq->execute();
+$rqr = $rqq->fetchAll(PDO::FETCH_ASSOC);
+foreach($rqr as $r) {
+        $typs .= "'".$r['rqt_title']."',";
+}
+$typs = array(rtrim($typs,","));
 
 $operator = $oid;
 
