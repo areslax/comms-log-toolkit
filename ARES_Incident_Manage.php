@@ -327,7 +327,7 @@ function showStatusEdit(mid,mnam,sid) {
 
 <div id=members style='position:fixed;top:10px;leftt:10px;padding:0px;background-color:white;text-align:center;'>
 <table id=table_memstatus border=1 cellpadding=1 cellspacing=0 style='border-color:white;'>
-<tr><th colspan=3>Member Status</th></tr>
+<tr><th colspan=4>Member Status</th></tr>
 <?php
 $ops = array();
 #one specific incident
@@ -363,7 +363,7 @@ foreach($orow as $o) {
 }
 ksort($ops);
 foreach($ops as $cs => $data) {
-	echo "<tr><td align=left title='".$data['locationname']."' style='cursor:pointer'>".$cs."</td><td align=left><a href='ARES_Member_Manage.php?mid=".$data['mid']."&admin=".$_GET['admin']."' target='_blank' title='Click to view ".$cs." Member Details'>".$data['name']."</a></td><td style='background-color:".$data['statusclr'].";cursor:pointer;' title='".$data['statustxt']."' onclick=\"showStatusEdit(".$data['mid'].",'".$cs.": ".$data['name']."',".$data['statusid'].")\">".$data['status']."</td></tr>\n";
+	echo "<tr><td align=left title='".$data['locationname']."' style='cursor:pointer'>".$cs."</td><td align=left><a href='ARES_Member_Manage.php?mid=".$data['mid']."&admin=".$_GET['admin']."' target='_blank' title='Click to view ".$cs." Member Details'>".$data['name']."</a></td><td style='background-color:".$data['statusclr'].";cursor:pointer;' title='".$data['statustxt']."' onclick=\"showStatusEdit(".$data['mid'].",'".$cs.": ".$data['name']."',".$data['statusid'].")\">".$data['status']."</td><th cellpadding=0><input type=checkbox title='Under this Net Control'></th></tr>\n";
 }
 ?>
 </table>
