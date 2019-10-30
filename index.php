@@ -19,28 +19,9 @@ var curr_callsign = "";
 var gotalert = 0;
 var chkmsgs = setInterval("checkAdminAlert()",10000);
 </script>
-<style type="text/css">
-.menu {
-	position: absolute;
-	top: 0px;
-	overflow: auto;
-	border: none;
-	height: 100%;
-	width: 170px;
-}
-.main {
-	position: absolute;
-	top: 0px;
-	left: 176px;
-	overflow: auto;
-	border: none;
-	height: 100%;
-	width: 84%;
-}
-</style>
 
 </head>
-<body>
+<body class="container">
 
 <iframe id=alertmsg></iframe>
 
