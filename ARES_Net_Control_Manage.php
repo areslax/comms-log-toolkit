@@ -73,6 +73,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 		foreach($pres as $pr) {
 			$parentid = $pr['nc_callsign'];
 		}
+		$xicon = (empty($ncid)) ? "":"<img src='images/icon-delete.png' border=0 width=16 align=absmiddle alt='reset icon' title='Reset Net Control' style='cursor:pointer;margin-left:2px;' onclick=\"location.href='ARES_Net_Control_Manage.php'\">";
 		$gpsico = (empty($r['nc_gps'])) ? "":" <a href='https://maps.google.com/?q=".$r['nc_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a>";
 		$a = "<form method=post>
 <input type=hidden name=updatenc value=1>
@@ -101,6 +102,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 
 <?php
 include "common_includes.php";
+include "ARES_INCLUDE_Operator_Status.php";
 ?>
 
 <script type="text/javascript">
@@ -142,7 +144,7 @@ function deleteMe(ncid,data,rid) {
 
 <h2>ARES Net Control Management</h2>
 
-<input type=text name=nc_lookup id=nc_lookup class='nclookup' placeholder="To look up a Net Control, Click here and Start Typing ..." style="font-weight:bold;width:500px;text-align:center;" onfocus="this.select()" value="<?=$thisnc?>">
+<input type=text name=nc_lookup id=nc_lookup class='nclookup' placeholder="To look up a Net Control, Click here and Start Typing ..." style="font-weight:bold;width:500px;text-align:center;" onfocus="this.select()" value="<?=$thisnc?>"><?=$xicon?>
 <div id=results>
 <?=$searchresults?>
 </div>

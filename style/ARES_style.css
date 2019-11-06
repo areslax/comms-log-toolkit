@@ -191,4 +191,8 @@ TEXTAREA {
   z-index: 1000;
 }
 
+#table_memstatus TD {
+  font-size: 11px;
+}
+
 /*# sourceMappingURL=ARES_style.css.map */

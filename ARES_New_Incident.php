@@ -43,9 +43,6 @@ if (empty($iid)) {
 if (empty($iid)) { include "common_includes.php"; }
 else { echo "<link rel=stylesheet type='text/css' href='style/ARES_style.css'>\n"; }
 ?>
-<style type="text/css">
-#table_memstatus TD { font-size: 11px; }
-</style>
 
 <script type="text/javascript">
 function openMap() {

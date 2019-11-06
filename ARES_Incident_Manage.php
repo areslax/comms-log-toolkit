@@ -3,7 +3,7 @@
  * ARES_Incident_Manage.php
  * Interface for managing incidents
  * ################################ */
-if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
+#if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
 require "db_conn.php";
 $thisloc = "";
 $searchresults = "";
@@ -319,19 +319,17 @@ function showStatusEdit(mid,mnam,sid) {
 }
 </script>
 
-<style type="text/css">
-#table_memstatus TD { font-size: 11px; }
-</style>
-
 </head>
 <body>
 <center>
 
 <h2>ARES Incident Management</h2>
 
-<div id=members style='position:fixed;top:10px;leftt:10px;padding:0px;background-color:white;text-align:center;'>
+<?php include "ARES_INCLUDE_Operator_Status.php"; ?>
+<!--
+<div id=members style='position:fixed;top:10px;left:10px;padding:0px;background-color:white;text-align:center;'>
 <table id=table_memstatus border=1 cellpadding=1 cellspacing=0 style='border-color:white;'>
-<tr><th colspan=4>Member Status</th></tr>
+<tr><th colspan=4>Operator Status</th></tr>
 <?php
 $ops = array();
 #one specific incident
@@ -373,6 +371,7 @@ foreach($ops as $cs => $data) {
 </table>
 <div style='margin-top:6px;font-size:11px'><a href='ARES_Operator_Status.php' target='_blank'>Operator Check In</a> | <a href='ARES_Member_Manage.php?admin=1' target='_blank'>Member Manage</a></div>
 </div>
+-->
 
 <div id=inctypes style='position:fixed;top:10px;right:10px;padding:8px;background-color:white;border:solid 1px grey;border-radius:3px;text-align:center;'>
 <table border=0 cellpadding=3 cellspacing=0>
@@ -386,7 +385,11 @@ echo "<tr><td><input type=text size=8 id=it_data_new placeholder='Add Code'></td
 </table>
 </div>
 
-<input type=text name=i_lookup id=i_lookup class='incident' placeholder="To look up an Incident, Click here and Start Typing ..." style="width:500px;text-align:center;font-weight:bold;" value="<?=$thisinc?>" onfocus='this.select()'>
+<?php
+$xicon = (empty($iid)) ? "":"<img src='images/icon-delete.png' border=0 width=16 align=absmiddle alt='reset icon' title='Reset Net Control' style='cursor:pointer;margin-left:2px;' onclick=\"location.href='ARES_Incident_Manage.php'\">";
+?>
+
+<input type=text name=i_lookup id=i_lookup class='incident' placeholder="To look up an Incident, Click here and Start Typing ..." style="width:500px;text-align:center;font-weight:bold;" value="<?=$thisinc?>" onfocus='this.select()'><?=$xicon?>
 <div id=results>
 <?=$searchresults?>
 </div>

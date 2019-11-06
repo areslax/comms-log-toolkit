@@ -3,7 +3,7 @@
  * ARES_Location_Manage.php
  * Interface for managing locations
  * ################################ */
-if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
+#if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
 
 require "db_conn.php";
 $thisloc = "";
@@ -252,6 +252,7 @@ foreach($larr as $lr) {
 
 <?php
 include "common_includes.php";
+include "ARES_INCLUDE_Operator_Status.php";
 ?>
 
 <script type="text/javascript">
@@ -364,7 +365,11 @@ echo "<tr><td><input type=text size=14 id=lt_title_new placeholder='Add New Type
 </table>
 </div>
 
-<input type=text name=l_lookup id=l_lookup class='location' placeholder="To look up a Location, Click here and Start Typing ..." style="width:500px;text-align:center;font-weight:bold;" value="<?=$thisloc?>" onfocus='this.select()'>
+<?php
+$xicon = (empty($lid)) ? "":"<img src='images/icon-delete.png' border=0 width=16 align=absmiddle alt='reset icon' title='Reset Net Control' style='cursor:pointer;margin-left:2px;' onclick=\"location.href='ARES_Location_Manage.php'\">";
+?>
+
+<input type=text name=l_lookup id=l_lookup class='location' placeholder="To look up a Location, Click here and Start Typing ..." style="width:500px;text-align:center;font-weight:bold;" value="<?=$thisloc?>" onfocus='this.select()'><?=$xicon?>
 <div id=results>
 <?=$searchresults?>
 </div>
