@@ -41,45 +41,10 @@ if (empty($iid)) {
 
 <?php
 if (empty($iid)) { include "common_includes.php"; }
+else { echo "<link rel=stylesheet type='text/css' href='style/ARES_style.css'>\n"; }
 ?>
 <style type="text/css">
 #table_memstatus TD { font-size: 11px; }
-/* Tooltip container */
-.tooltip {
-	position: relative;
-	display: inline-block;
-	cursor: pointer;
-}
-/* Tooltip text */
-.tooltip .tooltiptext {
-	visibility: hidden;
-	width: 260px;
-	background-color: lightgrey;
-	color: black;
-	text-align: left;
-	font-size: 11px;
-	padding: 5px 5px;
-	border-radius: 6px;
-	position: absolute;
-	z-index: 1;
-	top: 100%;
-	left: 50%;
-	margin-left: -130px;
-}
-.tooltip .tooltiptext::after {
-	content: " ";
-	position: absolute;
-	bottom: 100%;
-	left: 50%;
-	margin-left: -5px;
-	border-width: 5px;
-	border-style: solid;
-	border-color: transparent transparent lightgrey transparent;
-}
-/* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
-	visibility: visible;
-}
 </style>
 
 <script type="text/javascript">

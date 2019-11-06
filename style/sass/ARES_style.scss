@@ -93,6 +93,43 @@ TEXTAREA {
 .px80 { width: 88px; }
 .px100 { width: 100px; }
 
+/* Tooltip container */
+.tooltip {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+}
+/* Tooltip text */
+.tooltip .tooltiptext {
+	visibility: hidden;
+	width: 260px;
+	background-color: lightgrey;
+	color: black;
+	text-align: left;
+	font-size: 11px;
+	padding: 5px 5px;
+	border-radius: 6px;
+	position: absolute;
+	z-index: 1;
+	top: 100%;
+	left: 50%;
+	margin-left: -130px;
+}
+.tooltip .tooltiptext::after {
+	content: " ";
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: transparent transparent lightgrey transparent;
+}
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+	visibility: visible;
+}
+
 .topknot {
         padding: 0px;
         font-size: 14px;

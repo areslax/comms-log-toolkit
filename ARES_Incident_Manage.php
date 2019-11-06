@@ -119,9 +119,10 @@ if ((!empty($_GET['iid']) && $_GET['iid']!='undefined') || !empty($iid)) {
 		}
 		$gpsicon = (!empty($r['i_gps'])) ? " <a href='https://maps.google.com/?q=".$r['i_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a>":"";
 		$actchkd = (!empty($r['i_status'])) ? " checked":"";
+		$mapgps = (empty($r['i_gps'])) ? 0:$r['i_gps'];
 		$a = "<form method=post>\n<input type=hidden name=updateincident value=1>\n<input type=hidden name=i_id value='".$iid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:580px'>
 <tr><td>Name</td><td colspan=3><input type=text name=i_name class='incident' onfocus='this.select();' style='width:380px;text-align:left;' placeholder='i.e. Mojave Earthquake' value='".$r['i_name']."'></td></tr>
-<tr><td>Type</td><td><select name=i_type style='width:100px'><option value=0></option>".$itypes."</select></td><td>GPS".$gpsicon."</td><td><input type=text name=i_gps size=21 value='".$r['i_gps']."'></td></tr>
+<tr><td>Type</td><td><select name=i_type style='width:100px'><option value=0></option>".$itypes."</select></td><td>GPS".$gpsicon."</td><td><input type=text name=i_gps size=21 value='".$r['i_gps']."' onclick='this.select()' placeholder='Copy & Paste from Map'><div class='tooltip' onclick='openMap()'><img src='images/icon-help.png' width=16 alt='GPS Help' style='cursor:pointer;margin:0 0 0 4px;' align=absmiddle><span class='tooltiptext'><ol style='margin-left:0px'><li>Click to Open Google Maps</li><li>Right-click Incident Location</li><li>Click \"What's Here?\"</li><li>Copy GPS from Maps, then<br>close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
 <tr><td>Tac Call</td><td><input type=text size=12 name=i_tactical value='".$r['i_tactical']."'></td><td>Incident Lead</td><td><input type=hidden name=i_lead_id id=i_lead_id value=".$r['i_lead_id']."><input type=text size=21 class='people' name=i_lead value='".$thislead."' onfocus='this.select()'></td></tr>";
 		$a .= "<tr><th colspan=4><input type=checkbox name=i_status value=1".$actchkd."> Active</th></tr>\n";
 		$a .= "<tr><th colspan=4 style='border-bottom:solid 1px black'><input type=submit value='Update This Incident Info'></th></tr>\n";
@@ -231,6 +232,9 @@ include "common_includes.php";
 <script type="text/javascript">
 function showIncident(iid) {
 //	location.href = "ARES_Incident_Manage.php?iid="+iid;
+}
+function openMap() {
+	window.open("https://google.com/maps/","maps","width=500;height=500;");
 }
 function showSearch(vis) {
 	var vis1 = (vis=="hidden") ? "block":"none";
@@ -393,7 +397,7 @@ echo "<tr><td><input type=text size=8 id=it_data_new placeholder='Add Code'></td
 <input type=hidden name=addincident value=1>
 <table border=0 cellpadding=6 cellspacing=0>
 <tr><td>Name</td><td colspan=3><input type=text id=i_name name=i_name class="incident" style="width:380px;text-align:left;" placeholder="i.e. Mojave Earthquake"></td></tr>
-<tr><td>Type</td><td><select name=i_type style="width:100px"><option value=0></option><?=$itypes?></select></td><td>GPS</td><td><input type=text name=i_gps id=i_gps size=21></td></tr>
+<tr><td>Type</td><td><select name=i_type style="width:100px"><option value=0></option><?=$itypes?></select></td><td>GPS</td><td><input type=text name=i_gps id=i_gps size=21 onclick="this.select()" placeholder="Copy & Paste from Map"><div class="tooltip" onclick="openMap()"><img src="images/icon-help.png" width=16 alt="GPS Help" style="cursor:pointer;margin:0 0 0 4px;" align=absmiddle><span class="tooltiptext"><ol style="margin-left:0px"><li>Click to Open Google Maps</li><li>Right-click Incident Location</li><li>Click "What's Here?"</li><li>Copy GPS from Maps, then<br>close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
 <tr><td>Tac Call</td><td><input type=text size=12 id=i_tactical name=i_tactical></td><td>Incident Lead</td><td><input type=hidden name=i_lead_id_new id=i_lead_id_new><input type=text class='people' size=21 name=i_lead></td></tr>
 <tr><th colspan=4><input type=submit value="Save This New Incident"></th></tr>
 </table>

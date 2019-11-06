@@ -143,7 +143,7 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 		$a .= "<tr><td>Tac Call</td><td><input type=text size=12 name=l_tactical value='".$r['l_tactical']."'></td><td>City</td><td><input type=text size=19 name=l_city value='".$r['l_city']."'></td></tr>";
 		$a .= "<tr><td>Trauma Level</td><td><input type=text size=12 name=l_trauma_level value='".$r['l_trauma_level']."'></td><td>State, Zip</td><td><select name=l_state style='width:50px'><option value=CA>CA</option></select>&nbsp;<input type=text size=10 name=l_zip value='".$r['l_zip']."'></td></tr>";
 		$a .= "<tr><td>Admin Name</td><td><input type=text size=12 id=l_admin_name name=l_admin_name value='".$r['l_admin_name']."'></td><td>Svc. Area</td><td><input type=text size=19 name=l_svc_area id=l_svc_area value='".$r['l_svc_area']."'></td></tr>";
-		$a .= "<tr><td>Desk Phone <a href='tel:".$r['l_desk_phone']."' title='Click to launch your phone dialer'><img src='images/icon-phone.svg' alt='phone icon' border=0 width=14 align=absmiddle></a></td><td><input type=text size=12 name=l_desk_phone value='".$r['l_desk_phone']."'></td><td>GPS <a href='https://maps.google.com/?q=".$r['l_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td><td><input type=text size=21 name=l_gps value='".$r['l_gps']."'></td></tr>";
+		$a .= "<tr><td>Desk Phone <a href='tel:".$r['l_desk_phone']."' title='Click to launch your phone dialer'><img src='images/icon-phone.svg' alt='phone icon' border=0 width=14 align=absmiddle></a></td><td><input type=text size=12 name=l_desk_phone value='".$r['l_desk_phone']."'></td><td>GPS <a href='https://maps.google.com/?q=".$r['l_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a></td><td style='white-space:nowrap'><input type=text size=21 name=l_gps value='".$r['l_gps']."' placeholder='Copy & Paste from Map'><div class='tooltip' onclick='openMap()'><img src='images/icon-help.png' width=16 alt='GPS Help' style='cursor:pointer;margin:0 0 0 4px;' align=absmiddle><span class='tooltiptext'><ol style='margin-left:0px'><li>Click to Open Google Maps</li><li>Right-click desired Location</li><li>Click \"What's Here?\"</li><li>Copy GPS from Maps, then<br>close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>";
 		$a .= "<tr><td>Base Hospital</td><td><input type=checkbox name=l_isbase is=l_isbase".$basechk."></td><td>Helipad</td><td><input type=checkbox name=l_helipad id=l_helipad".$helichk."></td></tr>
 <tr valign=top><td>Special Services</td><td colspan=3><textarea name=l_special style='width:403px;height:48px' placeholder='i.e. limited service, special services'>".$r['l_special']."</textarea></td></tr>";
 		$a .= "<tr valign=top><td>Location Notes</td><td colspan=3><textarea name='l_note' style='width:403px;height:48px' placeholder='i.e. cross street, parking, hazards in the area'>".$r['l_note']."</textarea></td></tr>\n";
@@ -257,6 +257,9 @@ include "common_includes.php";
 <script type="text/javascript">
 function showLocation(lid) {
 //	location.href = "ARES_Location_Manage.php?lid="+lid;
+}
+function openMap() {
+	window.open("https://google.com/maps/","maps","width=500;height=500;");
 }
 function showSearch(vis) {
 	var vis1 = (vis=="hidden") ? "block":"none";
@@ -376,7 +379,7 @@ echo "<tr><td><input type=text size=14 id=lt_title_new placeholder='Add New Type
 <tr><td>Tac Call</td><td><input type=text size=12 id=l_tactical name=l_tactical></td><td>City</td><td><input type=text size=19 id=l_city name=l_city></td></tr>
 <tr><td>Trauma Level</td><td><input type=text size=12 id=l_trauma_level name=l_trauma_level></td><td>State, Zip</td><td><select id=l_state name=l_state style="width:50px"><option value=CA>CA</option></select>&nbsp;<input type=text size=10 id=l_zip name=l_zip></td></tr>
 <tr><td>Admin Name</td><td><input type=text size=12 id=l_admin_name name=l_admin_name></td><td>Svc. Area</td><td><input type=text size=19 name=l_svc_area id=l_svc_area></td></tr>
-<tr><td>Desk Phone</td><td><input type=text size=12 id=l_desk_phone name=l_desk_phone></td><td>GPS</td><td><input type=text size=21 id=l_gps name=l_gps></td></tr>
+<tr><td>Desk Phone</td><td><input type=text size=12 id=l_desk_phone name=l_desk_phone></td><td>GPS</td><td><input type=text size=21 id=l_gps name=l_gps placeholder="Copy & Paste from Map"><div class="tooltip" onclick="openMap()"><img src="images/icon-help.png" width=16 alt="GPS Help" style="cursor:pointer;margin:0 0 0 4px;" align=absmiddle><span class="tooltiptext"><ol style="margin-left:0px"><li>Click to Open Google Maps</li><li>Right-click desired Location</li><li>Click "What's Here?"</li><li>Copy GPS from Maps, then<br>close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
 <tr><td>Base Hospital</td><td><input type=checkbox name=l_isbase is=l_isbase></td><td>Helipad</td><td><input type=checkbox name=l_helipad id=l_helipad></td></tr>
 <tr valign=top><td>Special Services</td><td colspan=3><textarea name=l_special style='width:394px;height:48px' placeholder='i.e. limited service, special services'></textarea></td></tr>
 <tr valign=top><td>Location Notes</td><td colspan=3><textarea name=l_note style='width:394px;height:48px' placeholder='i.e. cross street, parking, hazards in the area'></textarea></td></tr>

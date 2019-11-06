@@ -81,7 +81,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 
 <tr><td>Call Sign</td><td><input type=hidden name=nc_id value='".$r['nc_id']."'><input type=text class='netcontrol' size=10 name=nc_callsign value='".$r['nc_callsign']."'></td><td>Control Lead</td><td><input type=hidden name=nc_lead_id id=nc_lead_id value='".$r['nc_lead_id']."'><input type=text size=22 style='width:176px' class='people' name=nc_lead_name value='".$nc_leader."'></td></tr>
 <tr><td>Parent Control</td><td><input type=hidden name=nc_parent_id value='".$r['nc_parent_id']."'><input type=text size=10 class='netcontrol' name=nc_parent_callsign value='".$parentid."'></td><td>Location</td><td><input type=text size=22 class='location' style='width:176px' name=nc_location value='".$r['nc_location']."'></td></tr>
-<tr><td align=right>Active</td><td><input type=checkbox name=nc_active value=1".$isactive."></td><td>GPS".$gpsico."</td><td><input type=text name=nc_gps size=22  style='width:176px' value='".$r['nc_gps']."'></td></tr>
+<tr><td align=right>Active</td><td><input type=checkbox name=nc_active value=1".$isactive."></td><td>GPS".$gpsico."</td><td><input type=text name=nc_gps size=22  style='width:176px' value='".$r['nc_gps']."' placeholder='Copy & Paste from Map'><div class='tooltip' onclick='openMap()'><img src='images/icon-help.png' width=16 alt='GPS Help' style='cursor:pointer;margin:0 0 0 4px;' align=absmiddle><span class='tooltiptext'><ol style='margin-left:0px'><li>Click to Open Google Maps</li><li>Right-click Net Control Location</li><li>Click \"What's Here?\"</li><li>Copy GPS from Maps, then<br>close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
 <tr valign=top><td>Notes</td><td colspan=3><textarea name=nc_note style='width:400px;height:60px;'>".stripslashes($r['nc_note'])."</textarea></td></tr>";
 
 	}
@@ -106,6 +106,9 @@ include "common_includes.php";
 <script type="text/javascript">
 function showControl(ncid) {
 //	location.href = "ARES_Net_Control_Manage.php?ncid="+ncid;
+}
+function openMap() {
+	window.open("https://google.com/maps/","maps","width=500;height=500;");
 }
 function showSearch(vis) {
 	var vis1 = (vis=="hidden") ? "block":"none";
@@ -152,7 +155,7 @@ function deleteMe(ncid,data,rid) {
 <table border=0 cellpadding=6 cellspacing=0>
 <tr><td>Call Sign</td><td><input type=hidden name=nc_id id=nc_id><input type=text class='netcontrol' size=10 name=nc_callsign value=''></td><td>Control Lead</td><td><input type=hidden name=nc_lead_id id=nc_lead_id><input type=text size=22 style="width:176px" class='people' name=nc_lead_name value=''></td></tr>
 <tr><td>Parent Control</td><td><input type=hidden name=nc_parent_id id=nc_parent_id value=''><input type=text size=10 class='netcontrol' name=nc_parent_callsign value=''></td><td>Location</td><td><input type=text size=22 class='location' style='width:176px' name=nc_location value=''></td></tr>
-<tr><td align=right>Active</td><td><input type=checkbox name=nc_active value=1 checked></td><td>GPS</td><td><input type=text name=nc_gps size=22 style="width:176px" value=''></td></tr>
+<tr><td align=right>Active</td><td><input type=checkbox name=nc_active value=1 checked></td><td>GPS</td><td><input type=text name=nc_gps size=22 style="width:176px" value='' placeholder="Copy & Paste from Map"><div class="tooltip" onclick="openMap()"><img src="images/icon-help.png" width=16 alt="GPS Help" style="cursor:pointer;margin:0 0 0 4px;" align=absmiddle><span class="tooltiptext"><ol style="margin-left:0px"><li>Click to Open Google Maps</li><li>Right-click Net Control Location</li><li>Click "What's Here?"</li><li>Copy GPS from Maps, then<br>close Maps window</li><li>Paste into this field</li></ol></span></div></td></tr>
 <tr valign=top><td>Notes</td><td colspan=3><textarea name=nc_note style='width:400px;height:60px;'></textarea></td></tr>
 <tr><th colspan=4><input type=submit value="Save This New Net Control"></th></tr>
 </table>
