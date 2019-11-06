@@ -3,7 +3,7 @@
  * ARES_Event_Log.php
  * Event Log entry form
  * #################### */
-#if (empty($_GET['admin'])) { header("Location: http://www.km6wka.net/ares");exit; }
+#if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
 
 if (!empty($_GET['fld'])) {
 	$data = explode(":",$_GET['fld']);

@@ -117,7 +117,7 @@ $incidentname = (empty($incidentname)) ? "":$incidentname;
 
 $isave = (empty($stationid)) ? '<img src="images/icon-save.png" style="cursor:pointer;margin-bottom:-4px;" title="Save This Net Control" alt="Save This Net Control" width=16 border=0 onclick="setNetControl(sid,document.getElementById(\'stationgeo\').value,document.getElementById(\'incidentid\').value);this.src=\'images/icon-check.png\';this.title=\'Net Control Saved\';this.alt=\'Net Control Saved\';this.style.cursor=\'default\';this.onclick=\'\';">':'<img src="images/icon-check.png" style="margin-bottom:-4px" title="Net Control Saved" alt="Net Control Saved" width=16 border=0>';
 ?>
-<form id=commslog method=post action="https://www.km6wka.net/ares/api/reports/save.php">
+<form id=commslog method=post action="https://km6wka.net/ares/api/reports/save.php">
 <input type=hidden name=o_id value=<?=$oid?>>
 <table class="main_table" id="main_table" border=1 cellpadding=4 cellspacing=0 style="border-color:white">
 <!-- tr><th style="font-size:11px" colspan=9>This would be used by a local, or admin net control for making a report. There is a different display for the admin management view.</th></tr -->

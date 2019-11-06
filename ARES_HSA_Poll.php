@@ -3,7 +3,7 @@
  * ARES_HSA_Poll.php
  * HSA Status/Bed Availability Poll form
  * ##################################### */
-#if (empty($_GET['admin'])) { header("Location: http://www.km6wka.net/ares");exit; }
+#if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
 
 include "db_conn.php";
 
@@ -62,6 +62,9 @@ function saveData(frm) {
 		}
 	});
 }
+function addRow(frm) {
+	jQuery("#main_table tr:last").after("<tr><td><input type=text name='extra[]' size=14></td><td><input type=text name=hsaextra[] value='' size=5 onblur='addRow()'></td><td>&nbsp;</td></tr>\n");
+}
 </script>
 
 <style type="text/css">
@@ -74,7 +77,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 
 <body onload="init()">
 
-<form id=hsalog method=post action="https://www.km6wka.net/ares/api/reports/save.php" style="margin-bottom:0px">
+<form id=hsalog method=post action="https://km6wka.net/ares/api/reports/save.php" style="margin-bottom:0px">
 <input type=hidden name=hsatmstmp id=hsatmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=hsalocation id=hsalocation value="<?=$loccode?>">
 <input type=hidden name=hsaincident id=hsaincident value="<?=$inid?>">
@@ -105,7 +108,7 @@ Time This Data Was Collected: <input type=text size=14 name=hsadatacollected val
 <p style="margin:0 0 6px 0">
 <b>AVAILABLE BED COUNT:</b>
 </p>
-<table border=0 cellpadding=1 cellspacing=0>
+<table id=main_table border=0 cellpadding=1 cellspacing=0>
 <tr><th>Area</th><th colspan=2>Avail / Total</th></tr>
 <tr><td title="MEDD-SRGG">Med/Surg</td><td><input type=text name=hsamedsurg id=hsamedsurg value="" size=5></td><td>/ <?=$bedcnts['l_cnt_medsurg']?></td></tr>
 <tr><td title="TELL-EE">TELE</td><td><input type=text name=hsatele id=hsatele value="" size=5></td><td>/ <?=$bedcnts['l_cnt_tele']?></td></tr>
@@ -119,6 +122,8 @@ Time This Data Was Collected: <input type=text size=14 name=hsadatacollected val
 <tr><td title="EYE-SO-LAY-SHUN">Isolation&nbsp;&nbsp;</td><td><input type=text name=hsaisolation id=hsaisolation value="" size=5></td><td>/ <?=$bedcnts['l_cnt_iso']?></td></tr>
 <tr><td title="SYKE">Psych</td><td><input type=text name=hsapsych id=hsapsych value="" size=5></td><td>/ <?=$bedcnts['l_cnt_psych']?></td></tr>
 <tr><td title="OH-ARR">OR</td><td><input type=text name=hsaor id=hsaor value="" size=5></td><td>/ <?=$bedcnts['l_cnt_or']?></td></tr>
+<tr><td title=""><input type=text name="extra[]" size=14></td><td><input type=text name=hsaextra[] value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
+<tr><td title=""><input type=text name="extra[]" size=14></td><td><input type=text name=hsaextra[] value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
 </table>
 <br>
 <button type=button style="cursor:pointer" title="Save HSA Poll Data and Close This Popup" onclick="saveData(this.form)">Save This Report</button>

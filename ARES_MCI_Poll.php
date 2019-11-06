@@ -3,7 +3,7 @@
  * ARES_MCI_Poll.php
  * MCI Poll form
  * ################# */
-#if (empty($_GET['admin'])) { header("Location: http://www.km6wka.net/ares");exit; }
+#if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
 
 require "db_conn.php";
 
@@ -106,7 +106,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 </style>
 
 <body onload="init()">
-<form id=mcilog method=post action="https://www.km6wka.net/ares/api/reports/save.php">
+<form id=mcilog method=post action="https://km6wka.net/ares/api/reports/save.php">
 <input type=hidden name=mcitmstmp id=mcitmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=mcilocation id=mcilocation value="<?=$loccode?>">
 <input type=hidden name=mciincident id=mciincident value="<?=$inid?>">

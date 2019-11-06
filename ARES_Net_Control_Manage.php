@@ -3,7 +3,7 @@
  * ARES_Net_Control_Manage.php
  * Interface for managing net controls
  * ################################### */
-//if (empty($_GET['admin'])) { header("Location: https://www.km6wka.net/ares");exit; }
+//if (empty($_GET['admin'])) { header("Location: https://km6wka.net/ares");exit; }
 
 require "db_conn.php";
 $searchresuts = "";
