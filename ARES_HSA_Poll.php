@@ -32,8 +32,10 @@ include "common_includes.php";
 var svclevels = new Array();
 svclevels[1] = "Green";
 svclevels[2] = "Yellow";
-svclevels[3] = "Red";
-svclevels[4] = "Black";
+svclevels[3] = "Orange";
+svclevels[4] = "Red";
+svclevels[5] = "Black";
+svclevels[6] = "Grey";
 function saveData(frm) {
 	var frmdata = jQuery(frm).serializeToJSON();
 	frmdata = JSON.stringify(frmdata);
@@ -71,8 +73,10 @@ function addRow(frm) {
 SPAN { padding: 6px 6px 1px 3px; }
 .green { background-color: green; }
 .yellow { background-color: yellow; }
-.red { color:white;background-color: red; }
-.black { color:white;background-color: black; }
+.orange { background-color: orange; }
+.red { color: white;background-color: red; }
+.black { color: white;background-color: black; }
+.grey { color: white;background-color: grey; }
 </style>
 
 <body onload="init()">
@@ -100,8 +104,10 @@ Time This Data Was Collected: <input type=text size=14 name=hsadatacollected val
 <table border=0 cellpadding=3 cellspacing=6><tr>
 <th class='green' title="Green: Full Service"><input type=radio name=hsasvclvl value=1 onmouseup="document.getElementById('hsamedsurg').focus();"><br>GRN</th>
 <th class='yellow' title="Yellow: Limited Service"><input type=radio name=hsasvclvl value=2 onmouseup="document.getElementById('hsamedsurg').focus();"><br>YLO</th>
-<th class='red' title="Red: Emergency Service Only"><input type=radio name=hsasvclvl value=3 onmouseup="document.getElementById('hsamedsurg').focus();"><br>RED</th>
-<th class='black' title="Black: No Service, Shelter in Place"><input type=radio name=hsasvclvl value=4 onmouseup="document.getElementById('hsamedsurg').focus();"><br>BLK</th>
+<th class='orange' title="Orange: Modified Service Level"><input type=radio name=hsasvclvl value=3 onmouseup="document.getElementById('hsamedsurg').focus();"><br>ORG</th>
+<th class='red' title="Red: Emergency Service Only"><input type=radio name=hsasvclvl value=4 onmouseup="document.getElementById('hsamedsurg').focus();"><br>RED</th>
+<th class='black' title="Black: No Service, Shelter in Place"><input type=radio name=hsasvclvl value=5 onmouseup="document.getElementById('hsamedsurg').focus();"><br>BLK</th>
+<th class='grey' title="Grey: Unknown Service Level"><input type=radio name=hsasvclvl value=6 onmouseup="document.getElementById('hsamedsurg').focus();"><br>GRY</th>
 </tr></table>
 <br>
 
