@@ -5,6 +5,7 @@
  * ################################## */
 ?>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="style/jquery-ui-1.12.1.css">
 <script type="text/javascript" src="scripts/jquery-3.4.1.min.js"></script>
