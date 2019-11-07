@@ -4,6 +4,8 @@
  * Commons script and stylesheet refs
  * ################################## */
 ?>
+<meta charset="utf-8">
+
 <link rel="stylesheet" href="style/jquery-ui-1.12.1.css">
 <script type="text/javascript" src="scripts/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.12.1.min.js"></script>

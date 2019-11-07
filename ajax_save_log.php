@@ -22,15 +22,19 @@ switch($rtyp) {
 	$stacode = $jdata->mcilocation;
 	$tmstamp = $jdata->mcitmstmp;
 	$location = $staid;
+	//add dump to INSERT Patients
 	break;
 	case "hsapoll":
 	$stacode = $jdata->hsalocation;
+	//add dump to UPDATE Availability
 	break;
 	case "resreq":
 	$stacode = $jdata->reqlocation;
+	//add dump to INSERT Resource_Requests
 	break;
 	case "relreq":
 	$stacode = $jdata->rellocation;
+	//add dump to INSERT Relay_Requests
 	break;
 	case "comms":
 	$stacode = $jdata->stationid;

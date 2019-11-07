@@ -6,7 +6,9 @@
  * ###################################### */
 ?>
 <!-- ARES_INCLUDE_Operator_Status.php -->
-<div id=members style='position:fixed;top:10px;left:10px;padding:0px;background-color:white;text-align:center;'>
+<div style='position:fixed;top:10px;left:10px;padding:0px;background-color:white;text-align:center;'>
+<!--div id=members style='position:fixed;top:10px;left:10px;padding:0px;background-color:white;text-align:center;'-->
+<div id=members>
 <table id=table_memstatus border=1 cellpadding=1 cellspacing=0 style='border-color:white;width:280px;'>
 <tr><th colspan=4>Operator Status</th></tr>
 <?php
@@ -67,6 +69,10 @@ foreach($ops as $cs => $data) {
 }
 ?>
 </table>
+<!--/div-->
 <div style='margin-top:6px;font-size:11px'><a href='ARES_Operator_Status.php' target='_blank'>Operator Check In</a> | <a href='ARES_Member_Manage.php?admin=1' target='_blank'>Member Manage</a></div>
+</div>
+<div id="opstab" style="text-align:center;font-size:10px;color:green;cursor:pointer;margin-top:6px;padding:3px;border-radius:2px;background-color:#aaffcc;">Toggle Operator Status</div>
+</div>
 </div>
 <!-- end ARES_INCLUDE_Operator_Status.php -->

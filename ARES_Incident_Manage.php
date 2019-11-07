@@ -446,6 +446,10 @@ jQuery(function() {
 	});
 
 });
+jQuery("#opstab").click(function(){
+	jQuery("#members").slideToggle(200);
+});
+jQuery("#members").slideToggle(2000);
 </script>
 </body>
 </html>

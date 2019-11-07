@@ -73,13 +73,12 @@ function saveData(frm) {
 			console.log(a);
 			//build msgfld string
 			frmstr = frmstr.substr(2,(frmstr.length-4));
-			var frmtype = frmstr.substr(0,3);
 			var frmarry = frmstr.split('","');
-			var msgdata = frmtype.toUpperCase()+" Poll\n";
+			var msgdata = "MCI Poll\n";
 			for(i=0;i<frmarry.length;i++) {
 				msgarry = frmarry[i].split('":"');
 				if (msgarry[1].length>0) {
-					msgdata += msgarry[0].replace("mci","")+": "+msgarry[1]+"\n"
+					msgdata += msgarry[0]+": "+msgarry[1]+"\n"
 				}
 			}
 			//transfer to parent comms form
@@ -93,7 +92,7 @@ function saveData(frm) {
 	});
 }
 jQuery(document).ready(function(){
-	jQuery("#mciimmediate").focus();
+	jQuery("#immediate").focus();
 });
 </script>
 
@@ -107,9 +106,9 @@ SPAN { padding: 6px 6px 1px 3px; }
 
 <body onload="init()">
 <form id=mcilog method=post action="https://km6wka.net/ares/api/reports/save.php">
-<input type=hidden name=mcitmstmp id=mcitmstmp value="<?=date("Y-m-d H:i:s")?>">
-<input type=hidden name=mcilocation id=mcilocation value="<?=$loccode?>">
-<input type=hidden name=mciincident id=mciincident value="<?=$inid?>">
+<input type=hidden name=tmstmp id=mcitmstmp value="<?=date("Y-m-d H:i:s")?>">
+<input type=hidden name=location id=mcilocation value="<?=$loccode?>">
+<input type=hidden name=incident id=mciincident value="<?=$inid?>">
 
 <div style="position:absolute;top:0px;right:0px;width:12px;height:12px;border-radius:12px;border:solid 1px grey;background-color:lightgrey;text-align:center;font-size:12px;cursor:pointer;" onclick="parent.showModal('','none');" title="Close MCI Poll Popup WITHOUT Saving Poll Data">X</div>
 
@@ -126,14 +125,14 @@ SPAN { padding: 6px 6px 1px 3px; }
 <tr>
 <td align=center>
 <p style="margin:0px 0 6px 0;font-size:0.9em;">
-Time This Data Was Collected: <input type=text size=14 name=mcidatacollected value='<?=date("Ymd H:i")?>'>
+Time This Data Was Collected: <input type=text size=14 name=datacollected value='<?=date("Ymd H:i")?>'>
 </p>
 <p style="margin:0 0 6px 0">
 <b>TRIAGE COUNTS:</b>
 </p>
-<span class='red' style="padding:4px 4px 6px 4px" title="IMMEDIATE: Will die, if not transported ASAP"><input type=text id=mciimmediate name=mciimmediate size=10 value="" style="text-align:center" placeholder="Immediate"></span>
-<span class='yellow' style="padding:4px 4px 6px 4px" title="DELAYED: Need transport, but not Immediate"><input type=text name=mcidelayed size=10 value="" style="text-align:center" placeholder="Delayed"></span>
-<span class='green' style="padding:4px 4px 6px 4px" title="MINOR: Walking Wounded"><input type=text name=mciminor size=10 value="" style="text-align:center" placeholder="Minor"></span>
+<span class='red' style="padding:4px 4px 6px 4px" title="IMMEDIATE: Will die, if not transported ASAP"><input type=text id=immediate name=immediate size=10 value="" style="text-align:center" placeholder="Immediate"></span>
+<span class='yellow' style="padding:4px 4px 6px 4px" title="DELAYED: Need transport, but not Immediate"><input type=text name=delayed size=10 value="" style="text-align:center" placeholder="Delayed"></span>
+<span class='green' style="padding:4px 4px 6px 4px" title="MINOR: Walking Wounded"><input type=text name=minor size=10 value="" style="text-align:center" placeholder="Minor"></span>
 <br>
 
 <p style="margin:20px 0 6px 0">

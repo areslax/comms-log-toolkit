@@ -15,7 +15,7 @@ $r=$q->fetch(PDO::FETCH_ASSOC);
 
 //define types of entry
 $typs = array(" ");
-$rqq = $conn->prepare("select rqt_title from Request_Types order by rqt_id");
+$rqq = $conn->prepare("select rqt_title from Entry_Types order by rqt_id");
 $rqq->execute();
 $rqr = $rqq->fetchAll(PDO::FETCH_ASSOC);
 foreach($rqr as $r) {

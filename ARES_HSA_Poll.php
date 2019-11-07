@@ -47,14 +47,13 @@ function saveData(frm) {
 			console.log(a);
                         //build msgfld string
                         frmdata = frmdata.substr(2,(frmdata.length-4));
-                        var frmtype = frmdata.substr(0,3);
                         var frmarry = frmdata.split('","');
-                        var msgdata = frmtype.toUpperCase()+" Poll\n";
+                        var msgdata = "HSA Poll\n";
                         for(i=0;i<frmarry.length;i++) {
                                 msgarry = frmarry[i].split('":"');
                                 if (msgarry[1].length>0) {
-					msgarry[1] = (msgarry[0].substr(3,msgarry[0].length)=='svclvl') ? svclevels[msgarry[1]]:msgarry[1];
-                                        msgdata += msgarry[0].substr(3,msgarry[0].length)+": "+msgarry[1]+"\n";
+					msgarry[1] = (msgarry[0]=='servicelevel') ? svclevels[msgarry[1]]:msgarry[1];
+                                        msgdata += msgarry[0]+": "+msgarry[1]+"\n";
                                 }
                         }
 			parent.<?=$msgfld?>.innerHTML = msgdata;
@@ -64,8 +63,10 @@ function saveData(frm) {
 		}
 	});
 }
+var iter = 2;
 function addRow(frm) {
-	jQuery("#main_table tr:last").after("<tr><td><input type=text name='extra[]' size=14></td><td><input type=text name=hsaextra[] value='' size=5 onblur='addRow()'></td><td>&nbsp;</td></tr>\n");
+	jQuery("#main_table tr:last").after("<tr><td><div id=extra"+iter+" onblur=\"jQuery('#hsaextra"+iter+"').attr('name',this.innerHTML)\" contenteditable=true style='height:19px;width:120px;border:solid 1px #acacac;'></div></td><td><input type=text name='hsaextra"+iter+"' id=hsaextra"+iter+" value='' size=5 onblur='addRow()'></td><td>&nbsp;</td></tr>\n");
+	iter++;
 }
 </script>
 
@@ -82,9 +83,9 @@ SPAN { padding: 6px 6px 1px 3px; }
 <body onload="init()">
 
 <form id=hsalog method=post action="https://km6wka.net/ares/api/reports/save.php" style="margin-bottom:0px">
-<input type=hidden name=hsatmstmp id=hsatmstmp value="<?=date("Y-m-d H:i:s")?>">
-<input type=hidden name=hsalocation id=hsalocation value="<?=$loccode?>">
-<input type=hidden name=hsaincident id=hsaincident value="<?=$inid?>">
+<input type=hidden name=tmstmp id=hsatmstmp value="<?=date("Y-m-d H:i:s")?>">
+<input type=hidden name=location id=hsalocation value="<?=$loccode?>">
+<input type=hidden name=incident id=hsaincident value="<?=$inid?>">
 
 <div style="position:absolute;top:0px;right:0px;width:12px;height:12px;border-radius:12px;border:solid 1px grey;background-color:lightgrey;text-align:center;font-size:12px;cursor:pointer;" onclick="parent.showModal('','none');" title="Close HSA Poll Popup WITHOUT Saving Poll Data">X</div>
 
@@ -96,18 +97,18 @@ SPAN { padding: 6px 6px 1px 3px; }
 <tr>
 <td align=center>
 <p style="margin:0px 0 6px 0;font-size:0.9em;">
-Time This Data Was Collected: <input type=text size=14 name=hsadatacollected value='<?=date("Ymd H:i")?>'>
+Time This Data Was Collected: <input type=text size=14 name=datacollected value='<?=date("Ymd H:i")?>'>
 </p>
 <p style="margin:10px 0 10px 0">
 <b>HOSPITAL SERVICE LEVEL:</b>
 </p>
 <table border=0 cellpadding=3 cellspacing=6><tr>
-<th class='green' title="Green: Full Service"><input type=radio name=hsasvclvl value=1 onmouseup="document.getElementById('hsamedsurg').focus();"><br>GRN</th>
-<th class='yellow' title="Yellow: Limited Service"><input type=radio name=hsasvclvl value=2 onmouseup="document.getElementById('hsamedsurg').focus();"><br>YLO</th>
-<th class='orange' title="Orange: Modified Service Level"><input type=radio name=hsasvclvl value=3 onmouseup="document.getElementById('hsamedsurg').focus();"><br>ORG</th>
-<th class='red' title="Red: Emergency Service Only"><input type=radio name=hsasvclvl value=4 onmouseup="document.getElementById('hsamedsurg').focus();"><br>RED</th>
-<th class='black' title="Black: No Service, Shelter in Place"><input type=radio name=hsasvclvl value=5 onmouseup="document.getElementById('hsamedsurg').focus();"><br>BLK</th>
-<th class='grey' title="Grey: Unknown Service Level"><input type=radio name=hsasvclvl value=6 onmouseup="document.getElementById('hsamedsurg').focus();"><br>GRY</th>
+<th class='green' title="Green: Full Service"><input type=radio name=servicelevel value=1 onmouseup="document.getElementById('hsamedsurg').focus();"><br>GRN</th>
+<th class='yellow' title="Yellow: Limited Service"><input type=radio name=servicelevel value=2 onmouseup="document.getElementById('hsamedsurg').focus();"><br>YLO</th>
+<th class='orange' title="Orange: Modified Service Level"><input type=radio name=servicelevel value=3 onmouseup="document.getElementById('hsamedsurg').focus();"><br>ORG</th>
+<th class='red' title="Red: Emergency Service Only"><input type=radio name=servicelevel value=4 onmouseup="document.getElementById('hsamedsurg').focus();"><br>RED</th>
+<th class='black' title="Black: No Service, Shelter in Place"><input type=radio name=servicelevel value=5 onmouseup="document.getElementById('hsamedsurg').focus();"><br>BLK</th>
+<th class='grey' title="Grey: Unknown Service Level"><input type=radio name=servicelevel value=6 onmouseup="document.getElementById('hsamedsurg').focus();"><br>GRY</th>
 </tr></table>
 <br>
 
@@ -116,20 +117,20 @@ Time This Data Was Collected: <input type=text size=14 name=hsadatacollected val
 </p>
 <table id=main_table border=0 cellpadding=1 cellspacing=0>
 <tr><th>Area</th><th colspan=2>Avail / Total</th></tr>
-<tr><td title="MEDD-SRGG">Med/Surg</td><td><input type=text name=hsamedsurg id=hsamedsurg value="" size=5></td><td>/ <?=$bedcnts['l_cnt_medsurg']?></td></tr>
-<tr><td title="TELL-EE">TELE</td><td><input type=text name=hsatele id=hsatele value="" size=5></td><td>/ <?=$bedcnts['l_cnt_tele']?></td></tr>
-<tr><td title="EYE-CEE-YOU">ICU</td><td><input type=text name=hsaicu id=hsaicu value="" size=5></td><td>/ <?=$bedcnts['l_cnt_icu']?></td></tr>
-<tr><td title="PEE-EYE-CEE-YOU">PICU</td><td><input type=text name=hsapicu id=hsapicu value="" size=5></td><td>/ <?=$bedcnts['l_cnt_picu']?></td></tr>
-<tr><td title="ENN-EYE-CEE-YOU">NICU</td><td><input type=text name=hsanicu id=hsanicu value="" size=5></td><td>/ <?=$bedcnts['l_cnt_nicu']?></td></tr>
-<tr><td title="PEEDZ">Peds</td><td><input type=text name=hsapeds id=hsapeds value="" size=5></td><td>/ <?=$bedcnts['l_cnt_peds']?></td></tr>
-<tr><td title="OH-BEE-GYNE">OB/Gyn</td><td><input type=text name=hsaobgyn id=hsaobgyn value="" size=5></td><td>/ <?=$bedcnts['l_cnt_obgyn']?></td></tr>
-<tr><td title="TRAH-MAH">Trauma</td><td><input type=text name=hsatrauma id=hsatrauma value="" size=5></td><td>/ <?=$bedcnts['l_cnt_trauma']?></td></tr>
-<tr><td title="BERN">Burn</td><td><input type=text name=hsaburn id=hsaburn value="" size=5></td><td>/ <?=$bedcnts['l_cnt_burn']?></td></tr>
-<tr><td title="EYE-SO-LAY-SHUN">Isolation&nbsp;&nbsp;</td><td><input type=text name=hsaisolation id=hsaisolation value="" size=5></td><td>/ <?=$bedcnts['l_cnt_iso']?></td></tr>
-<tr><td title="SYKE">Psych</td><td><input type=text name=hsapsych id=hsapsych value="" size=5></td><td>/ <?=$bedcnts['l_cnt_psych']?></td></tr>
-<tr><td title="OH-ARR">OR</td><td><input type=text name=hsaor id=hsaor value="" size=5></td><td>/ <?=$bedcnts['l_cnt_or']?></td></tr>
-<tr><td title=""><input type=text name="extra[]" size=14></td><td><input type=text name=hsaextra[] value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
-<tr><td title=""><input type=text name="extra[]" size=14></td><td><input type=text name=hsaextra[] value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
+<tr><td title="MEDD-SRGG">Med/Surg</td><td><input type=text name=medsurg id=hsamedsurg value="" size=5></td><td>/ <?=$bedcnts['l_cnt_medsurg']?></td></tr>
+<tr><td title="TELL-EE">TELE</td><td><input type=text name=tele id=hsatele value="" size=5></td><td>/ <?=$bedcnts['l_cnt_tele']?></td></tr>
+<tr><td title="EYE-CEE-YOU">ICU</td><td><input type=text name=icu id=hsaicu value="" size=5></td><td>/ <?=$bedcnts['l_cnt_icu']?></td></tr>
+<tr><td title="PEE-EYE-CEE-YOU">PICU</td><td><input type=text name=picu id=hsapicu value="" size=5></td><td>/ <?=$bedcnts['l_cnt_picu']?></td></tr>
+<tr><td title="ENN-EYE-CEE-YOU">NICU</td><td><input type=text name=nicu id=hsanicu value="" size=5></td><td>/ <?=$bedcnts['l_cnt_nicu']?></td></tr>
+<tr><td title="PEEDZ">Peds</td><td><input type=text name=peds id=hsapeds value="" size=5></td><td>/ <?=$bedcnts['l_cnt_peds']?></td></tr>
+<tr><td title="OH-BEE-GYNE">OB/Gyn</td><td><input type=text name=obgyn id=hsaobgyn value="" size=5></td><td>/ <?=$bedcnts['l_cnt_obgyn']?></td></tr>
+<tr><td title="TRAH-MAH">Trauma</td><td><input type=text name=trauma id=hsatrauma value="" size=5></td><td>/ <?=$bedcnts['l_cnt_trauma']?></td></tr>
+<tr><td title="BERN">Burn</td><td><input type=text name=burn id=hsaburn value="" size=5></td><td>/ <?=$bedcnts['l_cnt_burn']?></td></tr>
+<tr><td title="EYE-SO-LAY-SHUN">Isolation&nbsp;&nbsp;</td><td><input type=text name=isolation id=hsaisolation value="" size=5></td><td>/ <?=$bedcnts['l_cnt_iso']?></td></tr>
+<tr><td title="SYKE">Psych</td><td><input type=text name=psych id=hsapsych value="" size=5></td><td>/ <?=$bedcnts['l_cnt_psych']?></td></tr>
+<tr><td title="OH-ARR">OR</td><td><input type=text name=or id=hsaor value="" size=5></td><td>/ <?=$bedcnts['l_cnt_or']?></td></tr>
+<tr><td title=""><div id="extra0" style="height:19px;width:120px;border:solid 1px #acacac;" contenteditable=true onblur="jQuery('#hsaextra0').attr('name',this.innerHTML)"></div></td><td><input type=text name="hsaextra0" id=hsaextra0 value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
+<tr><td title=""><div id="extra1" style="height:19px;width:120px;border:solid 1px #acacac;" contenteditable=true onblur="jQuery('#hsaextra1').attr('name',this.innerHTML)"></div></td><td><input type=text name="hsaextra1" id=hsaextra1 value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
 </table>
 <br>
 <button type=button style="cursor:pointer" title="Save HSA Poll Data and Close This Popup" onclick="saveData(this.form)">Save This Report</button>
