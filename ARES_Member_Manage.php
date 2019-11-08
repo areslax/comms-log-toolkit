@@ -83,7 +83,7 @@ if (!empty($_POST['updatemember'])) {
 			$data = $_POST['mc_datas'][$t];
 		}
 		$q2 = $conn->prepare("update Member_Contacts set mc_type=:type,mc_data=:data,mc_carrier=:carr where mc_id=:mcid");
-		$q2->execute(array(':mcid'=>$t,':type'=>$d,':data'=>$data,':carr'=>$_POST['mc_carrier']));
+		$q2->execute(array(':mcid'=>$t,':type'=>$d,':data'=>$data,':carr'=>$_POST['mc_carrier'][$t]));
 	}
 	}
 	//got new contact entry
