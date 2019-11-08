@@ -18,7 +18,7 @@ if (!empty($_POST['addmember'])) {
 	$pword = md5($_POST['m_password']);
 	$q = $conn->prepare("insert into Members (m_access_level,m_callsign,m_fname,m_lname,m_note,m_active,m_start_date,m_last_login,m_status,m_prestage_lid,m_password) values (:accesslevel,:callsign,:fname,:lname,:note,:active,:startdate,:lastlogin,:status,:prestage,:password)");
 	try{
-	 $q->execute(array(':accesslevel'=>$_POST['m_access_level'],':callsign'=>$_POST['m_callsign'],':fname'=>$_POST['m_fname'],':lname'=>$_POST['m_lname'],':note'=>$_POST['m_note'],':active'=>$_POST['m_active'],':startdate'=>$tdate,':lastlogin'=>NULL,':status'=>$_POST['m_status'],':prestage'=>$_POST['m_prestage'],':password'=>$pword));
+	 $q->execute(array(':accesslevel'=>$_POST['m_access_level'],':callsign'=>$_POST['m_callsign'],':fname'=>$_POST['m_fname'],':lname'=>$_POST['m_lname'],':note'=>$_POST['m_note'],':active'=>$_POST['m_active'],':startdate'=>$tdate,':lastlogin'=>NULL,':status'=>$_POST['m_status'],':prestage'=>$_POST['m_prestage_lid'],':password'=>$pword));
 	}catch(PDOException $e){
 	 echo "oops: ".$e->getMessage();
 	 exit;
@@ -140,7 +140,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 <tr><td>Active</td><td><input type=checkbox name=m_active value=1";
 		if ($r['m_active']) { $a .= " checked"; }
 		$a .= "> <span style='font-size:10px'>".date("m/d/Y",strtotime($r['m_start_date']))."</span></td><td>Access</td><td><select name=m_access_level style='width:130px'><option value=0></option>".$mtypes."</select></td></tr>
-<tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid value='".$r['m_prestage_lid']."'><input name=m_prestage_lid_name class='location' style='width:400px;text-align:left;' value='".$depto."' onfocus='this.select()'></td></tr>
+<tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid id=m_prestage_lid value='".$r['m_prestage_lid']."'><input name=m_prestage_lid_name class='location' style='width:400px;text-align:left;' value='".$depto."' onfocus='this.select()'></td></tr>
 <tr valign=top><td>Notes</td><td colspan=3><textarea name=m_note style='width:400px;height:60px;'>".$r['m_note']."</textarea></td></tr>";
 
 	}
@@ -391,7 +391,7 @@ echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Leve
 <tr><td>First Name</td><td><input type=text size=12 id=m_fname name=m_fname></td><td>Cell Phone</td><td><input type=text size=12 id=cell_phone name=mc_type_cell_phone><select name=mc_carrier style="width:80px;height:21px;"><option value=0>Carrier</option><?=$carriers?></select></td></tr>
 <tr><td>Last Name</td><td><input type=text size=12 id=m_lname name=m_lname></td><td>Email</td><td><input type=text size=22 id=email name=mc_type_email autocomplete="ac234"></td></tr>
 <tr><td>Active</td><td><input type=checkbox name=m_active value=1 checked> <span style="font-size:10px"><?=date("m/d/Y")?></span></td><td>Access</td><td><select name=m_access_level style="width:100px"><option value=1>Operator</option><option value=2>Net Control</option><option value=3>Administrator</option></select></td></tr>
-<tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid><input name=m_prestage_lid_name class="location" style="width:400px;text-align:left;"></td></tr>
+<tr valign=top><td>Deploys To</td><td colspan=3><input type=hidden name=m_prestage_lid id=m_prestage_lid2><input name=m_prestage_lid_name class="location" style="width:400px;text-align:left;"></td></tr>
 <tr valign=top><td>Notes</td><td colspan=3><textarea name=m_note style="width:400px;height:60px;"></textarea></td></tr>
 <tr><th colspan=4><input type=submit value="Save This New Operator"></th></tr>
 </table>
@@ -415,6 +415,8 @@ jQuery(function() {
                         event.preventDefault();
                         jQuery(this).val(ui.item.label);
                         locfld[this.id]=ui.item.value;
+//m_prestage_lid2 for updates
+			jQuery("#m_prestage_lid").val(ui.item.lid);
                 }
         });
 

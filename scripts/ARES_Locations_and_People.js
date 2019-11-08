@@ -14,15 +14,22 @@ var people = new Array(
 );
 
 var incidents = new Array(
-{label:'',value:'New Incident',iid:0},{label:'FIRE: OAKFIRE: Oak Fire',value:'Oak Fire',iid:'1'}
+{label:'FIRE: OAKFIRE: Oak Fire',value:'Oak Fire',iid:'1'}
 );
 
 var netcontrols = new Array(
-{label:'n1hen: Oak Fire: Calabasas',value:'n1hen: Oak Fire: Calabasas',ncid:'1'},{label:'N1HEN: Oak Fire',value:'N1HEN: Oak Fire',ncid:'2'}
+{label:'n1hen: Calabasas',value:'n1hen: Calabasas',ncid:'1'},{label:'N1HEN: ',value:'N1HEN: ',ncid:'2'}
 );
 
 var typs = new Array(
-'','A Action','E Event','H HSA Poll','M MCI Poll','R Resource Request','L Relay Request'
+'',
+'MCI Poll',
+'HSA Poll',
+'Event',
+'Resource Request',
+'Relay Request',
+'Action',
+'Report'
 );
 
 
