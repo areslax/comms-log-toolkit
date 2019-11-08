@@ -386,7 +386,7 @@ echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Leve
 <form method=post autocomplete='off'>
 <input type=hidden name=addmember value=1>
 <table border=0 cellpadding=6 cellspacing=0>
-<tr><td>Call Sign</td><td><input type=text size=8 id=m_callsign name=m_callsign class="people"></td><td>Status</td><td><select name=m_status style="width:100px"><option value=1>Idle</option><option value=2>Checked In</option><option value=3>En Route</option><option value=4>On Location</option></select></td></tr>
+<tr><td>Call Sign</td><td><input type=text size=8 id=m_callsign name=m_callsign class="people"></td><td>Status</td><td><select name=m_status style="width:100px"><option value=1>Idle</option><option value=2>Checked In</option><option value=3>En Route</option><option value=4>On Site</option></select></td></tr>
 <tr><td>Password</td><td><input type=password size=12 id=m_password name=m_password autocomplete="new-password"></td><td>Home Phone</td><td><input type=text size=12 id=home_phone name=mc_type_home_phone></td></tr>
 <tr><td>First Name</td><td><input type=text size=12 id=m_fname name=m_fname></td><td>Cell Phone</td><td><input type=text size=12 id=cell_phone name=mc_type_cell_phone><select name=mc_carrier style="width:80px;height:21px;"><option value=0>Carrier</option><?=$carriers?></select></td></tr>
 <tr><td>Last Name</td><td><input type=text size=12 id=m_lname name=m_lname></td><td>Email</td><td><input type=text size=22 id=email name=mc_type_email autocomplete="ac234"></td></tr>
