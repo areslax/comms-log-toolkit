@@ -18,18 +18,18 @@ $typs = array(" ");
 $rqq = $conn->prepare("select rqt_title from Entry_Types order by rqt_id");
 $rqq->execute();
 $rqr = $rqq->fetchAll(PDO::FETCH_ASSOC);
-foreach($rqr as $r) {
-        $typs[] = $r['rqt_title'];
+foreach($rqr as $rt) {
+        $typs[] = $rt['rqt_title'];
 }
 
 $operator = $oid;
 
 $d = json_decode($r['r_data']);
 
-$stationid = $d->stationid;
-$stationloc = $d->stationloc;
-$incidentid = $d->incidentid;
-$incidentname = $d->incidentname;
+$stationid = (isset($d->stationid)) ? $d->stationid:"";
+$stationloc = (isset($d->stationloc)) ? $d->stationloc:"";
+$incidentid = (isset($d->incidentid)) ? $d->incidentid:"";
+$incidentname = (isset($d->incidentname)) ? $d->incidentname:"";
 
 foreach($d->ids as $id) {
 
@@ -72,7 +72,7 @@ foreach($d->ids as $id) {
 	}
 
 	$ts = (empty($d->$msg)) ? "":$d->$ts;
-	$tsfocus = (empty($ts) && empty($tsfocus)) ? 'jQuery("#ts'.$id.'").focus();':$tsfocus;
+	$tsfocus = (empty($ts) && empty($tsfocus)) ? 'jQuery("#ts'.$id.'").focus();':((!empty($tsfocus)) ? $tsfocus:$ts);
 
 	$grab .= '<tr id=row'.$id.' valign=top><th id=rid'.$id.'><input type=hidden name=ids[] value='.$id.'><input type=hidden name=msgstatus_'.$id.' id=msgstatus'.$id.' value="'.$d->$msgstatus.'">'.$id.'</th><td><input type=text size=20 name=ts_'.$id.' id=ts'.$id.' onfocus="hiliteme('.$id.')"';
 	if (empty($ts)) { $grab .= ' onblur="getTimestamp(this.id);disableblur(this);"'; }

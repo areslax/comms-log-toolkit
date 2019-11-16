@@ -17,10 +17,10 @@ $newiter = 1;
 //needs to be only for current station
 
 if (!empty($_COOKIE['ncid'])) {
-	$oid = $_COOKIE['oid'];
-//	$iid = $_COOKIE['iid'];
-	$lid = $_COOKIE['lid'];
-	$ncid = $_COOKIE['ncid'];
+	$oid = (isset($_COOKIE['oid'])) ? $_COOKIE['oid']:"";
+//	$iid = (isset($_COOKIE['iid'])) ? $_COOKIE['iid']:"";
+	$lid = (isset($_COOKIE['lid'])) ? $_COOKIE['lid']:"";
+	$ncid = (isset($_COOKIE['ncid'])) ? $_COOKIE['ncid']:"";
 	include "grab_report.php"; 
 }
 /**/
