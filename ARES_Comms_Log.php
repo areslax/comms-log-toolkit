@@ -130,12 +130,12 @@ var chkmsgs = setInterval("checkAdminAlert()",10000);
 	<input type=image src="images/icon-print.png" title="Print this Log" style="width:16px;" onclick="self.print()"><br>
 	<input type=image src="images/icon-new.png" title="Start a New Log" style="width:16px;" onclick="startNewLog()"><br><br>
 	<div style="position:relative">
-	<img id=iconloc src="images/icon-location-on.png" style="width:16px;cursor:pointer;" title="Set Contact field to Location" onclick="loclookup=locs;this.src='images/icon-location-on.png';jQuery('#iconppl').attr('src','images/icon-people.png');initAuto();" onmouseover="jQuery('#contactfld').css('background-color','lightgreen')" onmouseout="jQuery('#contactfld').css('background-color','white')">
-	<div id=locul style="position:absolute;background-color:yellow;top:0px;left:52px;padding:2px;text-align:left;display:none;"></div>
+	<img id=iconloc src="images/icon-location-on.png" style="width:16px;cursor:pointer;" title="Set Contact field to Location" onclick="loclookup=locs;this.src='images/icon-location-on.png';jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();" onmouseover="jQuery('#pplul').css('display','none');jQuery('#contactfld').css('background-color','lightgreen');jQuery('#locul').css('display','block');" onmouseout="jQuery('#contactfld').css('background-color','white')">
+	<div id=locul style="position:absolute;top:0px;left:52px;padding:2px;text-align:left;display:none;"></div>
 	</div>
 	<div style="position:relative">
-	<img id=iconppl src="images/icon-people.png" style="width:16px;cursor:pointer;" title="Set Contact field to People" onclick="loclookup=people;this.src='images/icon-people-on.png';jQuery('#iconloc').attr('src','images/icon-location.png');initAuto();" onmouseover="jQuery('#contactfld').css('background-color','lightgreen')" onmouseout="jQuery('#contactfld').css('background-color','white')">
-	<div id=pplul></div>
+	<img id=iconppl src="images/icon-people.png" style="width:16px;cursor:pointer;" title="Set Contact field to People" onclick="loclookup=people;this.src='images/icon-people-on.png';jQuery('#iconloc').attr('src','images/icon-location.png');jQuery('#pplul').css('display','none');initAuto();" onmouseover="jQuery('#locul').css('display','none');jQuery('#contactfld').css('background-color','lightgreen');jQuery('#pplul').css('display','block');" onmouseout="jQuery('#contactfld').css('background-color','white')">
+	<div id=pplul style="position:absolute;top:0px;left:52px;padding:2px;text-align:left;display:none;"></div>
 	</div>
 <!--
 	<button type=button style="width:70px" onclick="checkType(3,stationid,1)">EVENT</button><br>
@@ -184,16 +184,22 @@ else {
 //location and people type menus
 //console.log(loc_med);
 var locul = "";
-locul += (loc_med.length<1) ? "<div class='lnk ui-state-disabled'>Medical</div>":"<div class='lnk' onclick='loclookup=loc_med'>Medical</div>";
-locul += (loc_pd.length<1) ? "<div class='lnk ui-state-disabled'>Police</div>":"<div class='lnk' onclick='loclookup=loc_pd'>Police</div>";
-locul += (loc_fd.length<1) ? "<div class='lnk ui-state-disabled'>Fire</div>":"<div class='lnk' onclick='loclookup=loc_fd'>Fire</div>";
-locul += (loc_psy.length<1) ? "<div class='lnk ui-state-disabled'>Psych</div>":"<div class='lnk' onclick='loclookup=loc_psy'>Psych</div>";
-locul += (loc_reh.length<1) ? "<div class='lnk ui-state-disabled'>Rehab</div>":"<div class='lnk' onclick='loclookup=loc_reh'>Rehab</div>";
-locul += (loc_sta.length<1) ? "<div class='lnk ui-state-disabled'>Station</div>":"<div class='lnk' onclick='loclookup=loc_sta'>Station</div>";
+locul += (loc_med.length<1) ? "<div class='lnk ui-state-disabled'>Medical</div>":"<div class='lnk' onclick=\"loclookup=loc_med;jQuery('#iconloc').attr('src','images/icon-location-on.png');jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();jQuery('#locul').css('display','none');\">Medical</div>";
+locul += (loc_pd.length<1) ? "<div class='lnk ui-state-disabled'>Police</div>":"<div class='lnk' onclick=\"loclookup=loc_pd;jQuery('#iconloc').attr('src','images/icon-location-on.png');jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();jQuery('#locul').css('display','none');\">Police</div>";
+locul += (loc_fd.length<1) ? "<div class='lnk ui-state-disabled'>Fire</div>":"<div class='lnk' onclick=\"loclookup=loc_fd;jQuery('#iconloc').attr('src','images/icon-location-on.png');jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();jQuery('#locul').css('display','none');\">Fire</div>";
+locul += (loc_psy.length<1) ? "<div class='lnk ui-state-disabled'>Psych</div>":"<div class='lnk' onclick=\"loclookup=loc_psy;jQuery('#iconloc').attr('src','images/icon-location-on.png');jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();jQuery('#locul').css('display','none');\">Psych</div>";
+locul += (loc_reh.length<1) ? "<div class='lnk ui-state-disabled'>Rehab</div>":"<div class='lnk' onclick=\"loclookup=loc_reh;jQuery('#iconloc').attr('src','images/icon-location-on.png');jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();jQuery('#locul').css('display','none');\">Rehab</div>";
+locul += (loc_sta.length<1) ? "<div class='lnk ui-state-disabled'>Station</div>":"<div class='lnk' onclick=\"loclookup=loc_sta;jQuery('#iconloc').attr('src','images/icon-location-on.png');jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();jQuery('#locul').css('display','none');\">Station</div>";
 jQuery("#locul").html(locul);
+var pplul = "";
+pplul += (people_ops.length<1) ? "<div class='lnk ui-state-disabled'>Operators</div>":"<div class='lnk' onclick=\"loclookup=people_ops;jQuery('#iconloc').attr('src','images/icon-location.png');jQuery('#iconppl').attr('src','images/icon-people-on.png');jQuery('#pplul').css('display','none');initAuto();jQuery('#pplul').css('display','none');\">Operators</div>";
+pplul += (people_net.length<1) ? "<div class='lnk ui-state-disabled'>Net Controls</div>":"<div class='lnk' onclick=\"loclookup=people_net;jQuery('#iconloc').attr('src','images/icon-location.png');jQuery('#iconppl').attr('src','images/icon-people-on.png');jQuery('#pplul').css('display','none');initAuto();jQuery('#pplul').css('display','none');\">Net Controls</div>";
+pplul += (people_adm.length<1) ? "<div class='lnk ui-state-disabled'>Administrators</div>":"<div class='lnk' onclick=\"loclookup=people_adm;jQuery('#iconloc').attr('src','images/icon-location.png');jQuery('#iconppl').attr('src','images/icon-people-on.png');jQuery('#pplul').css('display','none');initAuto();jQuery('#pplul').css('display','none');\">Administrators</div>";
+jQuery("#pplul").html(pplul);
 //console.log(locul);
 //autocomplete
 var loclookup = locs;
+var peeplookup = people;
 var locfld = new Array();
 var pplfld = new Array();
 function initAuto() {
@@ -213,7 +219,7 @@ function initAuto() {
 	});
 
 	jQuery(".people").autocomplete({
-		source: people,
+		source: peeplookup,
 		focus: function(event, ui) {
 			event.preventDefault();
 			jQuery(this).val(ui.item.label);
