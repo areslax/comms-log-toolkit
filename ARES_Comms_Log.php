@@ -103,7 +103,20 @@ function saveData(frm) {
 var gotalert = 0;
 var chkmsgs = setInterval("checkAdminAlert()",10000);
 </script>
-
+<style type="text/css">
+#menu {
+	margin: 0 0;
+	padding-left: 0;
+	list-style-type: none;
+	border: none;
+	background-color: none;
+}
+.lnk {
+	padding: 2px;
+	font-size: 10px;
+	cursor: pointer;
+}
+</style>
 </head>
 
 <body onbeforeunload="return false" onload="init()">
@@ -116,8 +129,14 @@ var chkmsgs = setInterval("checkAdminAlert()",10000);
 	<input type=image src="images/icon-save.png" title="Save this Log" style="width:16px;margin-bottom:1px;" onclick="saveData(document.forms[0])"><br>
 	<input type=image src="images/icon-print.png" title="Print this Log" style="width:16px;" onclick="self.print()"><br>
 	<input type=image src="images/icon-new.png" title="Start a New Log" style="width:16px;" onclick="startNewLog()"><br><br>
-	<img id=iconloc src="images/icon-location-on.png" style="width:16px;cursor:pointer;" title="Set Contact field to Location" onclick="loclookup=savloc;this.src='images/icon-location-on.png';jQuery('#iconppl').attr('src','images/icon-people.png');initAuto();"><br>
-	<img id=iconppl src="images/icon-people.png" style="width:16px;cursor:pointer;" title="Set Contact field to People" onclick="savloc=loclookup;loclookup=people;this.src='images/icon-people-on.png';jQuery('#iconloc').attr('src','images/icon-location.png');initAuto();"><br><br>
+	<div style="position:relative">
+	<img id=iconloc src="images/icon-location-on.png" style="width:16px;cursor:pointer;" title="Set Contact field to Location" onclick="loclookup=locs;this.src='images/icon-location-on.png';jQuery('#iconppl').attr('src','images/icon-people.png');initAuto();" onmouseover="jQuery('#contactfld').css('background-color','lightgreen')" onmouseout="jQuery('#contactfld').css('background-color','white')">
+	<div id=locul style="position:absolute;background-color:yellow;top:0px;left:52px;padding:2px;text-align:left;display:none;"></div>
+	</div>
+	<div style="position:relative">
+	<img id=iconppl src="images/icon-people.png" style="width:16px;cursor:pointer;" title="Set Contact field to People" onclick="loclookup=people;this.src='images/icon-people-on.png';jQuery('#iconloc').attr('src','images/icon-location.png');initAuto();" onmouseover="jQuery('#contactfld').css('background-color','lightgreen')" onmouseout="jQuery('#contactfld').css('background-color','white')">
+	<div id=pplul></div>
+	</div>
 <!--
 	<button type=button style="width:70px" onclick="checkType(3,stationid,1)">EVENT</button><br>
 -->
@@ -136,7 +155,7 @@ $isave = (empty($stationid)) ? '<img src="images/icon-save.png" style="cursor:po
 <table class="main_table" id="main_table" border=1 cellpadding=4 cellspacing=0 style="border-color:white">
 <!-- tr><th style="font-size:11px" colspan=9>This would be used by a local, or admin net control for making a report. There is a different display for the admin management view.</th></tr -->
 <tr><th id=log_date colspan=2>Tactical Comms Log</th><th align=left colspan=7><div style="display:inline;color:grey;font-size:13px;text-align:center;">Local Timestamp:<br><?=date("Y-m-d H:i")?></div><div style="margin-top:-10px;float:right;">Net&nbsp;Control:&nbsp;<input type=text size=10 name=stationid id=stationid placeholder="Station ID" class="topknot" onfocus="getGeoLoc();this.style.backgroundColor='yellow'" onblur="this.style.backgroundColor='white';sid=this.value;" value="<?=$stationid?>">&nbsp;<input type=hidden id=stationgeo><input type=hidden name=incidentid id=incidentid value="<?=$incidentid?>"><input type=text size=20 name=incidentname id=incidentname placeholder="Which Incident?" class="topknot" value="<?=$incidentname?>" onfocus="this.style.backgroundColor='white';this.select();">&nbsp;<?=$isave?></div></th></tr>
-<tr><th>ID</th><th>Timestamp</th><th>Rx/Tx</th><th>Contact</th><th>Type</th><th>Message</th><th width=70>Req'd?</th><th><small>Logged By</small></th></tr>
+<tr><th>ID</th><th>Timestamp</th><th>Rx/Tx</th><th id=contactfld>Contact</th><th>Type</th><th>Message</th><th width=70>Req'd?</th><th><small>Logged By</small></th></tr>
 <?php
 if (empty($grab)) {
 ?>
@@ -162,7 +181,19 @@ else {
 
 
 <script type="text/javascript">
+//location and people type menus
+//console.log(loc_med);
+var locul = "";
+locul += (loc_med.length<1) ? "<div class='lnk ui-state-disabled'>Medical</div>":"<div class='lnk' onclick='loclookup=loc_med'>Medical</div>";
+locul += (loc_pd.length<1) ? "<div class='lnk ui-state-disabled'>Police</div>":"<div class='lnk' onclick='loclookup=loc_pd'>Police</div>";
+locul += (loc_fd.length<1) ? "<div class='lnk ui-state-disabled'>Fire</div>":"<div class='lnk' onclick='loclookup=loc_fd'>Fire</div>";
+locul += (loc_psy.length<1) ? "<div class='lnk ui-state-disabled'>Psych</div>":"<div class='lnk' onclick='loclookup=loc_psy'>Psych</div>";
+locul += (loc_reh.length<1) ? "<div class='lnk ui-state-disabled'>Rehab</div>":"<div class='lnk' onclick='loclookup=loc_reh'>Rehab</div>";
+locul += (loc_sta.length<1) ? "<div class='lnk ui-state-disabled'>Station</div>":"<div class='lnk' onclick='loclookup=loc_sta'>Station</div>";
+jQuery("#locul").html(locul);
+//console.log(locul);
 //autocomplete
+var loclookup = locs;
 var locfld = new Array();
 var pplfld = new Array();
 function initAuto() {
@@ -170,7 +201,6 @@ function initAuto() {
 	//written to scripts/ARES_Locations_and_People.js
 	jQuery(".location").autocomplete({
 		source: loclookup,
-/*		source: people,*/
 		focus: function(event, ui) {
 			event.preventDefault();
 			jQuery(this).val(ui.item.label);
