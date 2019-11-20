@@ -132,7 +132,7 @@ function deleteMe(smsgid) {
 <body>
 <center>
 
-<h2>ARES SMS Group Management</h2>
+<h2>ARES SMS Group Management<br><a href='ARES_SMS_Queue_Manage.php' target='_blank' style='font-size:12px;font-weight:normal;'>Manage Scheduled SMS Messages</a></h2>
 
 <?php
 $xicon = (empty($smsgid)) ? "":"<img src='images/icon-delete.png' border=0 width=16 align=absmiddle alt='reset icon' title='Reset SMS Group' style='cursor:pointer;margin-left:2px;' onclick=\"location.href='ARES_SMS_Group_Manage.php'\">";
