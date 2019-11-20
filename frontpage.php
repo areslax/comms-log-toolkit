@@ -63,7 +63,8 @@ $checkin = "";
 if (!empty($_GET['admin'])) {
 ?>
 <p style="margin:6px">
-<b>MANAGE:</b>&nbsp;&nbsp;&nbsp; <a href="ARES_Alert_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Alerts</a> &nbsp;|&nbsp; <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Incidents</a> &nbsp;|&nbsp; <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Net Controls</a> &nbsp;|&nbsp; <a href="ARES_Member_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Operators</a> &nbsp;|&nbsp; <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Locations</a><br><br>
+<b>MANAGE:</b>&nbsp;&nbsp;&nbsp; <a href="ARES_Alert_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Alerts</a> &nbsp;|&nbsp; <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Incidents</a> &nbsp;|&nbsp; <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Net Controls</a> &nbsp;|&nbsp; <a href="ARES_Member_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Operators</a> &nbsp;|&nbsp; <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Locations</a><br>
+<br><a href="ARES_SMS_Group_Manage.php" target="_blank">ARES Member SMS Messaging</a><br><br>
 <?php
 	$checkin = "<a href='javascript:popCheckin()' class='colhead'>Operator Check In</a>&nbsp;|&nbsp;";
 }
