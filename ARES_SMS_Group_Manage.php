@@ -86,7 +86,7 @@ if ((!empty($_GET['smsgid']) && $_GET['smsgid']!='undefined' && is_numeric($_GET
 		$searchresult = "<form method=post>\n<input type=hidden name=updatesmsgroup value=1>\n<input type=hidden name=smsg_id value='".$smsgid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:420px'>
 		<tr><td>Group Name</td><td><input type=text name=smsg_name class='incident' onfocus='this.select();' style='width:280px;text-align:left;' placeholder='i.e. NW Operators, Admins, etc.' value='".$r['smsg_name']."'></td></tr>
 		<tr valign=top><td>Group&nbsp;Members<br><span class=sm>Shift+Click or Ctrl+Click<br>to select multiple<br><br>Only shows Members with cell and carrier</span></td><td><select multiple name='m_ids[]' class='incident' style='width:280px;height:200px;text-align:left;border-color:lightgrey;'>".$m_ids."</select></td></tr>
-		<tr><th colspan=2><input type=submit value='Update This Group'> &nbsp; <input type=button onclick='deleteMe(".$smsgid.")' value='Delete This Group'> &nbsp; <input type=button value='Cancel Group Changes' onclick=\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$smsgid."'\"></th></tr>
+		<tr><th colspan=2><input type=submit value='Update Group'> &nbsp; <input type=button value='Cancel Changes' onclick=\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$smsgid."'\"> &nbsp; <input type=button onclick='deleteMe(".$smsgid.")' value='Delete Group'></th></tr>
 		<tr><th colspan=2></form><hr><form method=post><input type=hidden name=sendmsg value=1><input type=hidden name=smsgid value='".$smsgid."'></th></tr>
 		<tr><th colspan=2>".$sentmsg."SEND AN SMS MESSAGE TO: \"".$smsg_name."\"</th></tr>
 		<tr valign=top><td>Text Message<br><span class='sm'>No HTML, just text</span></td><td><textarea name=smsq_message style='width:280px'></textarea></td></tr>
@@ -135,10 +135,10 @@ function deleteMe(smsgid) {
 <h2>ARES SMS Group Management</h2>
 
 <?php
-$xicon = (empty($iid)) ? "":"<img src='images/icon-delete.png' border=0 width=16 align=absmiddle alt='reset icon' title='Reset SMS Group' style='cursor:pointer;margin-left:2px;' onclick=\"location.href='ARES_SMS_Group_Manage.php'\">";
+$xicon = (empty($smsgid)) ? "":"<img src='images/icon-delete.png' border=0 width=16 align=absmiddle alt='reset icon' title='Reset SMS Group' style='cursor:pointer;margin-left:2px;' onclick=\"location.href='ARES_SMS_Group_Manage.php'\">";
 ?>
 
-<input type=text name=smsg_lookup id=smsg_lookup class='smsgroups' placeholder="To look up an SMS Group, Click here and Start Typing ..." style="width:500px;text-align:center;font-weight:bold;" value="<?=$smsg_name?>" onfocus='this.select()'><?=$xicon?>
+<input type=text name=smsg_lookup id=smsg_lookup class='smsgroups' placeholder="To look up an SMS Group, Click here and Start Typing ..." style="width:400px;text-align:center;font-weight:bold;" value="<?=$smsg_name?>" onfocus='this.select()'><?=$xicon?>
 <div id=results>
 <?=$searchresult?>
 </div>

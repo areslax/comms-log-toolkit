@@ -12,7 +12,7 @@ if (sizeOf($res)>0) {
 		//get member cell+carrier and send message
 		$msg = @strip_tags($r['smsq_message']);
 		$msg = @stripslashes($msg);
-		$hed = "From: ares@areslax.org\r\n"."CC: stupidscript@gmail.com";
+		$hed = "From: ares@areslax.org\r\n"."BCC: stupidscript@gmail.com";
 		$delim = array("-","_"," ",".","(",")");
 		foreach($mids as $mid) {
 			$m = $conn->prepare("select mc_data,mc_carrier,carrier_ext from Member_Contacts left outer join Mobile_Carriers on Mobile_Carriers.carrier_id=Member_Contacts.mc_carrier where m_id=".$mid." and mc_carrier is not NULL and mc_type='4' limit 1");
