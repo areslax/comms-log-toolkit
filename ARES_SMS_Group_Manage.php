@@ -28,10 +28,11 @@ if (!empty($_POST['updatesmsgroup'])) {
 }
 
 //got message to group
+$sentmsg = "";
 if (!empty($_POST['sendmsg']) && !empty($_POST['smsgid'])) {
 	//enter into SMS_Queue
-	$sendts = (empty($_POST['smsq_send_ts'])) ? date("YmdHis"):date("YmdHis",strtotime($_POST['smsq_send_ts']));
-	$sentts = (empty($_POST['smsq_send_ts'])) ? date("YmdHis"):NULL;
+	$sendts = (empty($_POST['smsq_send_ts'])) ? date("YmdHi"):date("YmdHi",strtotime($_POST['smsq_send_ts']));
+	$sentts = (empty($_POST['smsq_send_ts'])) ? $sendts:NULL;
 	$q = $conn->prepare("insert into SMS_Queue (smsg_id,smsq_send_ts,smsq_sent_ts,smsq_message) values (:smsgid,:sendts,:sentts,:msg)");
 	$q->execute(array(':smsgid'=>$_POST['smsgid'],':sendts'=>$sendts,':sentts'=>$sentts,':msg'=>$_POST['smsq_message']));
 	//send immediately
@@ -44,13 +45,14 @@ if (!empty($_POST['sendmsg']) && !empty($_POST['smsgid'])) {
 		//get member cell+carrier and send message
 		$msg = @strip_tags($_POST['smsq_message']);
 		$msg = @stripslashes($msg);
+		$hed = "From: ares@areslax.org";
 		$delim = array("-","_"," ",".","(",")");
 		foreach($mids as $mid) {
 			$m = $conn->prepare("select mc_data,mc_carrier,carrier_ext from Member_Contacts left outer join Mobile_Carriers on Mobile_Carriers.carrier_id=Member_Contacts.mc_carrier where m_id=".$mid." and mc_carrier is not NULL and mc_type='4' limit 1");
 			$m->execute();
 			$to = $m->fetchAll(PDO::FETCH_ASSOC);
 			$addr = str_replace($delim,"",$to[0]['mc_data']).$to[0]['carrier_ext'];
-			mail($addr,"ARES SMS Message",$msg);
+			mail($addr,"ARES SMS Message",$msg,$hed);
 		}
 		$sentmsg .= "<div style='font-weight:bold;color:green;'>SMS Message sent!</div><script>setTimeout(\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$_POST['smsgid']."'\",2000);</script>";
 	}
@@ -83,10 +85,10 @@ if ((!empty($_GET['smsgid']) && $_GET['smsgid']!='undefined' && is_numeric($_GET
 		}
 		$searchresult = "<form method=post>\n<input type=hidden name=updatesmsgroup value=1>\n<input type=hidden name=smsg_id value='".$smsgid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:420px'>
 		<tr><td>Group Name</td><td><input type=text name=smsg_name class='incident' onfocus='this.select();' style='width:280px;text-align:left;' placeholder='i.e. NW Operators, Admins, etc.' value='".$r['smsg_name']."'></td></tr>
-		<tr valign=top><td>Group&nbsp;Members<br><span class=sm>Shift+Click or Ctrl+Click<br>to select multiple<br><br>Only shows Members with cell and carrier</span></td><td><select multiple name='m_ids[]' class='incident' style='width:280px;height:200px;text-align:left;'>".$m_ids."</select></td></tr>
-		<tr><th colspan=2><input type=submit value='Update This Group'> &nbsp; <button type=button onclick='deleteMe(".$smsgid.")'>Delete This Group</button></th></tr>
+		<tr valign=top><td>Group&nbsp;Members<br><span class=sm>Shift+Click or Ctrl+Click<br>to select multiple<br><br>Only shows Members with cell and carrier</span></td><td><select multiple name='m_ids[]' class='incident' style='width:280px;height:200px;text-align:left;border-color:lightgrey;'>".$m_ids."</select></td></tr>
+		<tr><th colspan=2><input type=submit value='Update This Group'> &nbsp; <input type=button onclick='deleteMe(".$smsgid.")' value='Delete This Group'> &nbsp; <input type=button value='Cancel Group Changes' onclick=\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$smsgid."'\"></th></tr>
 		<tr><th colspan=2></form><hr><form method=post><input type=hidden name=sendmsg value=1><input type=hidden name=smsgid value='".$smsgid."'></th></tr>
-		<tr><th colspan=2>".$sentmsg."SEND AN SMS MESSAGE TO GROUP: \"".$smsg_name."\"</th></tr>
+		<tr><th colspan=2>".$sentmsg."SEND AN SMS MESSAGE TO: \"".$smsg_name."\"</th></tr>
 		<tr valign=top><td>Text Message<br><span class='sm'>No HTML, just text</span></td><td><textarea name=smsq_message style='width:280px'></textarea></td></tr>
 		<tr><td>Schedule&nbsp;Send</td><td><input type=text class='datepicker' name=smsq_send_ts style='width:200px' placeholder='Leave Empty for Send Now'></td></tr>
 		<tr><th colspan=2><input type=submit value='Send This SMS Message To: \"".$smsg_name."\"'></th></tr>
@@ -157,7 +159,7 @@ foreach($mres as $mr) {
 <input type=hidden name=addsmsgroup value=1>
 <table border=0 cellpadding=6 cellspacing=0 style='width:420px'>
 <tr><td>Group Name</td><td><input type=text name=smsg_name class='smsgroups' onfocus='this.select();' style='width:280px;text-align:left;' placeholder='i.e. NW Operators, Admins, etc.'></td></tr>
-<tr valign=top><td>Group&nbsp;Members<br><span class=sm>Shift+Click or Ctrl+Click<br>to select multiple<br><br>Only shows Members with cell and carrier</span></td><td><select multiple name="m_ids[]" style='width:284px;height:200px;text-align:left;'><?=$m_ids?></select></td></tr>
+<tr valign=top><td>Add&nbsp;Members<br><span class=sm>Shift+Click or Ctrl+Click<br>to select multiple<br><br>Only shows Members with cell and carrier</span></td><td><select multiple name="m_ids[]" style='width:284px;height:200px;text-align:left;border-color:lightgrey;'><?=$m_ids?></select></td></tr>
 <tr><th colspan=2><input type=submit value='Add This New SMS Group'></th></tr>
 </table>
 </form>
