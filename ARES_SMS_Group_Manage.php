@@ -40,16 +40,22 @@ if (!empty($_POST['sendmsg']) && !empty($_POST['smsgid'])) {
 		$ms = $conn->prepare("select m_ids from SMS_Groups where smsg_id=:smsgid limit 1");
 		$ms->execute(array(':smsgid'=>$_POST['smsgid']));
 		$mids = $ms->fetch(PDO::FETCH_ASSOC);
+		$mids = json_decode($mids['m_ids']);
 		//get member cell+carrier and send message
 		$msg = @strip_tags($_POST['smsq_message']);
 		$msg = @stripslashes($msg);
-		foreach(json_decode($mids) as $mid) {
-			$m = $conn->prepare("select mc_data,mc_carrier from Member_Contacts where m_id=".$mid." limit 1");
+		$delim = array("-","_"," ",".","(",")");
+		foreach($mids as $mid) {
+			$m = $conn->prepare("select mc_data,mc_carrier,carrier_ext from Member_Contacts left outer join Mobile_Carriers on Mobile_Carriers.carrier_id=Member_Contacts.mc_carrier where m_id=".$mid." and mc_carrier is not NULL and mc_type='4' limit 1");
 			$m->execute();
 			$to = $m->fetchAll(PDO::FETCH_ASSOC);
-			$addr = $to['mc_data']."@".$to['mc_carrier'];
+			$addr = str_replace($delim,"",$to[0]['mc_data']).$to[0]['carrier_ext'];
 			mail($addr,"ARES SMS Message",$msg);
 		}
+		$sentmsg .= "<div style='font-weight:bold;color:green;'>SMS Message sent!</div><script>setTimeout(\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$_POST['smsgid']."'\",2000);</script>";
+	}
+	else {
+		$sentmsg .= "<div style='font-weight:bold;color:blue;'>SMS Message queued for later delivery</div><script>setTimeout(\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$_POST['smsgid']."'\",2000);</script>";
 	}
 }
 
@@ -80,7 +86,7 @@ if ((!empty($_GET['smsgid']) && $_GET['smsgid']!='undefined' && is_numeric($_GET
 		<tr valign=top><td>Group&nbsp;Members<br><span class=sm>Shift+Click or Ctrl+Click<br>to select multiple<br><br>Only shows Members with cell and carrier</span></td><td><select multiple name='m_ids[]' class='incident' style='width:280px;height:200px;text-align:left;'>".$m_ids."</select></td></tr>
 		<tr><th colspan=2><input type=submit value='Update This Group'> &nbsp; <button type=button onclick='deleteMe(".$smsgid.")'>Delete This Group</button></th></tr>
 		<tr><th colspan=2></form><hr><form method=post><input type=hidden name=sendmsg value=1><input type=hidden name=smsgid value='".$smsgid."'></th></tr>
-		<tr><th colspan=2>SEND AN SMS MESSAGE TO GROUP: \"".$smsg_name."\"</th></tr>
+		<tr><th colspan=2>".$sentmsg."SEND AN SMS MESSAGE TO GROUP: \"".$smsg_name."\"</th></tr>
 		<tr valign=top><td>Text Message<br><span class='sm'>No HTML, just text</span></td><td><textarea name=smsq_message style='width:280px'></textarea></td></tr>
 		<tr><td>Schedule&nbsp;Send</td><td><input type=text class='datepicker' name=smsq_send_ts style='width:200px' placeholder='Leave Empty for Send Now'></td></tr>
 		<tr><th colspan=2><input type=submit value='Send This SMS Message To: \"".$smsg_name."\"'></th></tr>
