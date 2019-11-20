@@ -199,6 +199,7 @@ echo "</table>";
 
 <script type="text/javascript">
 //autocomplete
+var loclookup = locs;
 //callsign lookup
 var calllookup = new Array(<?=$autocall?>);
 //name lookup

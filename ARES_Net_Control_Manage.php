@@ -167,6 +167,7 @@ function deleteMe(ncid,data,rid) {
 
 <script type="text/javascript">
 //autocomplete
+var loclookup = locs;
 var netfld = new Array();
 var locfld = new Array();
 var pplfld = new Array();

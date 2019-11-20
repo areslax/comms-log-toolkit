@@ -401,6 +401,7 @@ echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Leve
 
 <script type="text/javascript">
 //autocomplete
+var loclookup = locs;
 var locfld = new Array();
 var pplfld = new Array();
 jQuery(function() {

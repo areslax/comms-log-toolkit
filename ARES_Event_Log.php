@@ -95,6 +95,7 @@ jQuery("#<?=$focusfld?>").focus();
 </script>
 <script type="text/javascript">
 //autocomplete
+var loclookup = locs;
 var locfld = new Array();
 var pplfld = new Array();
 jQuery(function() {

@@ -418,6 +418,7 @@ $xicon = (empty($lid)) ? "":"<img src='images/icon-delete.png' border=0 width=16
 
 <script type="text/javascript">
 //autocomplete
+var loclookup = locs;
 var locfld = new Array();
 var pplfld = new Array();
 jQuery(function() {
