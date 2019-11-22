@@ -131,11 +131,11 @@ var chkmsgs = setInterval("checkAdminAlert()",10000);
 	<input type=image src="images/icon-new.png" title="Start a New Log" style="width:16px;" onclick="startNewLog()"><br><br>
 	<div style="position:relative">
 	<img id=iconloc src="images/icon-location-on.png" style="width:16px;cursor:pointer;" title="Set Contact field to Location" onclick="loclookup=locs;this.src='images/icon-location-on.png';jQuery('#iconppl').attr('src','images/icon-people.png');jQuery('#locul').css('display','none');initAuto();" onmouseover="jQuery('#pplul').css('display','none');jQuery('#contactfld').css('background-color','lightgreen');jQuery('#locul').css('display','block');" onmouseout="jQuery('#contactfld').css('background-color','white')">
-	<div id=locul style="position:absolute;top:0px;left:52px;padding:2px;text-align:left;display:none;"></div>
+	<div id=locul style="position:absolute;top:0px;left:52px;padding:2px;text-align:left;background-color:white;display:none;"></div>
 	</div>
 	<div style="position:relative">
 	<img id=iconppl src="images/icon-people.png" style="width:16px;cursor:pointer;" title="Set Contact field to People" onclick="loclookup=people;this.src='images/icon-people-on.png';jQuery('#iconloc').attr('src','images/icon-location.png');jQuery('#pplul').css('display','none');initAuto();" onmouseover="jQuery('#locul').css('display','none');jQuery('#contactfld').css('background-color','lightgreen');jQuery('#pplul').css('display','block');" onmouseout="jQuery('#contactfld').css('background-color','white')">
-	<div id=pplul style="position:absolute;top:0px;left:52px;padding:2px;text-align:left;display:none;"></div>
+	<div id=pplul style="position:absolute;top:0px;left:52px;padding:2px;text-align:left;background-color:white;display:none;"></div>
 	</div>
 <!--
 	<button type=button style="width:70px" onclick="checkType(3,stationid,1)">EVENT</button><br>

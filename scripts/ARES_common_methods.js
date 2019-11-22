@@ -293,10 +293,32 @@ function markDone(idn) {
 }
 
 function relayMessage(itr) {
-	getTimestampHTML("sentfld_"+itr);
-	var sentdata = jQuery("#sentfld_"+itr).html().replace("<br>"," ");
-	jQuery("#msgstatus"+itr).val(sentdata);
-	jQuery("#msgbut_"+itr).attr("disabled",true);
+	//send message
+	var mfrom = encodeURIComponent(jQuery("#msgfrom"+itr).val());
+	var mto = encodeURIComponent(jQuery("#msgto"+itr).val());
+	var msg = encodeURIComponent(jQuery("#msg"+itr).val());
+	var sendvia = "";
+	var sendviav = "sendvia_"+itr+"[]";
+	var frmsendvia = document.getElementsByName(sendviav);
+	for(i=0;i<frmsendvia.length;i++) {
+		sendvia += (frmsendvia[i].checked) ? frmsendvia[i].value+":":"";
+	}
+	var datastr = "from="+mfrom+"&to="+mto+"&msg="+msg+"&via="+sendvia;
+	jQuery.ajax({
+		type: "POST",
+		url: "ajax_send_relay_message.php",
+		data: datastr,
+		success: function(a,b,c){
+			console.log(a);
+			//populate SEND NOW space with timestamp
+			getTimestampHTML("sentfld_"+itr);
+			var sentdata = jQuery("#sentfld_"+itr).html().replace("<br>"," ");
+			//update container with timestamp string
+			jQuery("#msgstatus"+itr).val(sentdata);
+			//disabled SEND NOW
+			jQuery("#msgbut_"+itr).attr("disabled",true);
+		}
+	});
 }
 
 function divVis(div) {
