@@ -93,6 +93,7 @@ else {
 var iter = 0;
 function init() {
 	var txts = document.getElementsByClassName('msg');
+//console.log(txts);return false;
 	for (i=0;i<txts.length;i++) {
 		init2(txts[i].id);
 	}
