@@ -27,29 +27,29 @@ if (!empty($_POST['sendme'])) {
 			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
 			$q1 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
 			$q1->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
-			$itmid = $conn->lastInsertId();
+//			$itmid = $conn->lastInsertId();
 			break;
 			case "personnel":
 			$desc = nl2br($_POST['personnel_item_desc_'.$iid]);
 			$q2 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,min_experience,req_skills,pref_skills,mobilize_date,paid,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:minexp,:reqskill,:prefskill,:mdate,:paid,:qtyreq,:estdu)");
 			$q2->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":minexp"=>$_POST['min_experience_'.$iid],":reqskill"=>$_POST['personnel_req_skills_'.$iid],":prefskill"=>$_POST['personnel_pref_skills_'.$iid],":mdate"=>$_POST['mobilize_date_'.$iid],":paid"=>$_POST['paid_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
-			$itmid = $conn->lastInsertId();
+//			$itmid = $conn->lastInsertId();
 			break;
 			case "other":
 			$desc = nl2br($_POST['other_item_desc_'.$iid]);
 			$q3 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:qtyreq,:estdu)");
 			$q3->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
-			$itmid = $conn->lastInsertId();
+//			$itmid = $conn->lastInsertId();
 			break;
 			default:
 			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
 			$q4 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
 			$q4->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
-			$itmid = $conn->lastInsertId();
+//			$itmid = $conn->lastInsertId();
 		}
 		//fulfillment init
-		$fq = $conn->prepare("insert into Resource_Request_Fulfill (req_id,req_item_num) values (:rid,:iid)");
-		$fq->execute(array(":rid"=>$rid,":iid"=>$itmid));
+		$fq = $conn->prepare("insert into Resource_Request_Fulfill (req_id,item_num) values (:rid,:iid)");
+		$fq->execute(array(":rid"=>$rid,":iid"=>$iid));
 	}
 }
 ?>
@@ -88,9 +88,9 @@ function addReqRow() {
 		newrow += "<td style='width:5%'>\n";
 		newrow += "<select name='req_item_priority_"+iter+"' style='width:60px'>\n";
 		newrow += "<option value=0></option>\n";
-		newrow += "<option value='sustainment'>Sustainment</option>\n";
-		newrow += "<option value='urgent'>Urgent</option>\n";
-		newrow += "<option value='emergent'>Emergent</option>\n";
+		newrow += "<option value=3>Sustainment</option>\n";
+		newrow += "<option value=2>Urgent</option>\n";
+		newrow += "<option value=1>Emergent</option>\n";
 		newrow += "</select>\n";
 		newrow += "</td>\n";
 		newrow += "<td style='width:5%'>\n";
@@ -300,9 +300,9 @@ TABLE.noborder TD { border: none; }
     <td style="width:5%">
       <select name="req_item_priority_1" style="width:60px">
       <option value=0></option>
-      <option value="sustainment">Sustainment</option>
-      <option value="urgent">Urgent</option>
-      <option value="emergent">Emergent</option>
+      <option value=3>Sustainment</option>
+      <option value=2>Urgent</option>
+      <option value=1>Emergent</option>
       </select>
     </td>
     <td style="width:5%">
@@ -328,9 +328,9 @@ TABLE.noborder TD { border: none; }
     <td style="width:5%">
       <select name="req_item_priority_2" style="width:60px">
       <option value=0></option>
-      <option value="sustainment">Sustainment</option>
-      <option value="urgent">Urgent</option>
-      <option value="emergent">Emergent</option>
+      <option value=3>Sustainment</option>
+      <option value=2>Urgent</option>
+      <option value=1>Emergent</option>
       </select>
     </td>
     <td style="width:5%">
@@ -356,9 +356,9 @@ TABLE.noborder TD { border: none; }
     <td style="width:5%">
       <select name="req_item_priority_3" style="width:60px">
       <option value=0></option>
-      <option value="sustainment">Sustainment</option>
-      <option value="urgent">Urgent</option>
-      <option value="emergent">Emergent</option>
+      <option value=3>Sustainment</option>
+      <option value=2>Urgent</option>
+      <option value=1>Emergent</option>
       </select>
     </td>
     <td style="width:5%">
