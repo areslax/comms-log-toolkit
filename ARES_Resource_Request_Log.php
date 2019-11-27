@@ -147,6 +147,7 @@ function orderBy(ob) {
 #request_notes TD {
 	font-size: .8em;
 }
+.b { font-weight: bold; }
 .hilite {
 	background-color: yellow;
 }
@@ -195,7 +196,7 @@ function orderBy(ob) {
 <center>
 <h2>ARES Resource Request Log</h2>
 
-<table border=0 cellpadding=3 cellspacing=0 id="filter_table">
+<!--table border=0 cellpadding=3 cellspacing=0 id="filter_table">
 <tr>
   <th align=left>Requests:</th>
   <td><input type=radio name=rrashow<?=$rradefault?> onclick="location.href='ARES_Resource_Request_Log.php?<?=$rrishowq?>'"></td><td>Default</td>
@@ -220,33 +221,36 @@ function orderBy(ob) {
   <td>&nbsp;</td>
   <td>&nbsp;</td>
 </tr>
-</table>
+</table-->
 
 <?php
 //loop through individual active request groups
+$acnt=0;
 foreach($reqs as $req) {
+	$acnt++;
+	echo "<div style='background-color:blue;height:4px;width:100%;margin-top:10px;'>&nbsp;</div>";
 	$reqid = $req['req_id'];
 	$req_datetime = date("m/d/Y H:i",strtotime($req['req_date']))." Tracking#".$req['req_tracking_num'];
 	$requestor_info_block = "<b>".$req['req_name']."</b>: ".$req['req_position'].", ".$req['req_agency']."<br>\n";
 	$requestor_info_block .= $req['req_phone']." : ".$req['req_email']."\n";
 	$requestor_mission_block = $req['req_mission_desc'];
 	$requestor_staging_block = $req['req_staging_note'];
-	$requestor_auth_block = "Authorized by: ".$req['req_auth']." / ".$req['req_sig'];
+	$requestor_auth_block = "".$req['req_auth']." / ".$req['req_sig'];
 ?>
 
-<h2 style="margin-bottom:2px;color:#aa0000;">Request Authorization</h2>
+<h2 style="margin-top:4px;margin-bottom:2px;color:#aa0000;">Request Authorization #<?=$acnt?></h2>
 
-<table border=1 cellpadding=4 cellspacing=0 style="border-color:white" id="auth_table">
-<tr><td>Incident</td><td><?=$req['incident_name']?></td><td>Request Date/Time</td><td><?=$req_datetime?></td></tr>
-<tr><td>Requestor</td><td><?=$requestor_info_block?></td><td>Requestor Auth</td><td><?=$requestor_auth_block?></td></tr>
-<tr valign=top><td>Mission Notes</td><td><?=$requestor_mission_block?></td><td>Staging Notes</td><td><?=$requestor_staging_block?></td></tr>
+<table border=1 cellpadding=4 cellspacing=0 style="background-color:#ffffaa;border-color:white" id="auth_table">
+<tr><td class='b'>Incident</td><td><?=$req['incident_name']?></td><td class='b'>Request Date/Time</td><td><?=$req_datetime?></td></tr>
+<tr><td class='b'>Requestor</td><td><?=$requestor_info_block?></td><td class='b'>Authorized By</td><td><?=$requestor_auth_block?></td></tr>
+<tr valign=top><td class='b'>Mission Notes</td><td><?=$requestor_mission_block?></td><td class='b'>Staging Notes</td><td><?=$requestor_staging_block?></td></tr>
 </table>
 
-<h2 style="margin-bottom:2px;color:#aa0000;">Request Order Sheet</h2>
+<h2 style="margin-bottom:2px;color:#aa0000;">Request Order Sheet #<?=$acnt?></h2>
 
 <table border=1 cellpadding=6 cellspacing=0 style="border-color:white">
-<tr><th colspan=5><h2>REQUEST DETAILS</h2></th><th colspan=6 class="log"><big>Fulfillment / Logistics</big><br><span class="sm">NOTE: To be completed by the Level/Entity that fills the request (OA EOC, Region, State)</span></th></tr>
-<tr><th rowspan=2 class="smb">I<br>T<br>E<br>M<br><br>#</th><th class="smb" rowspan=2<?=$hilitep?> style="cursor:pointer;" title="Click to Order By Priority" onclick="orderBy('priority')">Priority</th><th rowspan=2>Item Details</th><th rowspan=2 class="smb">Qty<br>Req</th><th class="smb" rowspan=2>Expected<br>Duration<br>of Use</th><th class="log med" colspan=3>Quantity</th><th class="log med" rowspan=2>Tracking<br>or DHV<br>Mission<br>Number</th><th class="log med" rowspan=2>Estimated<br>Arrival<br><span class="sm">(Date &amp; Time)</span></th><th class="log med" rowspan=2>COST</th></tr>
+<tr><th colspan=5 style="background-color:#eebbee"><h2>REQUEST DETAILS</h2></th><th colspan=6 class="log"><big>Fulfillment / Logistics</big><br><span class="sm">NOTE: To be completed by the Level/Entity that fills the request (OA EOC, Region, State)</span></th></tr>
+<tr style="background-color:#eebbee"><th rowspan=2 class="smb">I<br>T<br>E<br>M</th><th class="smb" rowspan=2<?=$hilitep?> style="cursor:pointer;" title="Click to Order By Priority" onclick="orderBy('priority')">Priority</th><th rowspan=2>Item Details</th><th rowspan=2 class="smb">Qty<br>Req</th><th class="smb" rowspan=2>Expected<br>Duration<br>of Use</th><th class="log med" colspan=3>Quantity</th><th class="log med" rowspan=2>Tracking<br>or DHV<br>Mission<br>Number</th><th class="log med" rowspan=2>Estimated<br>Arrival<br><span class="sm">(Date &amp; Time)</span></th><th class="log med" rowspan=2>COST</th></tr>
 <tr><th class="log smb">Approved</th><th class="log smb">Filled</th><th class="log smb">Back-<br>Ordered</th></tr>
 <?php
 //get lineitems for this req
@@ -269,25 +273,25 @@ foreach($lineitems as $l) {
 	switch ($l['item_type']) {
 		case 'supplies':
 		//supply/equipment (DEFAULT)
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Supply Item Description</th><th class='smb' style='width:12%'>Product Class</th><th class='smb' style='width:12%'>Items per Product Class</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><td align=center class='med'>".$l['pkg_class']."</td><td align=center class='med'>".$l['units_per_pkg_class']."</td></tr>\n</table>";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Supply Item Description</th><th class='smb' style='width:12%'>Package Class</th><th class='smb' style='width:12%'>Units per Pkg Class</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><td align=center class='med'>".$l['pkg_class']."</td><td align=center class='med'>".$l['units_per_pkg_class']."</td></tr>\n</table>";
 		$supchk = " selected";
 		break;
 		case 'personnel':
 		//personnel
 		$minexp = array(1=>'current hospital',2=>'current clinical',3=>'current license',4=>'clinical educat');
 		$paidchk = (!empty($l['paid'])) ? "YES":"";
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Personnel Description</th><th class='smb' style='width:10%'><u>Min</u> Req<br>Exper</th><th class='smb' style='width:10%'><u>Req</u> Skills</th><th class='smb' style='width:10%'><u>Pref</u> Skills</th><th class='smb' style='width:10%'>Required By</th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><th class='sm'>".$minexp[$l['min_experience']]."</th><td class='med'>".str_replace(",",", ",$l['req_skills'])."</td><td class='med'>".str_replace(",",", ",$l['pref_skills'])."</td><th class='med'>".$l['mobilize_date']."</th><th class='med'>".$paidchk."</th></tr>\n</table>";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Personnel Description</th><th class='smb' style='width:10%'><u>Min</u> <u>Req</u><br>Exper</th><th class='smb' style='width:10%'><u>Req</u> Skills</th><th class='smb' style='width:10%'><u>Pref</u> Skills</th><th class='smb' style='width:10%'>Required By</th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><th class='sm'>".$minexp[$l['min_experience']]."</th><td class='med'>".str_replace(",",", ",$l['req_skills'])."</td><td class='med'>".str_replace(",",", ",$l['pref_skills'])."</td><th class='med'>".$l['mobilize_date']."</th><th class='med'>".$paidchk."</th></tr>\n</table>";
 		$perchk = " selected";
 		break;
 		case 'other':
 		//other
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Other Item Description</th><th class='smb' width=10%>Product Class</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><td align=center class='med'>".$l['pkg_class']."</td></tr>\n</table>";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Other Item Description</th><th class='smb' width=10%>Package Class</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><td align=center class='med'>".$l['pkg_class']."</td></tr>\n</table>";
 		$othchk = " selected";
 		break;
 	}
 ?>
   <tr id="row_1" valign=top style="background-color:<?=$tclrs[$l['item_type']]?>">
-    <td style="width:4%;text-align:center;" class="med"><input type=hidden name="req_item_num[]" value=<?=$rid?>><?=$rid?></td>
+    <td style="width:4%;text-align:center;" class="med"><input type=hidden name="req_item_num[]" value=<?=$rid?>><?=$rid?><br><button type=button class='sm'i style='margin-top:9px;cursor:pointer;' title='Cancel this line item'>X</button></td>
     <th class="med" style="width:5%;background-color:<?=$pclrs[$l['item_priority']]?>"><?=strtoupper(substr($l['item_priority'],0,8))?></th>
     <td id="maincell_<?=$rid?>" style="width:89%;padding:0;">
     <?=$thisrow?>
@@ -297,8 +301,8 @@ foreach($lineitems as $l) {
     <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_approved',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_approved']?>"></th>
     <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_filled',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_filled']?>"></th>
     <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_backorder',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_backorder']?>"></th>
-    <th class="log" style="width:3%"><input type=text class="cntr" style="width:80px" onchange="saveFulData('ful_tracking_num',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_tracking_num']?>"></th>
-    <th class="log" style="width:3%"><input type=text class="datepicker cntr" style="width:80px" onchange="saveFulData('ful_est_arrival',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_est_arrival']?>"></th>
+    <th class="log" style="width:3%"><textarea class="cntr" rows=2 style="width:80px" onchange="saveFulData('ful_tracking_num',this.value,<?=$reqid?>,<?=$rid?>)"><?=$l['ful_tracking_num']?></textarea></th>
+    <th class="log" style="width:3%"><textarea class="datepicker cntr" rows=2 style="width:80px" onchange="saveFulData('ful_est_arrival',this.value,<?=$reqid?>,<?=$rid?>)"><?=$l['ful_est_arrival']?></textarea></th>
     <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_cost',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_cost']?>"></th>
   </tr>
 
@@ -308,7 +312,7 @@ foreach($lineitems as $l) {
 
 </table>
 
-<h2 style="margin-bottom:2px;color:#aa0000;">Request Notes</h2>
+<h2 style="margin-bottom:2px;color:#aa0000;">Request Notes #<?=$acnt?></h2>
 
 <table border=1 cellpadding=4 cellspacing=0 style="background-color:yellow;border-color:white" id="request_notes">
 <tr><td valign=top width="50%"><b>Suggested Source(s) of Supply; Suitable Substitute(s); Special Delivery Comment(s):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;"><?=$req['req_supply_notes']?></div></td><td valign=top width="50%"><b>Deliver to/Report to POC (Name/Title/Location/Tel#/Email/Radio#):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;"><?=$req['req_delivery_notes']?></div></td></tr>
@@ -321,5 +325,10 @@ foreach($lineitems as $l) {
 
 </center>
 <br><br><br><br>
+<script type="text/javascript">
+jQuery(function(){
+	jQuery(".datepicker").datetimepicker();
+});
+</script>
 </body>
 </html>

@@ -12,9 +12,6 @@ if (!empty($_POST['sendme'])) {
 #echo "p<pre>";print_r($_POST);exit;
 	require "db_conn.php";
 	//clean up missing elements
-#	foreach($_POST as $k => $v) {
-#		$_POST[$k] = (isset($_POST[$k])) ? $k:NULL;
-#	}
 	//create resource request
 	$q = $conn->prepare("insert into Resource_Requests (incident_name,req_date,req_name,req_agency,req_position,req_phone,req_email,req_tracking_num,req_mission_desc,req_staging_note,req_supply_notes,req_delivery_notes,req_staging_notes,req_additional_notes,req_confirm_1,req_confirm_2,req_confirm_3,req_auth,req_sig) values (:iname,:rdate,:rname,:ragency,:rpos,:rphone,:remail,:rtracking,:rmission,:rstaging,:rsupplyn,:rdeliveryn,:rstagingn,:raddtln,:rconf1,:rconf2,:rconf3,:rauth,:rsig)");
 	$q->execute(array(":iname"=>$_POST['incident_name'],":rdate"=>$_POST['req_date'],":rname"=>$_POST['req_name'],":ragency"=>$_POST['req_agency'],":rpos"=>$_POST['req_position'],":rphone"=>$_POST['req_phone'],":remail"=>$_POST['req_email'],":rtracking"=>$_POST['req_tracking_num'],":rmission"=>nl2br($_POST['req_mission_desc']),":rstaging"=>nl2br($_POST['req_staging_note']),":rsupplyn"=>nl2br($_POST['req_supply_notes']),":rdeliveryn"=>nl2br($_POST['req_delivery_notes']),":rstagingn"=>nl2br($_POST['req_staging_notes']),":raddtln"=>nl2br($_POST['req_additional_notes']),":rconf1"=>$_POST['req_confirm_1'],":rconf2"=>$_POST['req_confirm_2'],":rconf3"=>$_POST['req_confirm_3'],":rauth"=>$_POST['req_auth'],":rsig"=>$_POST['req_sig']));
@@ -28,29 +25,32 @@ if (!empty($_POST['sendme'])) {
 		switch ($type) {
 			case "supplies":
 			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
-			$q1 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
-			$q1->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$q1 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
+			$q1->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$itmid = $conn->lastInsertId();
 			break;
 			case "personnel":
 			$desc = nl2br($_POST['personnel_item_desc_'.$iid]);
-			$q2 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,min_experience,req_skills,pref_skills,mobilize_date,paid,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:minexp,:reqskill,:prefskill,:mdate,:paid,:qtyreq,:estdu)");
-			$q2->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":minexp"=>$_POST['min_experience_'.$iid],":reqskill"=>$_POST['personnel_req_skills_'.$iid],":prefskill"=>$_POST['personnel_pref_skills_'.$iid],":mdate"=>$_POST['mobilize_date_'.$iid],":paid"=>$_POST['paid_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$q2 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,min_experience,req_skills,pref_skills,mobilize_date,paid,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:minexp,:reqskill,:prefskill,:mdate,:paid,:qtyreq,:estdu)");
+			$q2->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":minexp"=>$_POST['min_experience_'.$iid],":reqskill"=>$_POST['personnel_req_skills_'.$iid],":prefskill"=>$_POST['personnel_pref_skills_'.$iid],":mdate"=>$_POST['mobilize_date_'.$iid],":paid"=>$_POST['paid_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$itmid = $conn->lastInsertId();
 			break;
 			case "other":
 			$desc = nl2br($_POST['other_item_desc_'.$iid]);
-			$q3 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,pkg_class,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:pclass,:qtyreq,:estdu)");
-			$q3->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$q3 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:qtyreq,:estdu)");
+			$q3->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$itmid = $conn->lastInsertId();
 			break;
 			default:
 			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
-			$q4 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
-			$q4->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$q4 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
+			$q4->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$itmid = $conn->lastInsertId();
 		}
-
-#		$q = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,".$extracs.",qty_requested,est_duration) values (:rid,:priority,:type,:desc,".$extraps.",:qtyreq,:estdu)");
-#		$q->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,$extravs,":qtyreq"=>$qtyreq,":estdu"=>$estdu));
+		//fulfillment init
+		$fq = $conn->prepare("insert into Resource_Request_Fulfill (req_id,req_item_num) values (:rid,:iid)");
+		$fq->execute(array(":rid"=>$rid,":iid"=>$itmid));
 	}
-	//fulfillment will happen in the fulfillment log
 }
 ?>
 
