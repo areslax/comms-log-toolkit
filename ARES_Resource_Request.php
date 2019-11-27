@@ -9,7 +9,48 @@ ini_set('display_errors','1');
 
 //got form, so submit it
 if (!empty($_POST['sendme'])) {
-	//do whatever, here
+#echo "p<pre>";print_r($_POST);exit;
+	require "db_conn.php";
+	//clean up missing elements
+#	foreach($_POST as $k => $v) {
+#		$_POST[$k] = (isset($_POST[$k])) ? $k:NULL;
+#	}
+	//create resource request
+	$q = $conn->prepare("insert into Resource_Requests (incident_name,req_date,req_name,req_agency,req_position,req_phone,req_email,req_tracking_num,req_mission_desc,req_staging_note,req_supply_notes,req_delivery_notes,req_staging_notes,req_additional_notes,req_confirm_1,req_confirm_2,req_confirm_3,req_auth,req_sig) values (:iname,:rdate,:rname,:ragency,:rpos,:rphone,:remail,:rtracking,:rmission,:rstaging,:rsupplyn,:rdeliveryn,:rstagingn,:raddtln,:rconf1,:rconf2,:rconf3,:rauth,:rsig)");
+	$q->execute(array(":iname"=>$_POST['incident_name'],":rdate"=>$_POST['req_date'],":rname"=>$_POST['req_name'],":ragency"=>$_POST['req_agency'],":rpos"=>$_POST['req_position'],":rphone"=>$_POST['req_phone'],":remail"=>$_POST['req_email'],":rtracking"=>$_POST['req_tracking_num'],":rmission"=>nl2br($_POST['req_mission_desc']),":rstaging"=>nl2br($_POST['req_staging_note']),":rsupplyn"=>nl2br($_POST['req_supply_notes']),":rdeliveryn"=>nl2br($_POST['req_delivery_notes']),":rstagingn"=>nl2br($_POST['req_staging_notes']),":raddtln"=>nl2br($_POST['req_additional_notes']),":rconf1"=>$_POST['req_confirm_1'],":rconf2"=>$_POST['req_confirm_2'],":rconf3"=>$_POST['req_confirm_3'],":rauth"=>$_POST['req_auth'],":rsig"=>$_POST['req_sig']));
+	$rid = $conn->lastInsertId();
+	//insert items
+	foreach($_POST['req_item_num'] as $k => $iid) {
+		if (empty($_POST['req_item_priority_'.$iid]) || empty($_POST['req_item_qty_'.$iid])) { continue; }
+		//what's what
+		$priority = $_POST['req_item_priority_'.$iid];
+		$type = $_POST['req_item_type_'.$iid];
+		switch ($type) {
+			case "supplies":
+			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
+			$q1 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
+			$q1->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			break;
+			case "personnel":
+			$desc = nl2br($_POST['personnel_item_desc_'.$iid]);
+			$q2 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,min_experience,req_skills,pref_skills,mobilize_date,paid,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:minexp,:reqskill,:prefskill,:mdate,:paid,:qtyreq,:estdu)");
+			$q2->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":minexp"=>$_POST['min_experience_'.$iid],":reqskill"=>$_POST['personnel_req_skills_'.$iid],":prefskill"=>$_POST['personnel_pref_skills_'.$iid],":mdate"=>$_POST['mobilize_date_'.$iid],":paid"=>$_POST['paid_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			break;
+			case "other":
+			$desc = nl2br($_POST['other_item_desc_'.$iid]);
+			$q3 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,pkg_class,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:pclass,:qtyreq,:estdu)");
+			$q3->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			break;
+			default:
+			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
+			$q4 = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
+			$q4->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+		}
+
+#		$q = $conn->prepare("insert into Resource_Request_Items (req_id,item_priority,item_type,item_desc,".$extracs.",qty_requested,est_duration) values (:rid,:priority,:type,:desc,".$extraps.",:qtyreq,:estdu)");
+#		$q->execute(array(":rid"=>$rid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,$extravs,":qtyreq"=>$qtyreq,":estdu"=>$estdu));
+	}
+	//fulfillment will happen in the fulfillment log
 }
 ?>
 
@@ -78,7 +119,7 @@ function customRow(rid,typ) {
 		break;
 		case 'personnel':
 		//personnel
-		var cellcontent = "<table border=0 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Personnel Type &amp; Probable Duties<br><div class='sm'> Indicate required license types (see list below)<br>RN, MD, EMT-I, Pharmacist, LVN, EMT-P, NP, DVM, PA, RCP, MFT, DDS, LCSW, etc.</div></th><th class='smb' style='width:10%'><u>Minimum</u> Required<br>Clinical Experience<br><div class='sm'>1=current hospital<br>2=current clinical<br>3=current license<br>4=clinical education</div></th><th class='smb' style='width:10%'><u>Required</u> Skills, Training, Certs<br><div class='sm'>(e.g., PALS, Current ICU experience, Languages, ICS training, Addt'l Lic. i.e., PHN, etc.)</div></th><th class='smb' style='width:10%'><u>Preferred</u> Skills, Training, Certs</th><th class='smb' style='width:10%'>Date/Time Required<br><div class='sm'>Indicate anticipated mobilization or duty date.</div></th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td><textarea name='personnel_item_desc_"+rid+"' id='personnel_item_desc"+rid+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='cntr' name='min_experience_"+rid+"'></th><td><textarea name='personnel_req_skills_"+rid+"' id='personnel_req_skills"+rid+"' class='msg' style='width:100%;height:20px;'></textarea></td><td><textarea name='personnel_pref_skills_"+rid+"' id='personnel_pref_skills"+rid+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='datepicker"+rid+" cntr' style='font-size:10px;width:80px;height:16px;' name='mobilize_date_"+rid+"'></th><th><input type=checkbox name='paid_"+rid+"' value=1'></th></tr>\n</table>";
+		var cellcontent = "<table border=0 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Personnel Type &amp; Probable Duties<br><div class='sm'> Indicate required license types (see list below)<br>RN, MD, EMT-I, Pharmacist, LVN, EMT-P, NP, DVM, PA, RCP, MFT, DDS, LCSW, etc.</div></th><th class='smb' style='width:10%'><u>Minimum</u> Required<br>Clinical Experience<br><div class='sm'>1=current hospital<br>2=current clinical<br>3=current license<br>4=clinical education</div></th><th class='smb' style='width:10%'><u>Required</u> Skills, Training, Certs<br><div class='sm'>(e.g., PALS, Current ICU experience, Languages, ICS training, Addt'l Lic. i.e., PHN, etc.)</div></th><th class='smb' style='width:10%'><u>Preferred</u> Skills, Training, Certs</th><th class='smb' style='width:10%'>Date/Time Required<br><div class='sm'>Indicate anticipated mobilization or duty date.</div></th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td><textarea name='personnel_item_desc_"+rid+"' id='personnel_item_desc"+rid+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='cntr' name='min_experience_"+rid+"'></th><td><textarea name='personnel_req_skills_"+rid+"' id='personnel_req_skills"+rid+"' class='msg' style='width:100%;height:20px;'></textarea></td><td><textarea name='personnel_pref_skills_"+rid+"' id='personnel_pref_skills"+rid+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='datepicker"+rid+" cntr' style='font-size:10px;width:80px;height:16px;' name='mobilize_date_"+rid+"'></th><th><input type=checkbox name='paid_"+rid+"' value=1></th></tr>\n</table>";
 		break;
 		case 'other':
 		//other
@@ -131,6 +172,9 @@ TABLE.noborder TD { border: none; }
 	font-weight: bold;
 	line-height: 11px;
 }
+.med {
+	font-size:13px;
+}
 </style>
 
 </head>
@@ -144,8 +188,8 @@ TABLE.noborder TD { border: none; }
 
 <table cellpadding=4 cellspacing=0 style="width:100%;">
   <tr class="lightyelo">
-    <td colspan=3 style="position:relative;height:36px;text-align:center;"><div style="position:absolute;left:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button></div><h2>Resource Request: Medical and Health FIELD/HCF<sup style="font-size:.5em">1</sup> to Op Area</h2></td>
-    <th style="width:126px;height:36px;"><h5>RR MH (10/26/2019)</h5></th>
+    <td colspan=2 style="position:relative;height:36px;text-align:center;"><div style="float:left;left:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button></div><h2>Resource Request: Medical and Health FIELD/HCF<sup style="font-size:.5em">1</sup> to Op Area</h2></td>
+    <th style="width:126px;height:36px;"><h5>RR MH (11/26/2019)</h5></th>
   </tr>
 
   <tr>
@@ -156,7 +200,7 @@ TABLE.noborder TD { border: none; }
 
     <td style="width:76%;font-weight:bold;" valign=top>
     1. Incident Name:<div style="padding-left:2%;"><input tabindex=1 type="text" name="incident_name" style="width:97%" maxlength=220></div></td>
-    <th style="font-size:11px;width:12%;border-right:none;border-bottom:none;" class="lightgreen" valign=top colspan=2>
+    <th style="font-size:11px;width:12%;border-bottom:none;" class="lightgreen" valign=top>
     2a. Request DATE/TIME:<br>
 	<input tabindex=2 type=text class="datepicker0" name="req_date" style="text-align:center;width:50%" maxlength=16></th>
     <!--th style="font-size:11px;width:12%;border-left:none;border-bottom:none;" class="lightgreen" valign=top>
@@ -174,8 +218,8 @@ TABLE.noborder TD { border: none; }
 	<tr><td>Phone:</td><td><input tabindex=8 type=text name="req_phone" style="width:30%" maxlength=40></td></tr>
 	<tr><td>Email:</td><td><input tabindex=9 type=text name="req_email" style="width:30%" maxlength=40></td></tr>
     </table></td>
-    <th style="font-size:11px;width:24%;padding-top:10px;border-top:none;" class="lightgreen" colspan=2 valign=top>
-    2c. Request TRACKING NUMBER:<br><span style="font-weight:normal;font-style:italic;">(Assigned by Requesting Entity)</span><br>
+    <th style="font-size:11px;width:24%;padding-top:10px;border-top:none;" class="lightgreen" valign=top>
+    2b. Request TRACKING NUMBER:<br><span style="font-weight:normal;font-style:italic;">(Assigned by Requesting Entity)</span><br>
 	<input tabindex=4 type=text name="req_tracking_num" style="width:50%;text-align:center;"></b></font></td>
   </tr>
 
@@ -203,12 +247,12 @@ TABLE.noborder TD { border: none; }
   </tr>
 
   <tr class="lightblue">
-    <td style="position:relative;font-weight:bold;font-size:18px;" colspan=4>
+    <td style="position:relative;font-weight:bold;font-size:18px;" colspan=3>
     6. ORDER <div style="position:relative;display:inline;left:14%;font-size:1.5em;text-align:center;font-style:italic;">SUPPLY / EQUIPMENT / PERSONNEL REQUEST DETAILS</div></td>
   </tr>
 
   <tr>
-  <td colspan=4 class="lightblue">
+  <td colspan=3 class="lightblue">
     <table id="order_table" cellpadding=4 cellspacing=0 width=100% style="background-color:white">
     <tr>
     <th style="width:4%;line-height:18px;">
@@ -338,30 +382,39 @@ TABLE.noborder TD { border: none; }
   </td>
   </tr>
 
+  <tr>
+  <td colspan=3 style="padding:0">
+    <table border=1 cellpadding=4 cellspacing=0 width="100%" style="border-color:white" id="request_notes">
+    <tr><td valign=top width="50%" class="med">Suggested Source(s) of Supply; Suitable Substitute(s); Special Delivery Comment(s):<br><textarea name="req_supply_notes" id="req_supply_notes" class="msg" style="width:100%;height:80px;"></textarea></td><td valign=top width="50%" class="med">Deliver to/Report to POC (Name/Title/Location/Tel#/Email/Radio#)<br><textarea name="req_delivery_notes" id="req_delivery_notes" class="msg" style="width:100%;height:80px;"></textarea></td></tr>
+    <tr><td valign=top width="50%" class="med">Staging &amp; Deployment Details<br>(Parking/staging location? Food/water provided? Housing Provided? Items personnel should bring? Etc.):<br><textarea name="req_staging_notes" id="req_staging_notes" class="msg" style="width:100%;height:80px;"></textarea></td><td valign=top width="50%" class="med">Additional Instructions<br><br><textarea name="req_additional_notes" id="req_additional_notes" class="msg" style="width:100%;height:80px;"></textarea></td></tr>
+    </table>
+  </td>
+  </tr> 
+
   <tr class="lightred">
     <th style="width:4%" rowspan=5>
     <p>R<br>E<br>V<br>I<br>E<br>W</th>
-    <td style="font-weight:bold;" colspan=4>
+    <td style="font-weight:bold;" colspan=2>
     7. Requesting facility <u>must</u> confirm that these 3 requirements have been met prior to submission of request:
     </td>
   </tr>
   <tr class="lightred">
-    <td style="font-size:.8em;font-weight:bold;" colspan=3>
+    <td style="font-size:.8em;font-weight:bold;" colspan=2>
     *<input type=checkbox id=req_confirm_1 name="req_confirm_1" value=1 onclick="checkAuth(this.form)">
     Is the resource(s) being requested exhausted or nearly exhausted?</td>
   </tr>
   <tr class="lightred">
-    <td style="font-size:.8em;font-weight:bold;" colspan=3>
+    <td style="font-size:.8em;font-weight:bold;" colspan=2>
     *<input type=checkbox id=req_confirm_2 name="req_confirm_2" value=1 onclick="checkAuth(this.form)">
     Facility is unable to obtain resources within a reasonable time frame (based upon priority level below) from vendors, contractors, MOU/MOA's or corporate office?</td>
   </tr>
   <tr class="lightred">
-    <td style="font-size:.8em;font-weight:bold;"  colspan=3>
+    <td style="font-size:.8em;font-weight:bold;"  colspan=2>
     *<input type=checkbox id=req_confirm_3 name="req_confirm_3" value=1 onclick="checkAuth(this.form)">
     Facility is unable to obtain resource from other non-traditional sources?</td>
   </tr>
   <tr class="lightred">
-    <td colspan=3 style="position:relative;font-weight:bold">
+    <td colspan=2 style="position:relative;font-weight:bold">
     <div style="position:absolute;right:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button></div>
     <p style="margin:0 0 12px 0">8. COMMAND/MANAGEMENT REVIEW AND VERIFICATION<br>
     <span style="font-size:.9em">(NAME, POSITION, AND SIGNATURE - SIGNATURE INDICATES VERIFICATION OF NEED AND APPROVAL)</span></p>
