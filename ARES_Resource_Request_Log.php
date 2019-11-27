@@ -121,8 +121,17 @@ include "common_includes.php";
 ?>
 
 <script type="text/javascript">
-//everthing saves via ajax on update/change
-function saveData() {
+//fulfillment saves via ajax on update/change
+function saveFulData(fld,val,reqid,rid) {
+	var datastr = "fld="+fld+"&val="+val+"&reqid="+reqid+"&rid="+rid;
+	jQuery.ajax({
+		type: "POST",
+		url: "ajax_save_request_fulfill.php",
+		data: datastr,
+		success: function(a,b,c){
+			console.log(a);
+		}
+	})
 }
 function orderBy(ob) {
 	location.href = "ARES_Resource_Request_Log.php?orderby="+ob+"&<?=$rrashowq?>&<?=$rrishowq?>";
@@ -150,7 +159,7 @@ function orderBy(ob) {
 }
 .cntr {
         text-align: center;
-        width: 60px;
+        width: 40px;
 }
 .smb {
         font-size: .7em;
@@ -241,7 +250,7 @@ foreach($reqs as $req) {
 <tr><th class="log smb">Approved</th><th class="log smb">Filled</th><th class="log smb">Back-<br>Ordered</th></tr>
 <?php
 //get lineitems for this req
-$q2 = $conn->prepare("select * from Resource_Request_Items where req_id=:req");
+$q2 = $conn->prepare("select Resource_Request_Items.*,Resource_Request_Fulfill.* from Resource_Request_Items left outer join Resource_Request_Fulfill on (Resource_Request_Fulfill.req_id=Resource_Request_Items.req_id and Resource_Request_Fulfill.req_item_num=Resource_Request_Items.item_num) where Resource_Request_Items.req_id=:req");
 $q2->execute(array(":req"=>$reqid));
 $lineitems = $q2->fetchAll(PDO::FETCH_ASSOC);
 $pclrs = array('sustainment'=>'#aaffcc','urgent'=>'#ffdd99','emergent'=>'#ffaaaa');
@@ -267,7 +276,7 @@ foreach($lineitems as $l) {
 		//personnel
 		$minexp = array(1=>'current hospital',2=>'current clinical',3=>'current license',4=>'clinical educat');
 		$paidchk = (!empty($l['paid'])) ? "YES":"";
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Personnel Description</th><th class='smb' style='width:10%'><u>Min</u> Req<br>Exper</th><th class='smb' style='width:10%'><u>Req</u> Skills</th><th class='smb' style='width:10%'><u>Pref</u> Skills</th><th class='smb' style='width:10%'>Required By</th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><th class='sm'>".$minexp[$l['min_experience']]."</th><td class='med'>".$l['req_skills']."</td><td class='med'>".$l['pref_skills']."</td><th class='med'>".$l['mobilize_date']."</th><th class='med'>".$paidchk."</th></tr>\n</table>";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Personnel Description</th><th class='smb' style='width:10%'><u>Min</u> Req<br>Exper</th><th class='smb' style='width:10%'><u>Req</u> Skills</th><th class='smb' style='width:10%'><u>Pref</u> Skills</th><th class='smb' style='width:10%'>Required By</th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><th class='sm'>".$minexp[$l['min_experience']]."</th><td class='med'>".str_replace(",",", ",$l['req_skills'])."</td><td class='med'>".str_replace(",",", ",$l['pref_skills'])."</td><th class='med'>".$l['mobilize_date']."</th><th class='med'>".$paidchk."</th></tr>\n</table>";
 		$perchk = " selected";
 		break;
 		case 'other':
@@ -285,12 +294,12 @@ foreach($lineitems as $l) {
     </td>
     <th style="width:5%" class="med"><?=$l['qty_requested']?></th>
     <th style="width:3%" class="med"><?=$l['est_duration']?></th>
-    <td class="log" style="width:3%">&nbsp;</td>
-    <td class="log" style="width:3%">&nbsp;</td>
-    <td class="log" style="width:3%">&nbsp;</td>
-    <td class="log" style="width:3%">&nbsp;</td>
-    <td class="log" style="width:3%">&nbsp;</td>
-    <td class="log" style="width:3%">&nbsp;</td>
+    <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_approved',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_approved']?>"></th>
+    <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_filled',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_filled']?>"></th>
+    <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_backorder',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_backorder']?>"></th>
+    <th class="log" style="width:3%"><input type=text class="cntr" style="width:80px" onchange="saveFulData('ful_tracking_num',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_tracking_num']?>"></th>
+    <th class="log" style="width:3%"><input type=text class="datepicker cntr" style="width:80px" onchange="saveFulData('ful_est_arrival',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_est_arrival']?>"></th>
+    <th class="log" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_cost',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_cost']?>"></th>
   </tr>
 
 <?php
