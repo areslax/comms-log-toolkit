@@ -42,6 +42,7 @@ BODY { padding:40px; }
  left:490px;
 }
 .ctr { text-align:center; }
+.sm { font-size: .6em;font-weight: normal; }
 </style>
 </head>
 <body onload="self.focus()">
@@ -69,6 +70,7 @@ if (!empty($_GET['admin'])) {
 }
 ?>
 <?=$checkin?><a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead"><big>ARES Net Control Comms Log</big></a><br><br>
+<a href="ARES_Resource_Request.php">NEW: Resource Request Form</a><br><span class="sm">Right-Click or Ctrl+Click or Cmd+Click to open in<br>a new tab/window, so you can take your time</span><br><br>
 <!--/p-->
 <?php
 if (!empty($_GET['admin']) && $_GET['admin']=='2') { ?>
