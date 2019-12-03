@@ -11,8 +11,11 @@ $rfld = (empty($_GET['rfld'])) ? "":$_GET['rfld'];
 
 //got form, so submit it
 if (!empty($_POST['sendme'])) {
-	require "db_conn.php";
 	$msgfld = (empty($_POST['rfld'])) ? "":"msg".substr($_POST['rfld'],3);
+	//check if nodb (already posted to db by op)
+	//only applies when coming from comms log
+	if (!empty($msgfld) && (!isset($_POST['nodb']) || empty($_POST['nodb']))) {
+	require "db_conn.php";
 	//clean up missing elements
 	//create resource request
 	$q = $conn->prepare("insert into Resource_Requests (incident_name,req_date,req_name,req_agency,req_position,req_phone,req_email,req_tracking_num,req_mission_desc,req_staging_note,req_supply_notes,req_delivery_notes,req_staging_notes,req_additional_notes,req_confirm_1,req_confirm_2,req_confirm_3,req_auth,req_sig) values (:iname,:rdate,:rname,:ragency,:rpos,:rphone,:remail,:rtracking,:rmission,:rstaging,:rsupplyn,:rdeliveryn,:rstagingn,:raddtln,:rconf1,:rconf2,:rconf3,:rauth,:rsig)");
@@ -55,6 +58,7 @@ if (!empty($_POST['sendme'])) {
 		$fq = $conn->prepare("insert into Resource_Request_Fulfill (req_id,item_num) values (:rid,:iid)");
 		$fq->execute(array(":rid"=>$rid,":iid"=>$iid));
 	}
+	}//end nodb
 	if (!empty($msgfld)) {
 	//populate original comms log message field
 	$arr = "";
@@ -192,6 +196,9 @@ function customRow(rid,typ) {
 	}
 	init();
 }
+function checkNodb(chk) {
+	jQuery(".nodb").prop("checked",chk);
+}
 </script>
 <style type="text/css">
 * { font-family: Arial,Helvetica,sans-serif; }
@@ -240,7 +247,10 @@ TABLE.noborder TD { border: none; }
 
 </head>
 <body>
-
+<?php
+$nodb = (!empty($rfld)) ? "":" <span class='smb'><input type=checkbox name=nodb class='nodb' value=1 onclick='checkNodb(this.checked)'>NO DB</span> ";
+$nodb1 = (!empty($rfld)) ? "":" <span class='smb'><input type=checkbox name=nodb1 class='nodb' value=1 onclick='checkNodb(this.checked)'>NO DB</span> ";
+?>
 <form method=post onsubmit="print()">
 <input type=hidden name=sendme value=1>
 <input type=hidden name=rfld value="<?=$rfld?>">
@@ -250,7 +260,7 @@ TABLE.noborder TD { border: none; }
 
 <table cellpadding=4 cellspacing=0 style="width:100%;">
   <tr class="lightyelo">
-    <td colspan=2 style="position:relative;height:36px;text-align:center;"><div style="float:left;left:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button></div><h2>Resource Request: Medical and Health FIELD/HCF<sup style="font-size:.5em">1</sup> to Op Area</h2></td>
+    <td colspan=2 style="position:relative;height:36px;text-align:center;"><div class="noprint" style="float:left;left:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button><?=$nodb1?></div><h2>Resource Request: Medical and Health FIELD/HCF<sup style="font-size:.5em">1</sup> to Op Area</h2></td>
     <th style="width:126px;height:36px;"><h5>RR MH (11/26/2019)</h5></th>
   </tr>
 
@@ -274,14 +284,14 @@ TABLE.noborder TD { border: none; }
     <td style="width:76%;font-weight:bold;" valign=top>
     3. Requestor Name, Agency, Position, Phone / Email:<br>
     <table class="noborder" style="width:100%;font-weight:normal;">
-	<tr><td>Requestor Name:</td><td style="width:84%"><input tabindex=5 type=text name="req_name" style="width:97%"></td></tr>
+	<tr><td>Requestor&nbsp;Name:</td><td style="width:84%"><input tabindex=5 type=text name="req_name" style="width:97%"></td></tr>
 	<tr><td>Agency:</td><td><input tabindex=6 type=text name="req_agency" style="width:97%" maxlength=120></td></tr>
 	<tr><td>Position:</td><td><input tabindex=7 type=text name="req_position" style="width:97%" maxlength=120></td></tr>
 	<tr><td>Phone:</td><td><input tabindex=8 type=text name="req_phone" style="width:30%" maxlength=40></td></tr>
 	<tr><td>Email:</td><td><input tabindex=9 type=text name="req_email" style="width:30%" maxlength=40></td></tr>
     </table></td>
     <th style="font-size:11px;width:24%;padding-top:10px;border-top:none;" class="lightgreen" valign=top>
-    2b. Request TRACKING NUMBER:<br><span style="font-weight:normal;font-style:italic;">(Assigned by Requesting Entity)</span><br>
+    2b. Request TRACKING NUMBER:<br><span class="noprint" style="font-weight:normal;font-style:italic;">(Assigned by Requesting Entity)</span><br>
 	<input tabindex=4 type=text name="req_tracking_num" style="width:50%;text-align:center;"></b></font></td>
   </tr>
 
@@ -296,7 +306,7 @@ TABLE.noborder TD { border: none; }
   </tr>
 
   <tr>
-    <td style="font-weight:bold;padding-left:0px;;" colspan=3 class="noprint class="noprint"">
+    <td style="font-weight:bold;padding-left:0px;;" colspan=3 class="noprint">
 	<table class="noborder" cellpadding=4 style="font-size:12px;">
 	<tr>
 	<td style="font-size:1.5em;padding-right:20px;" class="grey">5. ORDER SHEETS (OBSOLETE, choose Item Type below): <i>ATTACH ADDITIONAL</i></td>
@@ -477,7 +487,7 @@ TABLE.noborder TD { border: none; }
   </tr>
   <tr class="lightred">
     <td colspan=2 style="position:relative;font-weight:bold">
-    <div style="position:absolute;right:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button></div>
+    <div style="position:absolute;right:10px;padding-top:10px;" class="noprint"><?=$nodb?><button type=submit class="bigbut" disabled>SEND REQUEST</button></div>
     <p style="margin:0 0 12px 0">8. <span class="noprint">COMMAND/MANAGEMENT REVIEW AND </span>VERIFICATION<span class="noprint"><br>
     <span style="font-size:.9em">(NAME, POSITION, AND SIGNATURE - SIGNATURE INDICATES VERIFICATION OF NEED AND APPROVAL</span>)</span></p></span>
     &nbsp;&nbsp; *<input type=text id=req_auth name="req_auth" style="width:40%;" maxlength=110 placeholder="Name &amp; Position" onblur="checkAuth(this.form)"> *<input type=text id=req_sig name="req_sig" style="width:15%" placeholder="Signature" onblur="checkAuth(this.form)"></td>
