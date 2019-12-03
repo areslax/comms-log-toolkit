@@ -248,8 +248,8 @@ TABLE.noborder TD { border: none; }
 </head>
 <body>
 <?php
-$nodb = (!empty($rfld)) ? "":" <span class='smb'><input type=checkbox name=nodb class='nodb' value=1 onclick='checkNodb(this.checked)'>NO DB</span> ";
-$nodb1 = (!empty($rfld)) ? "":" <span class='smb'><input type=checkbox name=nodb1 class='nodb' value=1 onclick='checkNodb(this.checked)'>NO DB</span> ";
+$nodb = (!empty($rfld)) ? "":" <span class='smb' title='Ask: Has this already been posted to the database? Check box if YES, to avoid dupes'><input type=checkbox name=nodb class='nodb' value=1 onclick='checkNodb(this.checked)'>NO DB</span> ";
+$nodb1 = (!empty($rfld)) ? "":" <span class='smb' title='Ask: Has this already been posted to the database? Check box if YES, to avoid dupes'><input type=checkbox name=nodb1 class='nodb' value=1 onclick='checkNodb(this.checked)'>NO DB</span> ";
 ?>
 <form method=post onsubmit="print()">
 <input type=hidden name=sendme value=1>
