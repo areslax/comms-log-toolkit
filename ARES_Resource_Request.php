@@ -7,14 +7,16 @@
  * ############################################### */
 ini_set('display_errors','1');
 
+$rfld = (empty($_GET['rfld'])) ? "":$_GET['rfld'];
+
 //got form, so submit it
 if (!empty($_POST['sendme'])) {
-#echo "p<pre>";print_r($_POST);exit;
 	require "db_conn.php";
+	$msgfld = (empty($_POST['rfld'])) ? "":"msg".substr($_POST['rfld'],3);
 	//clean up missing elements
 	//create resource request
 	$q = $conn->prepare("insert into Resource_Requests (incident_name,req_date,req_name,req_agency,req_position,req_phone,req_email,req_tracking_num,req_mission_desc,req_staging_note,req_supply_notes,req_delivery_notes,req_staging_notes,req_additional_notes,req_confirm_1,req_confirm_2,req_confirm_3,req_auth,req_sig) values (:iname,:rdate,:rname,:ragency,:rpos,:rphone,:remail,:rtracking,:rmission,:rstaging,:rsupplyn,:rdeliveryn,:rstagingn,:raddtln,:rconf1,:rconf2,:rconf3,:rauth,:rsig)");
-	$q->execute(array(":iname"=>$_POST['incident_name'],":rdate"=>$_POST['req_date'],":rname"=>$_POST['req_name'],":ragency"=>$_POST['req_agency'],":rpos"=>$_POST['req_position'],":rphone"=>$_POST['req_phone'],":remail"=>$_POST['req_email'],":rtracking"=>$_POST['req_tracking_num'],":rmission"=>nl2br($_POST['req_mission_desc']),":rstaging"=>nl2br($_POST['req_staging_note']),":rsupplyn"=>nl2br($_POST['req_supply_notes']),":rdeliveryn"=>nl2br($_POST['req_delivery_notes']),":rstagingn"=>nl2br($_POST['req_staging_notes']),":raddtln"=>nl2br($_POST['req_additional_notes']),":rconf1"=>$_POST['req_confirm_1'],":rconf2"=>$_POST['req_confirm_2'],":rconf3"=>$_POST['req_confirm_3'],":rauth"=>$_POST['req_auth'],":rsig"=>$_POST['req_sig']));
+	$q->execute(array(":iname"=>$_POST['incident_name'],":rdate"=>$_POST['req_date'],":rname"=>$_POST['req_name'],":ragency"=>$_POST['req_agency'],":rpos"=>$_POST['req_position'],":rphone"=>$_POST['req_phone'],":remail"=>$_POST['req_email'],":rtracking"=>$_POST['req_tracking_num'],":rmission"=>trim(json_encode($_POST['req_mission_desc']),'"'),":rstaging"=>trim(json_encode($_POST['req_staging_note']),'"'),":rsupplyn"=>trim(json_encode($_POST['req_supply_notes']),'"'),":rdeliveryn"=>trim(json_encode($_POST['req_delivery_notes']),'"'),":rstagingn"=>trim(json_encode($_POST['req_staging_notes']),'"'),":raddtln"=>trim(json_encode($_POST['req_additional_notes']),'"'),":rconf1"=>$_POST['req_confirm_1'],":rconf2"=>$_POST['req_confirm_2'],":rconf3"=>$_POST['req_confirm_3'],":rauth"=>$_POST['req_auth'],":rsig"=>$_POST['req_sig']));
 	$rid = $conn->lastInsertId();
 	//insert items
 	foreach($_POST['req_item_num'] as $k => $iid) {
@@ -24,25 +26,27 @@ if (!empty($_POST['sendme'])) {
 		$type = $_POST['req_item_type_'.$iid];
 		switch ($type) {
 			case "supplies":
-			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
+			$desc = trim(json_encode($_POST['supply_item_desc_'.$iid]),'"');
 			$q1 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
 			$q1->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
 //			$itmid = $conn->lastInsertId();
 			break;
 			case "personnel":
-			$desc = nl2br($_POST['personnel_item_desc_'.$iid]);
+			$desc = trim(json_encode($_POST['personnel_item_desc_'.$iid]),'"');
+			$paid = (isset($_POST['paid_'.$iid])) ? $_POST['paid_'.$iid]:0;
+			$prefs = (isset($_POST['personnel_pref_skills_'.$iid])) ? $_POST['personnel_pref_skills_'.$iid]:0;
 			$q2 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,min_experience,req_skills,pref_skills,mobilize_date,paid,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:minexp,:reqskill,:prefskill,:mdate,:paid,:qtyreq,:estdu)");
-			$q2->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":minexp"=>$_POST['min_experience_'.$iid],":reqskill"=>$_POST['personnel_req_skills_'.$iid],":prefskill"=>$_POST['personnel_pref_skills_'.$iid],":mdate"=>$_POST['mobilize_date_'.$iid],":paid"=>$_POST['paid_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
+			$q2->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":minexp"=>$_POST['min_experience_'.$iid],":reqskill"=>$_POST['personnel_req_skills_'.$iid],":prefskill"=>$prefs,":mdate"=>$_POST['mobilize_date_'.$iid],":paid"=>$paid,":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
 //			$itmid = $conn->lastInsertId();
 			break;
 			case "other":
-			$desc = nl2br($_POST['other_item_desc_'.$iid]);
+			$desc = trim(json_encode($_POST['other_item_desc_'.$iid]),'"');
 			$q3 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:qtyreq,:estdu)");
 			$q3->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
 //			$itmid = $conn->lastInsertId();
 			break;
 			default:
-			$desc = nl2br($_POST['supply_item_desc_'.$iid]);
+			$desc = trim(json_encode($_POST['supply_item_desc_'.$iid]),'"');
 			$q4 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
 			$q4->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
 //			$itmid = $conn->lastInsertId();
@@ -51,6 +55,60 @@ if (!empty($_POST['sendme'])) {
 		$fq = $conn->prepare("insert into Resource_Request_Fulfill (req_id,item_num) values (:rid,:iid)");
 		$fq->execute(array(":rid"=>$rid,":iid"=>$iid));
 	}
+	if (!empty($msgfld)) {
+	//populate original comms log message field
+	$arr = "";
+	$emptyi = NULL;
+	$priorities = array(1=>"EMERGENT",2=>"URGENT",3=>"SUSTAINMENT");
+	$minexper = array(1=>"current hospital",2=>"current clinical",3=>"current license",4=>"clinical education");
+	echo "<script type='text/javascript'>\n";
+	echo "var frmdata = \"";
+	foreach($_POST as $k => $v) {
+		$thisi = NULL;
+		if (strstr($k,'req_item_priority') && empty($v)) {
+			$emptyi = substr($k,strrpos($k,"_"));
+		}
+		$thisi = substr($k,strrpos($k,"_"));
+		if (is_array($v)) {
+			//item nums built into fields, so no need for this array, here
+			continue;
+/*
+			foreach($v as $k2 => $v2) {
+				$thisi = substr($k2,strrpos($k2,"_"));
+				if (empty($v2) || (isset($emptyi) && $thisi==$emptyi)) { continue; }
+				if (stristr($k2,'item_priority')) { $v2 = $priorities[$v2]; }
+				if (stristr($k2,'min_experience')) { $v2 = $minexper[$v2]; }
+				$arr .= "'".$k2."':'".$v2."',";
+			}
+/**/
+		}
+		else {
+			$thisi = substr($k,strrpos($k,"_"));
+			if (empty($v) || (isset($emptyi) && $thisi==$emptyi)) { continue; }
+			if (strstr($k,'item_priority')) { $v = $priorities[$v]; }
+			if (strstr($k,'min_experience')) { $v = $minexper[$v]; }
+			if ($k=='req_item_priority_1' || $k=='req_supply_notes') { $arr .= "'===== ':'=====',"; }
+			else if (strstr($k,'req_item_priority')) { $arr .= "'----- ':'-----',"; }
+			$arr .= "'".$k."':'".trim(json_encode($v),'"')."',";
+		}
+	}
+	$arr = str_replace("_"," ",str_replace("req_","",rtrim($arr,",")));
+	echo $arr."\";\n";
+	echo "frmdata = frmdata.substr(1,(frmdata.length-2));\n";
+	echo "var frmarry = frmdata.split(\"','\");\n";
+	echo "var msgdata = \"Resource Request\\n\";\n";
+	echo "for(i=0;i<frmarry.length;i++) {\n";
+	echo "	msgarry = frmarry[i].split(\"':'\");\n";
+	echo "	if (typeof msgarry[1] !== 'undefined' && msgarry[1].length>0 && msgarry[0]!='sendme' && msgarry[0]!='rfld') {\n";
+	echo "		msgdata += msgarry[0]+\": \"+msgarry[1]+\"\\n\";\n";
+	echo "	}\n";
+	echo "}\n";
+	echo "opener.".$msgfld.".innerHTML = msgdata;\n";
+	echo "opener.focus();\n";
+	echo "self.close();\n";
+	echo "</script>\n";
+	exit;
+	}//end !empty msgfld
 }
 ?>
 
@@ -185,6 +243,7 @@ TABLE.noborder TD { border: none; }
 
 <form method=post onsubmit="print()">
 <input type=hidden name=sendme value=1>
+<input type=hidden name=rfld value="<?=$rfld?>">
 
 <!-- PAGINATE DURING PRINTING
 <p style="text-align:right">Page 1 of <input name="pgcnt" type="number" min="1" max="99" size=2 maxlength=3></p-->

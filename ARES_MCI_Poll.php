@@ -133,6 +133,7 @@ Time This Data Was Collected: <input type=text size=14 name=datacollected value=
 <span class='red' style="padding:4px 4px 6px 4px" title="IMMEDIATE: Will die, if not transported ASAP"><input type=text id=immediate name=immediate size=10 value="" style="text-align:center" placeholder="Immediate"></span>
 <span class='yellow' style="padding:4px 4px 6px 4px" title="DELAYED: Need transport, but not Immediate"><input type=text name=delayed size=10 value="" style="text-align:center" placeholder="Delayed"></span>
 <span class='green' style="padding:4px 4px 6px 4px" title="MINOR: Walking Wounded"><input type=text name=minor size=10 value="" style="text-align:center" placeholder="Minor"></span>
+<span class='black' style="padding:4px 4px 6px 4px" title="FATALITIES"><input type=text name=fatalities size=10 value="" style="text-align:center" placeholder="Fatalities"></span>
 <br>
 
 <p style="margin:20px 0 6px 0">

@@ -132,8 +132,14 @@ function saveFulData(fld,val,reqid,rid) {
 		data: datastr,
 		success: function(a,b,c){
 			console.log(a);
-			if (a=="complete" || a=="cancelled") {
+			if (a=="cancelled") {
 				jQuery("#row_"+rid).hide(600);
+			}
+			else if (a=="complete") {
+				jQuery("#row_"+rid).css("color","grey");
+				jQuery("#licancel"+rid).hide(100);
+				jQuery("#licomplete"+rid).hide(100);
+				jQuery(".ful"+rid).attr("disabled","true");
 			}
 			else if (a=="reqcomplete" || a=="reqcancelled") {
 				jQuery("#reqdiv_"+reqid).hide(600);
@@ -247,11 +253,11 @@ foreach($reqs as $req) {
 	$acnt++;
 	$pbreak = ($acnt>1) ? " class='pbreak'":"";
 	$reqid = $req['req_id'];
-	$req_datetime = date("m/d/Y H:i",strtotime($req['req_date']))." Tracking#".$req['req_tracking_num'];
+	$req_datetime = date("m/d/Y H:i",strtotime($req['req_date']))." Tracking # ".$req['req_tracking_num'];
 	$requestor_info_block = "<b>".$req['req_name']."</b>: ".$req['req_position'].", ".$req['req_agency']."<br>\n";
 	$requestor_info_block .= $req['req_phone']." : ".$req['req_email']."\n";
-	$requestor_mission_block = $req['req_mission_desc'];
-	$requestor_staging_block = $req['req_staging_note'];
+	$requestor_mission_block = str_replace("\\r\\n","<br>",$req['req_mission_desc']);
+	$requestor_staging_block = str_replace("\\r\\n","<br>",$req['req_staging_note']);
 	$requestor_auth_block = "".$req['req_auth']." / ".$req['req_sig'];
 ?>
 
@@ -294,26 +300,26 @@ foreach($lineitems as $l) {
 	switch ($l['item_type']) {
 		case 'supplies':
 		//supply/equipment (DEFAULT)
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>Supply Item Description</th><th class='smb' style='width:12%'>Pkg Class</th><th class='smb' style='width:12%'>Units per Pkg Class</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><td align=center class='med'>".$l['pkg_class']."</td><td align=center class='med'>".$l['units_per_pkg_class']."</td></tr>\n</table>";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>Supply Item Description</th><th class='smb' style='width:12%'>Pkg Class</th><th class='smb' style='width:12%'>Units per Pkg Class</th></tr>\n<tr><td class='med'>".str_replace("\\r\\n","<br>",$l['item_desc'])."</td><td align=center class='med'>".$l['pkg_class']."</td><td align=center class='med'>".$l['units_per_pkg_class']."</td></tr>\n</table>";
 		$supchk = " selected";
 		break;
 		case 'personnel':
 		//personnel
 		$minexp = array(1=>'current hospital',2=>'current clinical',3=>'current license',4=>'clinical educat');
 		$paidchk = (!empty($l['paid'])) ? "YES":"";
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>Personnel Description</th><th class='smb' style='width:10%'><u>Min</u> <u>Req</u><br>Exper</th><th class='smb' style='width:10%'><u>Req</u> Skills</th><th class='smb' style='width:10%'><u>Pref</u> Skills</th><th class='smb' style='width:10%'>Reqd By</th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><th class='sm'>".$minexp[$l['min_experience']]."</th><td class='med'>".str_replace(",",", ",$l['req_skills'])."</td><td class='med'>".str_replace(",",", ",$l['pref_skills'])."</td><th class='med'>".$l['mobilize_date']."</th><th class='med'>".$paidchk."</th></tr>\n</table>";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>Personnel Description</th><th class='smb' style='width:10%'><u>Min</u> <u>Req</u><br>Exper</th><th class='smb' style='width:10%'><u>Req</u> Skills</th><th class='smb' style='width:10%'><u>Pref</u> Skills</th><th class='smb' style='width:10%'>Reqd By</th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td class='med'>".str_replace("\\r\\n","<br>",$l['item_desc'])."</td><th class='sm'>".$minexp[$l['min_experience']]."</th><td class='med'>".str_replace(",",", ",$l['req_skills'])."</td><td class='med'>".str_replace(",",", ",$l['pref_skills'])."</td><th class='med'>".$l['mobilize_date']."</th><th class='med'>".$paidchk."</th></tr>\n</table>";
 		$perchk = " selected";
 		break;
 		case 'other':
 		//other
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>Other Item Description</th><th class='smb' width=10%>Pkg Class</th></tr>\n<tr><td class='med'>".$l['item_desc']."</td><td align=center class='med'>".$l['pkg_class']."</td></tr>\n</table>";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>Other Item Description</th><th class='smb' width=10%>Pkg Class</th></tr>\n<tr><td class='med'>".str_replace("\\r\\n","<br>",$l['item_desc'])."</td><td align=center class='med'>".$l['pkg_class']."</td></tr>\n</table>";
 		$othchk = " selected";
 		break;
 	}
 	//cancel item button
-	$icancel = ($l['item_status']<3) ? "<br><button type=button class='sm noprint' onclick=\"saveFulData('ful_cancel',1,".$reqid.",".$rid.")\" style='margin-top:9px;padding:1px;cursor:pointer;' title='Cancel this line item'>X</button>":"";
+	$icancel = ($l['item_status']<3) ? "<br><button type=button id='licancel".$rid."' class='sm noprint' onclick=\"saveFulData('ful_cancel',1,".$reqid.",".$rid.")\" style='margin-top:9px;padding:1px;cursor:pointer;' title='Cancel this line item'>X</button>":"";
 	//item is complete if: click complete or filled=requested or approved=requested
-	$fcomplete = ($l['item_status']!=3) ? "<br><button type=button class=\"noprint\" onclick=\"saveFulData('ful_complete',1,".$reqid.",".$rid.")\" style=\"font-size:.5em;cursor:pointer;padding:0;\" title=\"Mark this line item complete\">COMPLETE</button>":"";
+	$fcomplete = ($l['item_status']!=3) ? "<br><button type=button id='licomplete".$rid."' class='noprint' onclick=\"saveFulData('ful_complete',1,".$reqid.",".$rid.")\" style=\"font-size:.5em;cursor:pointer;padding:0;\" title=\"Mark this line item complete\">COMPLETE</button>":"";
 ?>
   <tr id="row_<?=$rid?>" valign=top class="<?=$l['item_type']?>">
     <td style="width:4%;text-align:center;" class="med"><input type=hidden name="req_item_num[]" value=<?=$rid?>><?=$rid?><?=$icancel?></td>
@@ -323,12 +329,12 @@ foreach($lineitems as $l) {
     </td>
     <th style="width:5%" class="med"><?=$l['qty_requested']?></th>
     <th style="width:3%" class="med"><?=$l['est_duration']?></th>
-    <th class="log nobg" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_approved',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_approved']?>"></th>
-    <th class="log nobg" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_filled',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_filled']?>"><?=$fcomplete?></th>
-    <th class="log nobg" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_backorder',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_backorder']?>"></th>
-    <th class="log nobg" style="width:3%"><textarea class="cntr nobord" rows=2 style="width:80px" onchange="saveFulData('ful_tracking_num',this.value,<?=$reqid?>,<?=$rid?>)"><?=$l['ful_tracking_num']?></textarea></th>
-    <th class="log nobg" style="width:3%"><textarea class="datepicker cntr nobord" rows=2 style="width:80px" onchange="saveFulData('ful_est_arrival',this.value,<?=$reqid?>,<?=$rid?>)"><?=$l['ful_est_arrival']?></textarea></th>
-    <th class="log nobg" style="width:3%"><input type=text class="cntr" onchange="saveFulData('ful_cost',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_cost']?>"></th>
+    <th class="log nobg" style="width:3%"><input type=text class="cntr ful<?=$rid?>" onchange="saveFulData('ful_approved',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_approved']?>"></th>
+    <th class="log nobg" style="width:3%"><input type=text class="cntr ful<?=$rid?>" onchange="saveFulData('ful_filled',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_filled']?>"><?=$fcomplete?></th>
+    <th class="log nobg" style="width:3%"><input type=text class="cntr ful<?=$rid?>" onchange="saveFulData('ful_backorder',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_backorder']?>"></th>
+    <th class="log nobg" style="width:3%"><textarea class="cntr nobord ful<?=$rid?>" rows=2 style="width:80px" onchange="saveFulData('ful_tracking_num',this.value,<?=$reqid?>,<?=$rid?>)"><?=$l['ful_tracking_num']?></textarea></th>
+    <th class="log nobg" style="width:3%"><textarea class="datepicker cntr nobord ful<?=$rid?>" rows=2 style="width:80px" onchange="saveFulData('ful_est_arrival',this.value,<?=$reqid?>,<?=$rid?>)"><?=$l['ful_est_arrival']?></textarea></th>
+    <th class="log nobg" style="width:3%"><input type=text class="cntr ful<?=$rid?>" onchange="saveFulData('ful_cost',this.value,<?=$reqid?>,<?=$rid?>)" value="<?=$l['ful_cost']?>"></th>
   </tr>
 
 <?php
@@ -340,8 +346,8 @@ foreach($lineitems as $l) {
 <h2 style="margin-bottom:2px;color:#aa0000;">Request Notes #<?=$acnt?></h2>
 
 <table border=1 cellpadding=4 cellspacing=0 style="background-color:yellow;border-color:white;margin-bottom:10px;" class="nobg" id="request_notes">
-<tr><td valign=top width="50%"><b>Suggested Source(s) of Supply; Suitable Substitute(s); Special Delivery Comment(s):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=$req['req_supply_notes']?></div></td><td valign=top width="50%"><b>Deliver to/Report to POC (Name/Title/Location/Tel#/Email/Radio#):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=$req['req_delivery_notes']?></div></td></tr>
-<tr><td valign=top width="50%"><b>Staging &amp; Deployment Details (Parking/staging location? Food/water provided? Housing Provided? Items personnel should bring? Etc.):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=$req['req_staging_notes']?></div></td><td valign=top width="50%"><b>Additional Instructions:</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=$req['req_additional_notes']?></div></td></tr>
+<tr><td valign=top width="50%"><b>Suggested Source(s) of Supply; Suitable Substitute(s); Special Delivery Comment(s):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=str_replace("\\r\\n","<br>",$req['req_supply_notes'])?></div></td><td valign=top width="50%"><b>Deliver to/Report to POC (Name/Title/Location/Tel#/Email/Radio#):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=str_replace("\\r\\n","<br>",$req['req_delivery_notes'])?></div></td></tr>
+<tr><td valign=top width="50%"><b>Staging &amp; Deployment Details (Parking/staging location? Food/water provided? Housing Provided? Items personnel should bring? Etc.):</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=str_replace("\\r\\n","<br>",$req['req_staging_notes'])?></div></td><td valign=top width="50%"><b>Additional Instructions:</b><div style="background-color:#ffffaa;padding:4px;margin-top:4px;" class="nobg"><?=str_replace("\\r\\n","<br>",$req['req_additional_notes'])?></div></td></tr>
 </table>
 
 <!-- end request div -->
