@@ -78,7 +78,7 @@ function saveData(frm) {
 			for(i=0;i<frmarry.length;i++) {
 				msgarry = frmarry[i].split('":"');
 				if (msgarry[1].length>0) {
-					msgdata += msgarry[0]+": "+msgarry[1]+"\n"
+					msgdata += msgarry[0]+": "+trim(msgarry[1])+"\n"
 				}
 			}
 			//transfer to parent comms form
@@ -108,6 +108,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 <form id=mcilog method=post action="https://km6wka.net/ares/api/reports/save.php">
 <input type=hidden name=tmstmp id=mcitmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=location id=mcilocation value="<?=$loccode?>">
+<input type=hidden name=locname id=mcilocname value="<?=$locname?>">
 <input type=hidden name=incident id=mciincident value="<?=$inid?>">
 
 <div style="position:absolute;top:0px;right:0px;width:12px;height:12px;border-radius:12px;border:solid 1px grey;background-color:lightgrey;text-align:center;font-size:12px;cursor:pointer;" onclick="parent.showModal('','none');" title="Close MCI Poll Popup WITHOUT Saving Poll Data">X</div>

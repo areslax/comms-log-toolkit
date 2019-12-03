@@ -53,7 +53,7 @@ function saveData(frm) {
                                 msgarry = frmarry[i].split('":"');
                                 if (msgarry[1].length>0) {
 					msgarry[1] = (msgarry[0]=='servicelevel') ? svclevels[msgarry[1]]:msgarry[1];
-                                        msgdata += msgarry[0]+": "+msgarry[1]+"\n";
+                                        msgdata += msgarry[0]+": "+trim(msgarry[1])+"\n";
                                 }
                         }
 			parent.<?=$msgfld?>.innerHTML = msgdata;
@@ -85,6 +85,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 <form id=hsalog method=post action="https://km6wka.net/ares/api/reports/save.php" style="margin-bottom:0px">
 <input type=hidden name=tmstmp id=hsatmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=location id=hsalocation value="<?=$loccode?>">
+<input type=hidden name=locname id=hsalocname value="<?=$locname?>">
 <input type=hidden name=incident id=hsaincident value="<?=$inid?>">
 
 <div style="position:absolute;top:0px;right:0px;width:12px;height:12px;border-radius:12px;border:solid 1px grey;background-color:lightgrey;text-align:center;font-size:12px;cursor:pointer;" onclick="parent.showModal('','none');" title="Close HSA Poll Popup WITHOUT Saving Poll Data">X</div>
