@@ -66,17 +66,25 @@ if (!empty($_GET['admin'])) {
 <p style="margin:6px">
 <b>MANAGE:</b>&nbsp;&nbsp;&nbsp; <a href="ARES_Alert_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Alerts</a> &nbsp;|&nbsp; <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Incidents</a> &nbsp;|&nbsp; <a href="ARES_Net_Control_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Net Controls</a> &nbsp;|&nbsp; <a href="ARES_Member_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Operators</a> &nbsp;|&nbsp; <a href="ARES_Location_Manage.php<?=$isadmin?>" target="_blank" class="colhead">Locations</a><br><br>
 <?php
-	$checkin = "<a href='javascript:popCheckin()' class='colhead'>Operator Check In</a>&nbsp;|&nbsp;";
+	$checkin = "<a href='javascript:popCheckin()' class='colhead'>Operator Check In / Status</a><br>";
 }
 ?>
-<?=$checkin?><a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead"><big>ARES Net Control Comms Log</big></a><br><br>
-<a href="ARES_Resource_Request.php">NEW: Resource Request Form</a><br><span class="sm">Right-Click or Ctrl+Click or Cmd+Click to open in<br>a new tab/window, so you can take your time</span><br><br>
+<a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" class="colhead"><big>ARES Net Control Comms Log</big></a><br><br>
+<a href="ARES_Resource_Request.php" target="_blank">Resource Request Form</a><br>
+<?php
+if (!empty($_GET['admin'])) { ?>
+<a href="ARES_Resource_Request_Log.php" target="_blank">Resource Request Log</a><br>
+<?php
+} ?>
+<br>
 <!--/p-->
 <?php
-if (!empty($_GET['admin']) && $_GET['admin']=='2') { ?>
-<a href="ARES_SMS_Group_Manage.php" target="_blank">ARES Member SMS Messaging</a>
-<br><br>
-<?php
+if (!empty($_GET['admin'])) {
+	echo $checkin;
+	if (!empty($_GET['admin']=='2')) {
+		echo "<a href='ARES_SMS_Group_Manage.php' target='_blank'>ARES Member SMS Messaging</a><br>\n";
+	}
+	echo "<br>\n";
 } ?>
 <div style="border-top:solid 1px #900;margin:0;padding-top:20px;">
 <?php
@@ -84,7 +92,7 @@ if (!empty($_GET['admin']) && $_GET['admin']=='2') { ?>
 ?>
 <a href="https://www.freelists.org/list/arestoolkit" target="_blank">ARES Toolkit Mailing List</a> | <a href="forum/index.php" target="_blank">ARES Toolkit Forum</a> &nbsp;|&nbsp; <a href="javascript:popIRC()" class="colhead">ARESLAX IRC Chat</a>
 <div style="border-top:solid 1px #900;margin:20px 0 0 0;padding-top:20px;">
-<div onclick="javascript:divVis('forms')" style="cursor:pointer;font-weight:bold;margin:0 0 20px 0;padding:4px;border:solid 1px lightgrey;border-radius:4px;background-color:rgb(255,255,230);">FORMS: Download or Fill &amp; Print:</div>
+<div onclick="javascript:divVis('forms')" style="cursor:pointer;font-weight:bold;margin:0 0 20px 0;padding:4px;border:solid 1px lightgrey;border-radius:4px;background-color:rgb(255,255,230);" title="Click to Toggle Menu">FORMS: Download or Fill &amp; Print <span style="color:grey">&udarr;</span></div>
 <div id="forms" style="display:none;margin:0 0 16px 0;">
 <table border=0 cellpadding=6 cellspacing=0>
 <tr valign=top><td align=center>
