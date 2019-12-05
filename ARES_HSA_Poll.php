@@ -53,7 +53,7 @@ function saveData(frm) {
                                 msgarry = frmarry[i].split('":"');
                                 if (msgarry[1].length>0) {
 					msgarry[1] = (msgarry[0]=='servicelevel') ? svclevels[msgarry[1]]:msgarry[1];
-                                        msgdata += msgarry[0]+": "+trim(msgarry[1])+"\n";
+                                        msgdata += msgarry[0]+": "+msgarry[1]+"\n";
                                 }
                         }
 			parent.<?=$msgfld?>.innerHTML = msgdata;
@@ -86,7 +86,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 <input type=hidden name=tmstmp id=hsatmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=location id=hsalocation value="<?=$loccode?>">
 <input type=hidden name=locname id=hsalocname value="<?=$locname?>">
-<input type=hidden name=incident id=hsaincident value="<?=$inid?>">
+<input type=hidden name=incident_id id=hsaincident value="<?=$inid?>">
 
 <div style="position:absolute;top:0px;right:0px;width:12px;height:12px;border-radius:12px;border:solid 1px grey;background-color:lightgrey;text-align:center;font-size:12px;cursor:pointer;" onclick="parent.showModal('','none');" title="Close HSA Poll Popup WITHOUT Saving Poll Data">X</div>
 
@@ -113,7 +113,11 @@ Time This Data Was Collected: <input type=text size=14 name=datacollected value=
 </tr></table>
 <br>
 
-<p style="margin:0 0 6px 0">
+<table border=0 cellpadding=1 cellspacing=0>
+<tr><td title="Is a Mass Decontamination Facility available?">Mass Decontamination Facility Available:</td><td><input type=checkbox name=decon id=hsadecon value=1></td></td></tr>
+</table>
+
+<p style="margin:10px 0 6px 0">
 <b>AVAILABLE BED COUNT:</b>
 </p>
 <table id=main_table border=0 cellpadding=1 cellspacing=0>
@@ -130,6 +134,7 @@ Time This Data Was Collected: <input type=text size=14 name=datacollected value=
 <tr><td title="EYE-SO-LAY-SHUN">Isolation&nbsp;&nbsp;</td><td><input type=text name=isolation id=hsaisolation value="" size=5></td><td>/ <?=$bedcnts['l_cnt_iso']?></td></tr>
 <tr><td title="SYKE">Psych</td><td><input type=text name=psych id=hsapsych value="" size=5></td><td>/ <?=$bedcnts['l_cnt_psych']?></td></tr>
 <tr><td title="OH-ARR">OR</td><td><input type=text name=or id=hsaor value="" size=5></td><td>/ <?=$bedcnts['l_cnt_or']?></td></tr>
+<tr><td title="Ventilator">Ventilator</td><td><input type=text name=vent id=hsavent value="" size=5></td><td>&nbsp;</td></tr>
 <tr><td title=""><div id="extra0" style="height:19px;width:120px;border:solid 1px #acacac;" contenteditable=true onblur="jQuery('#hsaextra0').attr('name',this.innerHTML)"></div></td><td><input type=text name="hsaextra0" id=hsaextra0 value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
 <tr><td title=""><div id="extra1" style="height:19px;width:120px;border:solid 1px #acacac;" contenteditable=true onblur="jQuery('#hsaextra1').attr('name',this.innerHTML)"></div></td><td><input type=text name="hsaextra1" id=hsaextra1 value="" size=5 onblur="addRow()"></td><td>&nbsp;</td></tr>
 </table>
