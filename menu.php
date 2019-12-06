@@ -47,7 +47,7 @@ A:hover { border-bottom:1px dotted blue; }
 if (!empty($_GET['admin'])) {
 ?>
 <div class="ruleyelo" style="width:154px"></div>
-<div onclick="divVis('menumgmt')" style="cursor:pointer;font-weight:bold;font-size:13px;margin:4px 0 4px 0;" title="Click to Toggle Menu">MANAGE MENU <span style="color:grey">&udarr;</span></div>
+<div onclick="divVis('menumgmt')" style="cursor:pointer;font-weight:bold;font-size:13px;margin:4px 0 4px 0;" title="Click to Toggle Menu"><img src="images/icon-menu.png" width=12 alt="Click to Toggle Menu" align=absmiddle style="margin-top:-2px;opacity:.6;"> MANAGE MENU</div>
 <div id=menumgmt style="margin-left:10px;line-height:16px;display:none;margin:2px 0 6px 0;">
  <a href="ARES_Alert_Manage.php" target="_blank" style="color:rgb(180,180,200)">Manage Admin Alerts</a><br>
  <a href="ARES_Incident_Manage.php<?=$isadmin?>" target="_blank" style="color:rgb(180,180,200)">Manage Incidents</a><br>
@@ -82,7 +82,7 @@ if (!empty($_GET['admin'])) {
 
 <div class="ruleyelo" style="margin-left:-8px;width:154px"></div>
 
-<div onclick="divVis('forms')" style="cursor:pointer;font-weight:bold;font-size:13px;margin:4px 0 4px 0;" title="Click to Toggle Menu">FORMS MENU <span style="color:grey">&udarr;</span></div>
+<div onclick="divVis('forms')" style="cursor:pointer;font-weight:bold;font-size:13px;margin:4px 0 4px 0;" title="Click to Toggle Menu"><img src="images/icon-menu.png" width=12 alt="Click to Toggle Menu" align=absmiddle style="margin-top:-2px;opacity:.6;"> FORMS MENU</div>
 <div id="forms" style="display:none;margin:2px 0 6px 0;">
  <a href="files/20190703_Amateur_Radio_MCI_Poll_Form_2011_form.pdf" class="colhead" target="_blank">ARES MCI Poll</a><br>
  <a href="files/20190703_Hospital_Status_Assessment_Form_v4.1_form.pdf" class="colhead" target="_blank">ARES HSA Poll</a><br>

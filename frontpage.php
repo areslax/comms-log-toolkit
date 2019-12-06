@@ -92,7 +92,7 @@ if (!empty($_GET['admin'])) {
 ?>
 <a href="https://www.freelists.org/list/arestoolkit" target="_blank">ARES Toolkit Mailing List</a> | <a href="forum/index.php" target="_blank">ARES Toolkit Forum</a> &nbsp;|&nbsp; <a href="javascript:popIRC()" class="colhead">ARESLAX IRC Chat</a>
 <div style="border-top:solid 1px #900;margin:20px 0 0 0;padding-top:20px;">
-<div onclick="javascript:divVis('forms')" style="cursor:pointer;font-weight:bold;margin:0 0 20px 0;padding:4px;border:solid 1px lightgrey;border-radius:4px;background-color:rgb(255,255,230);" title="Click to Toggle Menu">FORMS: Download or Fill &amp; Print <span style="color:grey">&udarr;</span></div>
+<div onclick="javascript:divVis('forms')" style="cursor:pointer;font-weight:bold;margin:0 0 20px 0;padding:4px;border:solid 1px lightgrey;border-radius:4px;background-color:rgb(255,255,230);" title="Click to Toggle Menu"><img src="images/icon-menu.png" width=14 alt="Click to Toggle Menu" align=absmiddle style="margin-top:-2px;margin-right:2px;opacity:.6;"> FORMS: Download or Fill &amp; Print</div>
 <div id="forms" style="display:none;margin:0 0 16px 0;">
 <table border=0 cellpadding=6 cellspacing=0>
 <tr valign=top><td align=center>
