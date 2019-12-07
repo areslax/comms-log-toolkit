@@ -31,7 +31,7 @@ if (!empty($_POST['addlocation'])) {
 	$q = $conn->prepare("insert into Location_Bed_Counts (l_id,l_cnt_medsurg,l_cnt_tele,l_cnt_icu,l_cnt_picu,l_cnt_nicu,l_cnt_peds,l_cnt_obgyn,l_cnt_trauma,l_cnt_burn,l_cnt_iso,l_cnt_psych,l_cnt_or,l_cnt_total) values (:lid,:medsurg,:tele,:icu,:picu,:nicu,:peds,:obgyn,:trauma,:burn,:iso,:psych,:orm,:total)");
 	$q->execute(array(":lid"=>$lid,":medsurg"=>$_POST['l_cnt_medsurg'],":tele"=>$_POST['l_cnt_tele'],":icu"=>$_POST['l_cnt_icu'],":picu"=>$_POST['l_cnt_picu'],":nicu"=>$_POST['l_cnt_nicu'],":peds"=>$_POST['l_cnt_peds'],":obgyn"=>$_POST['l_cnt_obgyn'],":trauma"=>$_POST['l_cnt_trauma'],":burn"=>$_POST['l_cnt_burn'],":iso"=>$_POST['l_cnt_iso'],":psych"=>$_POST['l_cnt_psych'],":orm"=>$_POST['l_cnt_or'],":total"=>$_POST['l_cnt_total']));
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	file_get_contents("https://km6wka.net/ares/scripts/cron_generateNewLocations.php");
 }
 
 //got update location form submit
@@ -44,7 +44,7 @@ if (!empty($_POST['updatelocation'])) {
 	$q = $conn->prepare("update Locations set l_type=:type,l_tactical=:tactical,l_name=:name,l_address=:address,l_city=:city,l_state=:state,l_zip=:zip,l_gps=:gps,l_trauma_level=:trauma,l_desk_phone=:deskphone,l_special=:special,l_note=:note where l_id=:lid limit 1");
 	$q->execute(array(':type'=>$_POST['l_type'],':tactical'=>$_POST['l_tactical'],':name'=>$_POST['l_name'],':address'=>$_POST['l_address'],':city'=>$_POST['l_city'],':state'=>$_POST['l_state'],':zip'=>$_POST['l_zip'],':gps'=>$_POST['l_gps'],':trauma'=>$_POST['l_trauma_level'],':deskphone'=>$deskphone,':special'=>$special,':note'=>$note,':lid'=>$_POST['l_id']));
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	file_get_contents("https://km6wka.net/ares/scripts/cron_generateNewLocations.php");
 }
 
 $ctyps = array(0=>"",1=>"Email",2=>"Home Phone",3=>"Work Phone",4=>"Cell Phone",5=>"Account");

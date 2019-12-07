@@ -14,7 +14,7 @@ if (!empty($_POST['addincident'])) {
 	$q->execute(array(':type'=>$_POST['i_type'],':tactical'=>$_POST['i_tactical'],':name'=>$_POST['i_name'],':leadid'=>$_POST['i_lead_id_new'],':gps'=>$_POST['i_gps']));
 	$iid = $conn->lastInsertId();
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	file_get_contents("https://km6wka.net/ares/scripts/cron_generateNewLocations.php");
 }
 
 //got update incident form submit
@@ -23,7 +23,7 @@ if (!empty($_POST['updateincident'])) {
 	$q = $conn->prepare("update Incidents set i_type=:type,i_tactical=:tactical,i_status=:status,i_name=:name,i_lead_id=:leadid,i_gps=:gps where i_id=:iid limit 1");
 	$q->execute(array(':type'=>$_POST['i_type'],':tactical'=>$_POST['i_tactical'],':status'=>$_POST['i_status'],':name'=>$_POST['i_name'],':leadid'=>$_POST['i_lead_id'],':gps'=>$_POST['i_gps'],':iid'=>$_POST['i_id']));
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	file_get_contents("https://km6wka.net/ares/scripts/cron_generateNewLocations.php");
 }
 
 ######## THINK ABOUT INCIDENT LIAISONS #######

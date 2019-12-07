@@ -17,7 +17,7 @@ if (!empty($_POST['addnc'])) {
 	$q->execute(array(':leadid'=>$_POST['nc_lead_id'],':parentid'=>$_POST['nc_parent_id'],':callsign'=>$_POST['nc_callsign'],':location'=>$_POST['nc_location'],':gps'=>$_POST['nc_gps'],':note'=>$_POST['nc_note']));
 	$ncid = $conn->lastInsertId();
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	file_get_contents("https://km6wka.net/ares/scripts/cron_generateNewLocations.php");
 }
 
 //got update net control form submit
@@ -42,7 +42,7 @@ if (!empty($_POST['updatenc'])) {
 	$q = $conn->prepare("update Net_Controls set ".$nc_qury);
 	$q->execute($qvars);
 	//update common js file
-	file_get_contents("scripts/cron_generateNewLocations.php");
+	file_get_contents("https://km6wka.net/ares/scripts/cron_generateNewLocations.php");
 }
 
 //got ncid so show control info

@@ -30,14 +30,10 @@ else {
 	$labl = "";
 }
 //all operators
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$oq = $conn->prepare("select Members.m_id,m_callsign,m_status,m_fname,m_lname,m_prestage_lid,Operators.i_id,i_name,Operators.l_id,l_tactical,l_name,Operators.nc_id,nc_callsign,nc_location,nc_gps,s_title,s_data,s_color from Members left outer join Operators on Operators.m_id=Members.m_id left outer join Incidents on Incidents.i_id=Operators.i_id left outer join Locations on Locations.l_id=Operators.l_id left outer join Net_Controls on Net_Controls.nc_id=Operators.nc_id left outer join Status_Codes on Status_Codes.s_id=Members.m_status");
-try{
-	$oq->execute();
-}catch(PDOException $e){
-	print($e->getMessage());
-	exit;
-}
+//debug
+//$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$oq = $conn->prepare("select Members.m_id,m_callsign,m_status,m_fname,m_lname,m_prestage_lid,Operators.i_id,i_name,Operators.l_id,l_tactical,l_name,Operators.nc_id,nc_callsign,nc_location,nc_gps,s_title,s_data,s_color from Members left outer join Operators on Operators.m_id=Members.m_id left outer join Incidents on Incidents.i_id=Operators.i_id left outer join Locations on Locations.l_id=Operators.l_id left outer join Net_Controls on Net_Controls.nc_id=Operators.nc_id left outer join Status_Codes on Status_Codes.s_id=Members.m_status");
+$oq->execute();
 $orow = $oq->fetchAll(PDO::FETCH_ASSOC);
 foreach($orow as $o) {
 	$cs = strtoupper($o['m_callsign']);
