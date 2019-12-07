@@ -136,7 +136,7 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 			$sel = ($r['ev_type']==$ir['est_id']) ? " selected":"";
 			$etypes .= "<option value=".$ir['est_id'].$sel.">".$ir['est_name']."</option>";
 		}
-		$a = "<form method=post>\n<input type=hidden name=updateevent value=1>\n<input type=hidden name=ev_id value='".$evid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:580px'>
+		$a = "<form method=post>\n<input type=hidden name=updateevent value=1>\n<input type=hidden name=ev_id value='".$evid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:610px'>
 <tr><td>Name</td><td colspan=3><input type=text name=ev_name class='incident' onfocus='this.select();' style='width:456px;text-align:left;' placeholder='i.e. Baker to Vegas' value='".$r['ev_name']."'></td></tr>
 <tr><td>Type</td><td><select name=ev_type style='width:80px'><option value=0></option>".$etypes."</select></td><td>Occurs</td><td><input type=text name=date_start size=16 value='".date("Y/m/d H:i",strtotime($r['ev_date_start']))."' onclick='this.select()' class='datepicker' placeholder='Start'>-<input type=text name=date_end size=16 value='".date("Y/m/d H:i",strtotime($r['ev_date_end']))."' onclick='this.select()' class='datepicker' placeholder='End'></td></tr>";
 		$a .= "<tr><th colspan=4><input type=submit value='Update This Special Event Info'> <button type=button onclick='deleteMe(".$evid.")'>Delete This Event</button></th></tr>\n";
@@ -147,8 +147,8 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		$lq->execute(array(":evid"=>$evid));
 		$gotlocs = ($lq->rowCount()>0) ? 1:0;
 		$lres = $lq->fetchAll(PDO::FETCH_ASSOC);
-		$a .= "<h3 style='cursor:pointer;background-color:lightgrey;width:580px;height:30px;padding:6px 0 0 0;line-height:12px;' id=lochead title='Click to Toggle Event Locations'>Event Locations<br><span style='font-size:10px;font-weight:normal;'>Click to Toggle Event Locations</span></h3>\n";
-		$a .= "<table id=eventlocations border=0 cellpadding=6 cellspacing=0 style='margin-top:-20px;width:580px;display:none;'>\n";
+		$a .= "<h3 style='cursor:pointer;background-color:lightgrey;width:610px;height:30px;padding:6px 0 0 0;line-height:12px;' id=lochead title='Click to Toggle Event Locations'>Event Locations<br><span style='font-size:10px;font-weight:normal;'>Click to Toggle Event Locations</span></h3>\n";
+		$a .= "<table id=eventlocations border=0 cellpadding=6 cellspacing=0 style='margin-top:-20px;width:610px;display:none;'>\n";
 		//add new location
 		$a .= "<tr>\n<td width='100%' colspan=4>\n";
 		$a .= "<h4 align=center>Add New Event Location</h4>\n";
@@ -166,7 +166,7 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		foreach($lres as $ld) {
 			$lid = $ld['el_id'];
 			$a .= "<tr id=eloc".$lid." valign=top>";
-			$a .= "<td>Loc Name</td><td><input type=text id=el_name".$lid." value='".$ld['el_name']."' onchange=\"updateLoc('el_name',".$lid.",".$evid.")\"> <a href='https://maps.google.com/?q=".$ld['el_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a><br><button type=button style='font-size:9px'onclick=\"updateLoc('delete',".$lid.",".$evid.")\">REMOVE THIS LOC</button></td>";
+			$a .= "<td>Loc Name</td><td><input type=text id=el_name".$lid." value='".$ld['el_name']."' onchange=\"updateLoc('el_name',".$lid.",".$evid.")\"> <a href='https://maps.google.com/?q=".$ld['el_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a><br><button type=button style='font-size:9px'onclick=\"updateLoc('delete',".$lid.",".$evid.")\">REMOVE THIS LOCATION</button></td>";
 			$a .= "<td>Loc Note</td><td><textarea id=el_note".$lid." rows=3 onchange=\"updateLoc('el_note',".$lid.",".$evid.")\">".$ld['el_note']."</textarea></td>";
 			$a .= "</tr>\n";
 		}
@@ -179,8 +179,8 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		$sq = $conn->prepare("select Event_Staff.*,el_name,el_gps,el_note from Event_Staff left outer join Event_Locations on Event_Locations.el_id=Event_Staff.el_id where Event_Staff.ev_id=:evid order by el_id,es_callsign");
 		$sq->execute(array(":evid"=>$evid));
 		$sres = $sq->fetchAll(PDO::FETCH_ASSOC);
-		$a .= "<h3 style='cursor:pointer;background-color:lightgrey;width:580px;height:30px;padding:6px 0 0 0;line-height:12px;' id=staffhead title='Click to Toggle Event Staff'>Event Staff Assignments<br><span style='font-size:10px;font-weight:normal;'>Click to Toggle Event Staff</span></h3>\n";
-		$a .= "<table id=eventstaff border=0 cellpadding=6 cellspacing=0 style='margin-top:-20px;width:580px;border-bottom:solid 1px black;display:none;'>\n";
+		$a .= "<h3 style='cursor:pointer;background-color:lightgrey;width:610px;height:30px;padding:6px 0 0 0;line-height:12px;' id=staffhead title='Click to Toggle Event Staff'>Event Staff Assignments<br><span style='font-size:10px;font-weight:normal;'>Click to Toggle Event Staff</span></h3>\n";
+		$a .= "<table id=eventstaff border=0 cellpadding=6 cellspacing=0 style='margin-top:-20px;width:610px;border-bottom:solid 1px black;display:none;'>\n";
 		//add new event staff
 		//get event locs
 		$lgps = "'',";
