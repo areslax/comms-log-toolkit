@@ -65,10 +65,11 @@ function saveData(frm) {
 	frmstr = JSON.stringify(frmobj);
 //saving to json text files mainly used by sticks
 //on server for backup, in case no transfer to parent log
+	var datastr = "stationid=<?=$stationid?>&stacode=<?=$stationcode?>&locid=<?=$locid?>&loccode=<?=$loccode?>&incidentid=<?=$inid?>&rtyp=mcipoll&frmdata="+encodeURIComponent(frmstr);
 	jQuery.ajax({
 		type: "POST",
 		url: "ajax_save_log.php",
-		data: "stationid=<?=$stationid?>&stacode=<?=$stationcode?>&locid=<?=$locid?>&loccode=<?=$loccode?>&incidentid=<?=$inid?>&rtyp=mcipoll&frmdata="+encodeURIComponent(frmstr),
+		data: datastr,
 		success: function(a,b,c) {
 			console.log(a);
 			//build msgfld string
@@ -105,7 +106,8 @@ SPAN { padding: 6px 6px 1px 3px; }
 </style>
 
 <body onload="init()">
-<form id=mcilog method=post action="https://km6wka.net/ares/api/reports/save.php">
+<!--form id=mcilog method=post action="https://km6wka.net/ares/api/reports/save.php"-->
+<form id=mcilog method=post>
 <input type=hidden name=tmstmp id=mcitmstmp value="<?=date("Y-m-d H:i:s")?>">
 <input type=hidden name=location id=mcilocation value="<?=$loccode?>">
 <input type=hidden name=locname id=mcilocname value="<?=$locname?>">

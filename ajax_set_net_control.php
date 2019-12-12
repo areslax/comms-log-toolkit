@@ -13,7 +13,14 @@ $q->execute(array(":iid"=>$_POST['iid'],":sid"=>$_POST['sid'],":gps"=>$_POST['gp
 
 $ncid = $conn->lastInsertId();
 
+setcookie('incid',$_POST['iid']);
 setcookie('ncid',$ncid);
+setcookie('staid',$_POST['sid']);
 
-echo $ncid;
+#$_COOKIE['ncid']=$ncid;
+#$_COOKIE['staid']=$_POST['sid'];
+
+#echo $ncid;
+
+print_r($_COOKIE);
 exit;

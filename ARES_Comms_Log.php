@@ -6,6 +6,8 @@
  * ###################################### */
 ini_set('display_errors','0');
 
+#echo "<pre>";print_r($_COOKIE);exit;
+
 if (!isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on") {
 	header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"], true, 301);
 	exit;
@@ -18,9 +20,11 @@ $newiter = 1;
 
 if (!empty($_COOKIE['ncid'])) {
 	$oid = (isset($_COOKIE['oid'])) ? $_COOKIE['oid']:"";
-//	$iid = (isset($_COOKIE['iid'])) ? $_COOKIE['iid']:"";
-	$lid = (isset($_COOKIE['lid'])) ? $_COOKIE['lid']:"";
+	$iid = (isset($_COOKIE['incid'])) ? $_COOKIE['incid']:"";
+#	$lid = (isset($_COOKIE['lid'])) ? $_COOKIE['lid']:"";
+	$sid = (isset($_COOKIE['staid'])) ? $_COOKIE['staid']:"";
 	$ncid = (isset($_COOKIE['ncid'])) ? $_COOKIE['ncid']:"";
+#echo "sid: ".$sid.", iid: ".$iid;exit;
 	include "grab_report.php"; 
 }
 /**/

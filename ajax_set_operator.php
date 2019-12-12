@@ -43,8 +43,8 @@ else {
 }
 //set PHP cookies for report checking
 setcookie("oid",$oid);
-//setcookie("iid",$iid);
+setcookie("incid",$_POST['iid']);
 setcookie("lid",$lid);
 setcookie("ncid",$ncid);
 
-#print_r($_COOKIE);
+print_r($_COOKIE);

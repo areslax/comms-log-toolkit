@@ -298,13 +298,14 @@ function relayMessage(itr) {
 	var mfrom = encodeURIComponent(jQuery("#msgfrom"+itr).val());
 	var mto = encodeURIComponent(jQuery("#msgto"+itr).val());
 	var msg = encodeURIComponent(jQuery("#msg"+itr).val());
+	var rrq = jQuery("#act"+itr).val();
 	var sendvia = "";
 	var sendviav = "sendvia_"+itr+"[]";
 	var frmsendvia = document.getElementsByName(sendviav);
 	for(i=0;i<frmsendvia.length;i++) {
 		sendvia += (frmsendvia[i].checked) ? frmsendvia[i].value+":":"";
 	}
-	var datastr = "from="+mfrom+"&to="+mto+"&msg="+msg+"&via="+sendvia;
+	var datastr = "from="+mfrom+"&to="+mto+"&msg="+msg+"&via="+sendvia+"&rrq="+rrq;
 	jQuery.ajax({
 		type: "POST",
 		url: "ajax_send_relay_message.php",

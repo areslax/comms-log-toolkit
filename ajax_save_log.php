@@ -39,7 +39,25 @@ switch($rtyp) {
 	$stacode = $jdata->location;
 	$tmstamp = $jdata->mcitmstmp;
 	$location = $staid;
+	//Triage Counts
+	$immediate = $jdata->immediate;
+	$delayed = $jdata->delayed;
+	$minor = $jdata->minor;
+	$fatalities = $jdata->fatalities;
+	$iq = $conn->prepare("insert into Location_MCI_Status (l_id,ms_timestamp,ms_immediate,ms_delayed,ms_minor,ms_fatalities) values (:lid,:tim,:imm,:del,:min,:fat)");
+	$iq->execute(array(":lid"=>$lid,":tim"=>$tmstamp,":imm"=>$immediate,":del"=>$delayed,":min"=>$minor,":fat"=>$fatalities));
 	//Patients
+	foreach($jdata->patienttype as $i => $v) {
+		if (!empty($jdata->patientinfo[$i])) {
+			$ptype = $v;
+			$pinfo = $jdata->patientinfo[$i];
+			$trans = $jdata->transport[$i];
+			$timea = date("YmdHi",strtotime($jdata->timearrived[$i]));
+			$pdata = '{"patient_type":"'.$v.'","patient_info":"'.$pinfo.'","transport":"'.$trans.'","time_arrived":"'.$timea.'"}';
+			$pq = $conn->prepare("insert into Patients (l_id,p_type,p_note,p_transport,p_timestamp,p_data) values (:lid,:ptype,:pinfo,:trans,:timea,:pdata)");
+			$pq->execute(array(":lid"=>$lid,":ptype"=>$ptype,":pinfo"=>$pinfo,":trans"=>$trans;":timea"=>$timea,":pdata"=>$pdata));
+		}
+	}
 	break;
 	case "hsapoll":
 	$stacode = $jdata->location;
@@ -68,20 +86,12 @@ switch($rtyp) {
 	else {
 		$iq = $conn->prepare("insert into Availability (l_id,i_id,a_timestamp,a_data,a_servicelevel,a_medsurg,a_tele,a_icu,a_picu,a_nicu,a_peds,a_obgyn,a_trauma,a_burn,a_iso,a_psych,a_or,a_vent,a_decon,a_other) values (:lid,:iid,:now,:data,:svclvl,:medsurg,:tele,:icu,:picu,:nicu,:peds,:obgyn,:trauma,:burn,:iso,:psych,:opr,:vent,:decon,:other)");
 		$iq->execute(array(":lid"=>$lid,":iid"=>$incid,":now"=>$collected,":data"=>$edata,":svclvl"=>$servicelvls[$jdata->servicelevel],":medsurg"=>$jdata->medsurg,":tele"=>$jdata->tele,":icu"=>$jdata->icu,":picu"=>$jdata->picu,":nicu"=>$jdata->nicu,":peds"=>$jdata->peds,":obgyn"=>$jdata->obgyn,":trauma"=>$jdata->trauma,":burn"=>$jdata->burn,":iso"=>$jdata->isolation,":psych"=>$jdata->psych,":opr"=>$jdata->or,":vent"=>$jdata->vent,":decon"=>$decon,":other"=>$other));
-
-if ($iq->errorInfo()[0]!='00000') {
-echo "oops:\n";
-print_r($iq->errorInfo());
-exit;
-}
+		if ($iq->errorInfo()[0]!='00000') {
+			echo "oops:\n";
+			print_r($iq->errorInfo());
+			exit;
+		}
 	}
-	break;
-	case "relreq":
-	$stacode = $jdata->rellocation;
-	//add dump to INSERT Relay_Requests
-	break;
-	case "comms":
-	$stacode = $jdata->stationid;
 	break;
 }
 

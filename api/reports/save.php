@@ -47,64 +47,29 @@ class dbAct {
 		//check for mci or hsa poll, resource request and skip this next part
 		if (empty($formdata['mcitmstmp']) && empty($formdata['hsatmstmp']) && empty($formdata['rrtmstmp'])) {
 		//check for existing report
-		$q = "select r_id from Reports where r_data=:rdata limit 1";
-		$res = $this->conn->prepare($q);
-		$res->execute(array(":rdata"=>$formjson));
+		$currsta = '"stationid":"'.$formdata['stationid'].'","incidentid":"'.$formdata['incidentid'].'"';
+		$res = $this->conn->prepare("select r_id from Reports where r_data like ? order by r_id desc limit 1");
+		$res->execute(array("%$currsta%"));
 		$gots = ($res->rowCount() > 0) ? 1:0;
+
 		if (!$gots) {
-		//save entire log, if new
-		$q = "insert into Reports set o_id=:oid,r_timestamp='".date("YmdHis")."',r_data=:rdata";
-		$res = $this->conn->prepare($q);
-		$res->execute(array(":oid"=>$formdata['o_id'],":rdata"=>$formjson));
-		$rid = $this->conn->lastInsertId();
-		//loop through rows
-		$incs = $formdata['ids'];
-		foreach($incs as $inc) {
-		//no need to log empty messages
-		if (empty($formdata['msg_'.$inc])) { continue; }
-		//which form/poll
-		$typ = $formdata['typ_'.$inc];
-		$actdone = (isset($formdata['actdone_'.$inc])) ? $formdata['actdone_'.$inc]:0;
-		switch($typ) {
-			//save mci poll (Patients)
-//			case 1:
-			//save hsa poll (Availability,Locations.l_status)
-//			case 2:
-			//save event log (Events)
-			case 3:
-				//check for existing
-				$eq = $this->conn->prepare("select e_id from Events where e_timestamp=:ets and e_data=:edata limit 1");
-				$eq->execute(array(":ets"=>date("YmdHis",strtotime($formdata['ts_'.$inc])),":edata"=>$edata));
-				if ($eq->rowCount() < 1) {
-					$q = "insert into Events set r_id=:rid,e_timestamp=:ets,e_data=:edata";
-					$res = $this->conn->prepare($q);
-					$res->execute(array(":rid"=>$rid,":ets"=>date("YmdHis",strtotime($formdata['ts_'.$inc])),":edata"=>$formjson));
-				}
-				break;
-			//save resource request (Requests)
-//			case 4:
-			//save relay messages log (Messages)
-			case 5:
-				$msgstatus = (empty($actdone)) ? date("YmdHis",strtotime($formdata['msgstatus_'.$inc])):date("YmdHis",strtotime($actdone));
-                                //check for existing
-				$tmstmp = date("YmdHis",strtotime($formdata['ts_'.$inc]));
-				$rq = $this->conn->prepare("select msg_id from Messages where msg_timestamp=:mts and msg_data=:mdata limit 1");
-				$rq->execute(array(":mts"=>$tmstmp,":mdata"=>$formjson));
-				if ($rq->rowCount() < 1) {
-					$act = ($formdata['act_'.$inc]=='Yes') ? 1:0;
-					$q = "insert into Messages set r_id=:rid,msg_timestamp=:mts,msg_from=:msgfrom,msg_to=:msgto,msg_reply_req=:msgreplyreq,msg_status=:msgstatus,msg_data=:msgdata";
-					$res = $this->conn->prepare($q);
-					$res->execute(array(":rid"=>$rid,":mts"=>$tmstmp,":msgfrom"=>$formdata['msgfrom_'.$inc],":msgto"=>$formdata['msgto_'.$inc],":msgreplyreq"=>$act,":msgstatus"=>$msgstatus,":msgdata"=>$formjson));
-					//return $res->errorInfo();
-				}
-				break;
-		}//end switch typ
-		}//end foreach incs
-		}//end !gots
+			//save entire log, if new
+			$q = "insert into Reports set o_id=:oid,r_timestamp='".date("YmdHis")."',r_data=:rdata";
+			$res = $this->conn->prepare($q);
+			$res->execute(array(":oid"=>$formdata['o_id'],":rdata"=>$formjson));
+			$rid = $this->conn->lastInsertId();
+		}//end !gots insert
+		else {
+	                //update log, if station+incident exists
+			while($r = $res->fetch(PDO::FETCH_ASSOC)) { $rid = $r['r_id']; }
+			$q = "update Reports set r_timestamp='".date("YmdHis")."',r_data=:rdata where r_id=:rid";
+			$res = $this->conn->prepare($q);
+			$res->execute(array(":rdata"=>$formjson,":rid"=>$rid));
+		}//end else gots update
 		}//end mci/hsa/rr check
 		else {
 			//these three are POSTed forms, not json strings
-			//not directly associated with a report
+			//should be directly associated with a report
 			//mci poll
 			if (!empty($formdata['mcitmstmp'])) {
 				$tmstmp1 = date("YmdHis");//when reported

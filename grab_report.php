@@ -5,12 +5,18 @@
  * #################################### */
 include_once "db_conn.php";
 
-#$oid = (empty($oid)) ? 1:$oid;
-$ncid = '"stationid":"'.$ncid.'"';
+$rlike = '"stationid":"'.$sid.'","incidentid":"'.$iid.'"';
 $grab = "";
 
+#echo "<pre>";print_r($_COOKIE);echo $rlike;exit;
+
 $q = $conn->prepare("select * from Reports where r_data like ? order by r_id desc limit 1");
-$q->execute(array("%$ncid%"));
+$q->execute(array("%$rlike%"));
+if ($q->errorInfo()[0]!='00000') {
+echo "oops:\n";
+print_r($q->errorInfo());
+exit;
+}
 $r=$q->fetch(PDO::FETCH_ASSOC);
 
 //define types of entry
@@ -72,7 +78,7 @@ foreach($d->ids as $id) {
 	}
 
 	$ts = (empty($d->$msg)) ? "":$d->$ts;
-	$tsfocus = (empty($ts) && empty($tsfocus)) ? 'jQuery("#ts'.$id.'").focus();':((!empty($tsfocus)) ? $tsfocus:$ts);
+	$tsfocus = 'jQuery("#ts'.($id-1).'").focus();';//(empty($ts) && empty($tsfocus)) ? 'jQuery("#ts'.$id.'").focus();':((!empty($tsfocus)) ? $tsfocus:$ts);
 
 	$grab .= '<tr id=row'.$id.' valign=top><th id=rid'.$id.'><input type=hidden name=ids[] value='.$id.'><input type=hidden name=msgstatus_'.$id.' id=msgstatus'.$id.' value="'.$d->$msgstatus.'">'.$id.'</th><td><input type=text size=20 name=ts_'.$id.' id=ts'.$id.' onfocus="hiliteme('.$id.')"';
 	if (empty($ts)) { $grab .= ' onblur="getTimestamp(this.id);disableblur(this);"'; }

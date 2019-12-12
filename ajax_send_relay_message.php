@@ -26,6 +26,13 @@ $fq = $conn->prepare("select mc_data from Members left outer join Member_Contact
 $fq->execute(array(":mcall"=>$farr[0],":mfname"=>$farr[1],":mlname"=>$farr[2]));
 $fr = $fq->fetch(PDO::FETCH_ASSOC);
 
+//insert into Relay_Requests
+$mdata = json_encode($_POST);
+$mtime = date("YmdHis");
+$reply = (empty($_POST['rrq'])) ? 0:1;
+$iq = $conn->prepare("insert into Relay_Requests (rq_timestamp,rq_reply_req,rq_status,rq_data) values (:mtime,:reply,1,:mdata)");
+$id->execute(array(":mtime"=>$mtime,":reply"=>$reply,":mdata"=>$mdata));
+
 //sending header is problematic on AWS EC2 instance
 //working on a fix
 //$hedr = "From: ".$fr['mc_data'];
