@@ -231,7 +231,8 @@ function checkType(rtyp,rfld,doit,inid,sid) {
 	//relay request
 	if (rtyp=='6') {
 		var itr = rfld.substring(3,rfld.length);
-		document.getElementById('msgbox_'+itr).innerHTML = "<table border=0 cellpadding=2 cellspacing=0 style='background:none;margin-bottom:-6px;'><tr valign=top style='background:none !important'><td align=left style='background:none !important'><input type=hidden name=rmtyps_"+itr+" id=rmtyps"+itr+" value=''><input type=text name=msgfrom_"+itr+" id=msgfrom"+itr+" class='people' style='width:100px' tabindex='100"+itr+"0' onfocus='hiliteme("+itr+")' placeholder='Relay From'><br><input type=text name=msgto_"+itr+" id=msgto"+itr+" tabindex='100"+itr+"1' onfocus='hiliteme("+itr+")' class='people' onchange='getRelayOpts(this.value,"+itr+");' style='width:100px' placeholder='Relay To'><p style='text-align:center;margin-top:4px;' id=sentfld_"+itr+"><button type=button id=msgbut_"+itr+" style='font-size:11px;cursor:pointer;' onclick='relayMessage("+itr+")'>SEND NOW</button></p></td><td style='background:none !important'>\n<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=4 style='width:183px;padding:2px;' tabindex='100"+itr+"2' onfocus='hiliteme("+itr+")'></textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style='background:none !important'><tr id=butsms_"+itr+" style='display:none'><td style='padding:0px !important'><input type=checkbox name=sendvia_"+itr+"[] value=sms></td><td style='font-size:10px;text-align:left;'>SMS</td></tr><tr id=butemail_"+itr+" style='display:none'><td><input type=checkbox name=sendvia_"+itr+"[] value=email></td><td style='font-size:10px;text-align:left;'>Email</td></tr><tr id=butother_"+itr+"><td><input type=checkbox name=sendvia_"+itr+"[] value=other></td><td style='font-size:10px;text-align:left;'>Other</td></tr></table></tr></table>";
+		document.getElementById('msgbox_'+itr).innerHTML = "<table border=0 cellpadding=2 cellspacing=0 style='background:none;margin-bottom:-6px;'><tr valign=top style='background:none !important'><td align=left style='background:none !important'><input type=hidden name=msgsent_"+itr+" id=msgsent_"+itr+" value=''><input type=hidden name=rmtyps_"+itr+" id=rmtyps"+itr+" value=''><input type=text name=msgfrom_"+itr+" id=msgfrom"+itr+" class='people' style='width:100px' tabindex='100"+itr+"0' onfocus='hiliteme("+itr+")' placeholder='Relay From'><br><input type=text name=msgto_"+itr+" id=msgto"+itr+" tabindex='100"+itr+"1' onfocus='hiliteme("+itr+")' class='people' onchange='getRelayOpts(this.value,"+itr+");' style='width:100px' placeholder='Relay To'></td><td style='background:none !important'>\n<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=4 style='width:183px;padding:2px;' tabindex='100"+itr+"2' onfocus='hiliteme("+itr+")'></textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style='background:none !important'><tr id=butsms_"+itr+" style='display:none'><td style='padding:0px !important'><input type=checkbox name=sendvia_"+itr+"[] value=sms></td><td style='font-size:10px;text-align:left;'>SMS</td></tr><tr id=butemail_"+itr+" style='display:none'><td><input type=checkbox name=sendvia_"+itr+"[] value=email></td><td style='font-size:10px;text-align:left;'>Email</td></tr><tr id=butother_"+itr+"><td><input type=checkbox name=sendvia_"+itr+"[] value=other></td><td style='font-size:10px;text-align:left;'>Other</td></tr></table></tr></table>";
+		document.getElementById('reqtd_'+itr).innerHTML += "<p style='text-align:center;margin-top:4px;' id=sentfld_"+itr+"><button type=button id=msgbut_"+itr+" style='font-size:11px;cursor:pointer;' onclick='relayMessage("+itr+")'>SEND NOW</button></p>";
 		init();
 		initAuto();
 	}
@@ -291,6 +292,25 @@ function markDone(idn) {
 	document.getElementById("act"+idn).style.display = "none";
 	document.getElementById("actdiv"+idn).innerHTML = "<textarea id='actdone"+idn+"' name='actdone_"+idn+"' style='resize:none;text-align:center;font-size:10px;width:80px;height:22px;background:none;border:none;'></textarea>";
 	getTimestamp("actdone"+idn);
+	if (document.getElementById("typ"+idn).value.indexOf("Relay")!=-1) {
+		//marking relay request response recieved, so update Relay_Request record
+		var datastr = "rrid="+idn;
+		jQuery.ajax({
+			type: "POST",
+			url: "ajax_update_relay_request.php",
+			data: datastr,
+			success: function(a,b,c){
+				console.log(a);
+				document.getElementById("actdiv"+idn).innerHTML = "<textarea id='actdone"+idn+"' name='actdone_"+idn+"' style='resize:none;text-align:center;font-size:10px;width:80px;height:22px;background:none;border:none;'></textarea>";
+				getTimestamp("actdone"+idn);
+				document.getElementById("actdiv"+idn).innerHTML += '<div style="margin-top:-10px;text-align:center;font-size:10px;line-height:10px;">'+a.replace(" ","<br>")+'</div>';
+			}
+		});
+	}
+	else {
+		document.getElementById("actdiv"+idn).innerHTML = "<textarea id='actdone"+idn+"' name='actdone_"+idn+"' style='resize:none;text-align:center;font-size:10px;width:80px;height:22px;background:none;border:none;'></textarea>";
+		getTimestamp("actdone"+idn);
+	}
 }
 
 function relayMessage(itr) {
@@ -314,6 +334,8 @@ function relayMessage(itr) {
 			console.log(a);
 			//populate SEND NOW space with timestamp
 			getTimestampHTML("sentfld_"+itr);
+			//populate hidden field for form save/recall
+			getTimestamp("msgsent_"+itr);
 			var sentdata = jQuery("#sentfld_"+itr).html().replace("<br>"," ");
 			//update container with timestamp string
 			jQuery("#msgstatus"+itr).val(sentdata);
