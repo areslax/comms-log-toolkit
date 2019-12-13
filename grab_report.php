@@ -52,6 +52,7 @@ foreach($d->ids as $id) {
 		$msgfrom = "msgfrom_".$id;
 		$msgto = "msgto_".$id;
 		$sendvia = "sendvia_".$id;
+		$sendopts = "sendopts_".$id;
 		$rmtyps = "rmtyps_".$id;
 		$msgsent = "msgsent_".$id;
 	}
@@ -87,12 +88,12 @@ foreach($d->ids as $id) {
 		$sendbut = '';
 	}
 	else {
-		$grab .= '<table border=0 cellpadding=2 cellspacing=0 style="background:none;margin-bottom:-6px;"><tr valign=top style="background:none !important"><td align=left style="background:none !important"><input type=hidden name=msgsent_'.$id.' id=msgsent_'.$id.' value="'.$d->$msgsent.'"><input type=text name=msgfrom_'.$id.' id=msgfrom'.$id.' class="people" style="width:100px" onfocus="hiliteme('.$id.')" placeholder="Relay From" value="'.$d->$msgfrom.'"><br><input type=text name=msgto_'.$id.' id=msgto'.$id.' onfocus="hiliteme('.$id.')" class="people" onchange="getRelayOpts(this.value,'.$id.');" style="width:100px" placeholder="Relay To" value="'.$d->$msgto.'">';
+		$grab .= '<table border=0 cellpadding=2 cellspacing=0 style="background:none;margin-bottom:-6px;"><tr valign=top style="background:none !important"><td align=left style="background:none !important"><input type=hidden name=msgsent_'.$id.' id=msgsent_'.$id.' value="'.$d->$msgsent.'"><input type=hidden name=rmtyps_'.$id.' id=rmtyps'.$id.' value="'.$d->$rmtyps.'"><input type=hidden name=sendopts_'.$id.' id=sendopts'.$id.' value=\''.stripslashes($d->$sendopts).'\'><input type=text name=msgfrom_'.$id.' id=msgfrom'.$id.' class="people" style="width:100px" onfocus="hiliteme('.$id.')" placeholder="Relay From" value="'.$d->$msgfrom.'"><br><input type=text name=msgto_'.$id.' id=msgto'.$id.' onfocus="hiliteme('.$id.')" class="people" onchange="getRelayOpts(this.value,'.$id.');" style="width:100px" placeholder="Relay To" value="'.$d->$msgto.'">';
 
-		$sendbut = (empty($d->$msgsent)) ? '<p style="text-align:center;margin-top:4px;" id=sentfld_'.$id.'><button type=button id=msgbut_'.$id.' style="font-size:11px;cursor:pointer;" onclick="relayMessage('.$id.')">SEND NOW</button></p>':'<div style="margin-top:-10px;text-align:center;font-size:10px;line-height:10px;">'.str_replace(" ","<br>",date("m/d/Y H:i:s",strtotime($d->$msgsent))).'</div>';
+		$sendbut = (empty($d->$msgsent)) ? '<p style="text-align:center;margin-top:4px;" id=sentfld_'.$id.'><button type=button id=msgbut_'.$id.' style="font-size:11px;cursor:pointer;" onclick="relayMessage('.$id.')">SEND NOW</button></p>':'<div style="margin-top:4px;text-align:center;font-size:10px;line-height:10px;">'.str_replace(" ","<br>",date("m/d/Y H:i:s",strtotime($d->$msgsent))).'</div>';
 
 		$grab .= '</p></td><td style="background:none !important"><textarea name=msg_'.$id.' id=msg'.$id.' class="msg" rows=4 style="width:183px;padding:2px;" onfocus="hiliteme('.$id.')">'.$d->$msg.'</textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style="background:none !important">';
-		$rmtypa = explode(".",$d->$rmtyps);
+		$rmtypa = json_decode(stripslashes($d->$sendopts),'true');
 		if (in_array("sms",$rmtypa)) {
 			$chkd = (in_array("sms",$d->$sendvia)) ? " checked":"";
 			$grab .= '<tr id=butsms_'.$id.'><td style="padding:0px !important"><input type=checkbox'.$chkd.' name=sendvia_'.$id.'[] value=sms></td><td style="font-size:10px;text-align:left;">SMS</td></tr>';
@@ -101,10 +102,8 @@ foreach($d->ids as $id) {
 			$chkd = (in_array("email",$d->$sendvia)) ? " checked":"";
 			$grab .= '<tr id=butemail_'.$id.'><td><input type=checkbox'.$chkd.' name=sendvia_'.$id.'[] value=email></td><td style="font-size:10px;text-align:left;">Email</td></tr>';
 		}
-		if (!empty($d->$sendvia)) {
-			$chkd = (in_array("other",$d->$sendvia)) ? " checked":"";
-			$grab .= '<tr id=butother_'.$id.'><td><input type=checkbox'.$chkd.' name=sendvia_'.$id.'[] value=other></td><td style="font-size:10px;text-align:left;">Other</td></tr>';
-		}
+		$chkd = (in_array("other",$d->$sendvia)) ? " checked":"";
+		$grab .= '<tr id=butother_'.$id.'><td><input type=checkbox'.$chkd.' name=sendvia_'.$id.'[] value=other></td><td style="font-size:10px;text-align:left;">Other</td></tr>';
 		$grab .= "</table></td></tr></table>";
 	}
 	$grab .= '</td><td id=reqtd_'.$id.' align=center>';
@@ -112,10 +111,10 @@ foreach($d->ids as $id) {
 	$hidemenu = (empty($d->$actdone)) ? "":"display:none;";
 	$grab .= '<select name=act_'.$id.' id=act'.$id.' onfocus="hiliteme('.$id.')" style="width:60px;'.$hidemenu.'" onchange="checkAction('.$id.',this.selectedIndex)" onblur="document.getElementById(\'who'.$id.'\').focus()"><option'.$nosel.'>No<option'.$yssel.'>Yes</select>';
 	$grab .= '<div id=actdiv'.$id.' class="actdiv" style="'.$showdone.'">';
-	$donebut = '<button type=button style="display:inherit;margin-bottom:14px;" class="combut noprint" onclick="markDone('.$id.')">Done</button>';
+	$donebut = '<button type=button style="display:inherit;margin-bottom:0px;" class="combut noprint" onclick="markDone('.$id.')">Done</button>';
 	if (!empty($d->$actdone)) { $donebut = '<div style="font-size:10px;line-height:10px;">'.str_replace(" ","<br>",date("m/d/Y H:i:s",strtotime($d->$actdone))).'</div>'; }
-	$grab .= $donebut.$sendbut;
-	$grab .= '</div></td><td><input type=text name=who_'.$id.' id=who'.$id.' size=9 style="text-align:center" placeholder="Callsign" onfocus="hiliteme('.$id.')" onblur="if(this.value==\'\'){this.value=prompt(\'What is your call sign?\');}setCallSign('.$id.',this.value);addRow(this.form);document.getElementById(\'who'.($id + 1).'\').value=this.value;this.onBlur=\'\';disableblur(this);document.getElementById(\'ts'.($id +1).'\').focus();" value="'.$d->$who.'"></td></tr>';
+	$grab .= $donebut;
+	$grab .= '</div>'.$sendbut.'</td><td><input type=text name=who_'.$id.' id=who'.$id.' size=9 style="text-align:center" placeholder="Callsign" onfocus="hiliteme('.$id.')" onblur="if(this.value==\'\'){this.value=prompt(\'What is your call sign?\');}setCallSign('.$id.',this.value);addRow(this.form);document.getElementById(\'who'.($id + 1).'\').value=this.value;this.onBlur=\'\';disableblur(this);document.getElementById(\'ts'.($id +1).'\').focus();" value="'.$d->$who.'"></td></tr>';
 
 	//set for javascript to pick up for new rows
 	$newiter = $id;

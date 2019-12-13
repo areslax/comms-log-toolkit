@@ -231,8 +231,9 @@ function checkType(rtyp,rfld,doit,inid,sid) {
 	//relay request
 	if (rtyp=='6') {
 		var itr = rfld.substring(3,rfld.length);
-		document.getElementById('msgbox_'+itr).innerHTML = "<table border=0 cellpadding=2 cellspacing=0 style='background:none;margin-bottom:-6px;'><tr valign=top style='background:none !important'><td align=left style='background:none !important'><input type=hidden name=msgsent_"+itr+" id=msgsent_"+itr+" value=''><input type=hidden name=rmtyps_"+itr+" id=rmtyps"+itr+" value=''><input type=text name=msgfrom_"+itr+" id=msgfrom"+itr+" class='people' style='width:100px' tabindex='100"+itr+"0' onfocus='hiliteme("+itr+")' placeholder='Relay From'><br><input type=text name=msgto_"+itr+" id=msgto"+itr+" tabindex='100"+itr+"1' onfocus='hiliteme("+itr+")' class='people' onchange='getRelayOpts(this.value,"+itr+");' style='width:100px' placeholder='Relay To'></td><td style='background:none !important'>\n<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=4 style='width:183px;padding:2px;' tabindex='100"+itr+"2' onfocus='hiliteme("+itr+")'></textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style='background:none !important'><tr id=butsms_"+itr+" style='display:none'><td style='padding:0px !important'><input type=checkbox name=sendvia_"+itr+"[] value=sms></td><td style='font-size:10px;text-align:left;'>SMS</td></tr><tr id=butemail_"+itr+" style='display:none'><td><input type=checkbox name=sendvia_"+itr+"[] value=email></td><td style='font-size:10px;text-align:left;'>Email</td></tr><tr id=butother_"+itr+"><td><input type=checkbox name=sendvia_"+itr+"[] value=other></td><td style='font-size:10px;text-align:left;'>Other</td></tr></table></tr></table>";
+		document.getElementById('msgbox_'+itr).innerHTML = "<table border=0 cellpadding=2 cellspacing=0 style='background:none;margin-bottom:-6px;'><tr valign=top style='background:none !important'><td align=left style='background:none !important'><input type=hidden name=msgsent_"+itr+" id=msgsent_"+itr+" value=''><input type=hidden name=rmtyps_"+itr+" id=rmtyps"+itr+" value=''><input type=hidden name=sendopts_"+itr+" id=sendopts"+itr+" value=''><input type=text name=msgfrom_"+itr+" id=msgfrom"+itr+" class='people' style='width:100px' tabindex='100"+itr+"1' onfocus='hiliteme("+itr+")' placeholder='Relay From'><br><input type=text name=msgto_"+itr+" id=msgto"+itr+" tabindex='100"+itr+"2' onfocus='hiliteme("+itr+")' class='people' onchange='getRelayOpts(this.value,"+itr+");' style='width:100px' placeholder='Relay To'></td><td style='background:none !important'>\n<textarea name=msg_"+itr+" id=msg"+itr+" class='msg' rows=4 style='width:183px;padding:2px;' tabindex='100"+itr+"3' onfocus='hiliteme("+itr+")'></textarea></td><td><table border=0 cellpadding=0 cellspacing=0 style='background:none !important'><tr id=butsms_"+itr+" style='display:none'><td style='padding:0px !important'><input type=checkbox name=sendvia_"+itr+"[] value=sms></td><td style='font-size:10px;text-align:left;'>SMS</td></tr><tr id=butemail_"+itr+" style='display:none'><td><input type=checkbox name=sendvia_"+itr+"[] value=email></td><td style='font-size:10px;text-align:left;'>Email</td></tr><tr id=butother_"+itr+"><td><input type=checkbox name=sendvia_"+itr+"[] value=other></td><td style='font-size:10px;text-align:left;'>Other</td></tr></table></tr></table>";
 		document.getElementById('reqtd_'+itr).innerHTML += "<p style='text-align:center;margin-top:4px;' id=sentfld_"+itr+"><button type=button id=msgbut_"+itr+" style='font-size:11px;cursor:pointer;' onclick='relayMessage("+itr+")'>SEND NOW</button></p>";
+		jQuery("#typ"+itr).attr("tabindex","100"+itr+"0");
 		init();
 		initAuto();
 	}
@@ -270,20 +271,28 @@ function getRelayOpts(val,itr) {
 		data: datastr,
 		success: function(a,b,c){
 			console.log(a);
+			var soi = 0;
+			var sendopts = new Object();
 			if (a.indexOf('sms')!=-1) {
 				jQuery("#butsms_"+itr).css("display","table-row");
+				sendopts[soi] = "sms";
+				soi++;
 			}
 			else {
 				jQuery("#butsms_"+itr).css("display","none");
 			}
 			if (a.indexOf('email')!=-1) {
 				jQuery("#butemail_"+itr).css("display","table-row");
+				sendopts[soi] = "email";
+				soi++;
 			}
 			else {
 				jQuery("#butemail_"+itr).css("display","none");
 			}
+			sendopts[soi] = "other";
 			jQuery("#rmtyps"+itr).val(a);
-			jQuery("#msg"+(itr-1)).focus();
+			jQuery("#sendopts"+itr).val(JSON.stringify(sendopts));
+			jQuery("#msg"+itr).focus();
 		}
 	});
 }
