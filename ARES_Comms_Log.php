@@ -1,6 +1,6 @@
 <?php
 /* ####################################
- * ARES_Comms_Log.php JB
+ * ARES_Comms_Log.php
  * Form for quickly transcribing messages
  * Last updated: 2019-10-27
  * ###################################### */
