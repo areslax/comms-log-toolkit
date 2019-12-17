@@ -6,25 +6,50 @@
 ini_set('display_errors','1');
 require "../config/database.php";
 
-class dbAct {
+class dbAction {
  
 	// database connection and table name
 	private $conn;
 	
 	public function __construct($db) {
 		$this->conn = $db;
+		/* memcached                      */
+		/* required: add servers to class */
+		$MC_SERVERS = array('127.0.0.1');
+		$this->mc = new Memcache();
+		foreach($MC_SERVERS as $server) {
+			$this->mc->addServer($server);
+		}
+		/**/
 	}
  
+	//validate incoming string table variables
+	public function checkstr($str) {
+		//only alphanumeric or underscores allowed
+		return preg_match('/^[A-Za-z0-9_]+$/',$str);
+	}
+
 	// get all data in one table
 	public function readAll() {
 		global $tablename;
 		global $orderby;
-		//select all data
-		$q = "select * from ".$tablename." order by ".$orderby;
-		$res = $this->conn->prepare($q);
-		$res->execute();
- 
-		return $res;
+		//validate incoming variables
+		if (!$this->checkstr($tablename)) { return "dope 1";exit; }
+		if (!$this->checkstr($orderby)) { return "dope 2";exit; }
+		//uses memcached data
+		$res = $this->mc->get("all_".$tablename);
+		if ($res===false) {
+			$res = array();
+			//select all data
+			$q = "select * from ".$tablename." order by ".$orderby;
+			$req = $this->conn->query($q);
+			while($row=$req->fetch(PDO::FETCH_ASSOC)) {
+				$res[] = $row;
+			}
+			//10 minute expiry
+			$this->mc->set("all_".$tablename,$res,0,600);
+		} 
+		return json_encode($res);
 	}
 
 	//get all data for one record in one table
@@ -34,10 +59,10 @@ class dbAct {
 		global $recid;
 		//select one row
 		$q = "select * from ".$tablename." where ".$fldname."=:recid limit 1";
-		$res = $this->conn->prepare($q);
-		$res->execute(array(":recid"=>$recid));
+		$req = $this->conn->prepare($q);
+		$req->execute(array(":recid"=>$recid));
 
-		return $res;
+		return json_encode($req->fetch(PDO::FETCH_ASSOC));
 	}
 
 	//save log
@@ -122,11 +147,11 @@ class dbAct {
 }
 
 //connect to db and create object
-$database = new dbConn();
-$db = $database->getConn();
+$dbase = new dbConnect();
+$db = $dbase->getConn();
 
 //set up to use db object
-$dbdo = new dbAct($db);
+$dbdo = new dbAction($db);
 
 if (!empty($_POST)) {
 	$dbsave = $dbdo->saveLog();
@@ -138,20 +163,15 @@ if (!empty($_POST)) {
 $tablename = "Members";
 $orderby = 'm_lname';
 $dset = $dbdo->readAll();
-echo "dset:<pre>";
-while($r=$dset->fetch(PDO::FETCH_ASSOC)) {
-	print_r($r);
-}
-
+$dres = json_decode(print_r($dset));
+/**/
+/*
 //select one from a table
 $tablename = "Members";
 $fldname = "m_id";
 $recid = 4;
 $dset = $dbdo->readOne();
-echo "dset:<pre>";
-while($r=$dset->fetch(PDO::FETCH_ASSOC)) {
-	print_r($r);
-}
+$dres = json_decode(print_r($dset));
 /**/
 
 ?>
