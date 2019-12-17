@@ -34,8 +34,8 @@ class dbAction {
 		global $tablename;
 		global $orderby;
 		//validate incoming variables
-		if (!$this->checkstr($tablename)) { return "dope 1";exit; }
-		if (!$this->checkstr($orderby)) { return "dope 2";exit; }
+		if (!$this->checkstr($tablename)) { exit; }
+		if (!$this->checkstr($orderby)) { exit; }
 		//uses memcached data
 		$res = $this->mc->get("all_".$tablename);
 		if ($res===false) {
