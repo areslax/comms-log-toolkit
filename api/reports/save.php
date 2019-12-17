@@ -23,74 +23,40 @@ class dbAction {
 		/**/
 	}
  
-	//validate incoming string table variables
+	//validate incoming string variables
 	public function checkstr($str) {
 		//only alphanumeric or underscores allowed
 		return preg_match('/^[A-Za-z0-9_]+$/',$str);
 	}
 
-	// get all data in one table
-	public function readAll() {
-		global $tablename;
-		global $orderby;
-		//validate incoming variables
-		if (!$this->checkstr($tablename)) { exit; }
-		if (!$this->checkstr($orderby)) { exit; }
-		//uses memcached data
-		$res = $this->mc->get("all_".$tablename);
-		if ($res===false) {
-			$res = array();
-			//select all data
-			$q = "select * from ".$tablename." order by ".$orderby;
-			$req = $this->conn->query($q);
-			while($row=$req->fetch(PDO::FETCH_ASSOC)) {
-				$res[] = $row;
-			}
-			//10 minute expiry
-			$this->mc->set("all_".$tablename,$res,0,600);
-		} 
-		return json_encode($res);
-	}
-
-	//get all data for one record in one table
-	public function readOne() {
-		global $tablename;
-		global $fldname;
-		global $recid;
-		//select one row
-		$q = "select * from ".$tablename." where ".$fldname."=:recid limit 1";
-		$req = $this->conn->prepare($q);
-		$req->execute(array(":recid"=>$recid));
-
-		return json_encode($req->fetch(PDO::FETCH_ASSOC));
-	}
-
 	//save log
 	public function saveLog() {
+
 		$formdata = $_POST;
 		$formjson = json_encode($formdata);
+
 		//check for mci or hsa poll, resource request and skip this next part
 		if (empty($formdata['mcitmstmp']) && empty($formdata['hsatmstmp']) && empty($formdata['rrtmstmp'])) {
-		//check for existing report
-		$currsta = '"stationid":"'.$formdata['stationid'].'","incidentid":"'.$formdata['incidentid'].'"';
-		$res = $this->conn->prepare("select r_id from Reports where r_data like ? order by r_id desc limit 1");
-		$res->execute(array("%$currsta%"));
-		$gots = ($res->rowCount() > 0) ? 1:0;
+			//check for existing report
+			$currsta = '"stationid":"'.$formdata['stationid'].'","incidentid":"'.$formdata['incidentid'].'"';
+			$res = $this->conn->prepare("select r_id from Reports where r_data like ? order by r_id desc limit 1");
+			$res->execute(array("%$currsta%"));
+			$gots = ($res->rowCount() > 0) ? 1:0;
 
-		if (!$gots) {
-			//save entire log, if new
-			$q = "insert into Reports set o_id=:oid,r_timestamp='".date("YmdHis")."',r_data=:rdata";
-			$res = $this->conn->prepare($q);
-			$res->execute(array(":oid"=>$formdata['o_id'],":rdata"=>$formjson));
-			$rid = $this->conn->lastInsertId();
-		}//end !gots insert
-		else {
-	                //update log, if station+incident exists
-			while($r = $res->fetch(PDO::FETCH_ASSOC)) { $rid = $r['r_id']; }
-			$q = "update Reports set r_timestamp='".date("YmdHis")."',r_data=:rdata where r_id=:rid";
-			$res = $this->conn->prepare($q);
-			$res->execute(array(":rdata"=>$formjson,":rid"=>$rid));
-		}//end else gots update
+			if (!$gots) {
+				//save entire log, if new
+				$q = "insert into Reports set o_id=:oid,r_timestamp='".date("YmdHis")."',r_data=:rdata";
+				$res = $this->conn->prepare($q);
+				$res->execute(array(":oid"=>$formdata['o_id'],":rdata"=>$formjson));
+				$rid = $this->conn->lastInsertId();
+			}//end !gots insert
+			else {
+	        	        //update log, if station+incident exists
+				while($r = $res->fetch(PDO::FETCH_ASSOC)) { $rid = $r['r_id']; }
+				$q = "update Reports set r_timestamp='".date("YmdHis")."',r_data=:rdata where r_id=:rid";
+				$res = $this->conn->prepare($q);
+				$res->execute(array(":rdata"=>$formjson,":rid"=>$rid));
+			}//end else gots update
 		}//end mci/hsa/rr check
 		else {
 			//these three are POSTed forms, not json strings
@@ -157,22 +123,6 @@ if (!empty($_POST)) {
 	$dbsave = $dbdo->saveLog();
 	print_r($dbsave);
 }
-
-/*
-//select all from a table
-$tablename = "Members";
-$orderby = 'm_lname';
-$dset = $dbdo->readAll();
-$dres = json_decode(print_r($dset));
-/**/
-/*
-//select one from a table
-$tablename = "Members";
-$fldname = "m_id";
-$recid = 4;
-$dset = $dbdo->readOne();
-$dres = json_decode(print_r($dset));
-/**/
 
 ?>
 
