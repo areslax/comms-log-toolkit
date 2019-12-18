@@ -95,9 +95,8 @@ if ((!empty($_GET['iid']) && $_GET['iid']!='undefined') || !empty($iid)) {
 	$iid = (!empty($iid)) ? $iid:$_GET['iid'];
 	$q = $conn->prepare("select * from Incidents where i_id=:iid");
 	$q->execute(array(':iid'=>$iid));
-	$res = $q->fetchAll(PDO::FETCH_ASSOC);
 	$a = "{\"result\":[";
-	foreach($res as $r) {
+	while($r=$q->fetch(PDO::FETCH_ASSOC)) {
 		foreach($r as $key => $val) {
 			$r[$key] = addslashes($val);
 		}
@@ -105,15 +104,13 @@ if ((!empty($_GET['iid']) && $_GET['iid']!='undefined') || !empty($iid)) {
 		//get incident lead
 		$lq = $conn->query("select m_callsign,m_fname,m_lname from Members where m_id='".$r['i_lead_id']."' limit 1");
 		$lq->execute();
-		$lr = $lq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($lr as $ld) {
+		while($ld=$lq->fetch(PDO::FETCH_ASSOC)) {
 			$thislead = strtoupper($ld['m_callsign']).": ".$ld['m_fname']." ".$ld['m_lname'];
 		}
 		//get incident types
 		$itypes = "";
 		$iq = $conn->query("select * from Incident_Types order by it_id");
-		$ires = $iq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($ires as $ir) {
+		while($ir=$iq->fetch(PDO::FETCH_ASSOC)) {
 			$sel = ($r['i_type']==$ir['it_id']) ? " selected":"";
 			$itypes .= "<option value=".$ir['it_id'].$sel.">".$ir['it_data'].": ".$ir['it_title']."</option>";
 		}
@@ -170,7 +167,7 @@ if ((!empty($_GET['iid']) && $_GET['iid']!='undefined') || !empty($iid)) {
 		$a .= "<tr><td>Title</td><td><input type=text name=li_title size=14 style='font-weight:bold' value='".$contacts['title']."'></td><td>Note</td><td><input type=text name=li_note value='".$contacts['note']."'></td></tr>\n";
 		$a .= "<tr><td>First Name</td><td><input type=text name=li_fname size=14 style='font-weight:bold' value='".$contacts['fname']."'></td><td>Last Name</td><td><input type=text name=li_lname size=14 style='font-weight:bold' value='".$contacts['lname']."'> <input type=checkbox name=li_active value=1";
 		if (!empty($r['li_active'])) { $a .= " checked"; }
-		$a .= " title='Liaison Active?'> <button type=button onclick=\"deleteLiaison(".$liid.")\" title='Delete This Liaison'>-</button></td></tr>\n";
+		$a .= " title='Liaison Active?'> <button type=button onclick=\"deleteLiaison(".$liid.")\" title='Delete This Liaison' style='color:red'>-</button></td></tr>\n";
 		$i=0;
 		foreach($contacts['data']['type'] as $k) {
 			$icn = ($k>1 && $k!=5) ? " <a href='tel:".$contacts['data']['data'][$i]."' title='Click to launch your phone dialer'><img src='images/icon-phone.svg' alt='phone icon' border=0 width=14 align=absmiddle></a>":" <a href='mailto:".$contacts['data']['data'][$i]."?subject=ARES Message' title='Click to launch your email program'><img src='images/icon-email.svg' alt='email icon' border=0 width=14 align=absmiddle></a>";
@@ -179,7 +176,7 @@ if ((!empty($_GET['iid']) && $_GET['iid']!='undefined') || !empty($iid)) {
 				$sel = ($k==$t) ? " selected":"";
 				$a .= "<option value=".$t.$sel.">".$v."</option>";
 			}
-			$a .= "</select></td><td colspan=3><input type=text name=lic_datas[".$contacts['data']['id'][$i]."] size=44 value='".$contacts['data']['data'][$i]."'> <button type=button onclick=\"deleteMe(".$liid.",'".$contacts['data']['data'][$i]."',".$i.")\" title='Delete This Entry'>-</button>".$icn."</td></tr>\n";
+			$a .= "</select></td><td colspan=3><input type=text name=lic_datas[".$contacts['data']['id'][$i]."] size=44 value='".$contacts['data']['data'][$i]."'> <button type=button onclick=\"deleteMe(".$liid.",'".$contacts['data']['data'][$i]."',".$i.")\" title='Delete This Entry' style='color:red'>-</button>".$icn."</td></tr>\n";
 			$i++;
 		}
 		$a .= "<tr id=lcrow".$i."><td>Add <select name=new_lic_type style='width:80px'>";
@@ -214,8 +211,7 @@ if ((!empty($_GET['iid']) && $_GET['iid']!='undefined') || !empty($iid)) {
 $itypes = "";
 $itarry = array();
 $iq = $conn->query("select * from Incident_Types order by it_id");
-$ires = $iq->fetchAll(PDO::FETCH_ASSOC);
-foreach($ires as $ir) {
+while($ir=$iq->fetch(PDO::FETCH_ASSOC)) {
 	$itypes .= "<option value=".$ir['it_id'].$sel.">".$ir['it_data'].": ".$ir['it_title']."</option>";
 	$itarry[$ir['it_id']]['title'] = $ir['it_title'];
 	$itarry[$ir['it_id']]['data'] = $ir['it_data'];
@@ -332,9 +328,9 @@ function showStatusEdit(mid,mnam,sid) {
 <tr><th colspan=3>Incident Types</th></tr>
 <?php
 foreach($itarry as $it => $idata) {
-	echo "<tr><td><input type=text size=8 name=it_data value='".$idata['data']."' onblur='updateType(".$it.",this.value,0)'></td><td><input type=text size=12 name=it_title value='".$idata['title']."' onblur='updateType(".$it.",this.value,1)'></td><td><button type=button onclick='deleteType(".$it.")'>-</button></td></tr>\n";
+	echo "<tr><td><input type=text size=8 name=it_data value='".$idata['data']."' onblur='updateType(".$it.",this.value,0)'></td><td><input type=text size=12 name=it_title value='".$idata['title']."' onblur='updateType(".$it.",this.value,1)'></td><td><button type=button onclick='deleteType(".$it.")' style='color:red'>-</button></td></tr>\n";
 }
-echo "<tr><td><input type=text size=8 id=it_data_new placeholder='Add Code'></td><td><input type=text size=12 id=it_title_new placeholder='and Type'></td><td><button type=button onclick='addType()'>+</button></td></tr>";
+echo "<tr><td><input type=text size=8 id=it_data_new placeholder='Add Code'></td><td><input type=text size=12 id=it_title_new placeholder='and Type'></td><td><button type=button onclick='addType()' style='color:green'>+</button></td></tr>";
 ?>
 </table>
 </div>

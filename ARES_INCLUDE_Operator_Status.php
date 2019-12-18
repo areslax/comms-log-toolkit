@@ -34,8 +34,7 @@ else {
 //$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $oq = $conn->prepare("select Members.m_id,m_callsign,m_status,m_fname,m_lname,m_prestage_lid,Operators.i_id,i_name,Operators.l_id,l_tactical,l_name,Operators.nc_id,nc_callsign,nc_location,nc_gps,s_title,s_data,s_color from Members left outer join Operators on Operators.m_id=Members.m_id left outer join Incidents on Incidents.i_id=Operators.i_id left outer join Locations on Locations.l_id=Operators.l_id left outer join Net_Controls on Net_Controls.nc_id=Operators.nc_id left outer join Status_Codes on Status_Codes.s_id=Members.m_status");
 $oq->execute();
-$orow = $oq->fetchAll(PDO::FETCH_ASSOC);
-foreach($orow as $o) {
+while($o=$oq->fetch(PDO::FETCH_ASSOC)) {
 	$cs = strtoupper($o['m_callsign']);
 	$ops[$cs]['mid'] = $o['m_id'];
 	$ops[$cs]['name'] = $o['m_lname'].", ".$o['m_fname'];
@@ -46,8 +45,7 @@ foreach($orow as $o) {
 	if (empty($o['l_id'])) {
 		$lq = $conn->prepare("select l_tactical,l_name,l_gps from Locations where l_id=:lid limit 1");
 		$lq->execute(array(':lid'=>$o['m_prestage_lid']));
-		$larr = $lq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($larr as $l) {
+		while($l=$lq->fetch(PDO::FETCH_ASSOC)) {
 			$ops[$cs]['locationname'] = $l['l_tactical'].": ".$l['l_name'];
 			$ops[$cs]['locationgps'] = $l['l_gps'];
 		}

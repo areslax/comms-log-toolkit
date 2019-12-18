@@ -21,8 +21,7 @@ $r=$q->fetch(PDO::FETCH_ASSOC);
 $typs = array(" ");
 $rqq = $conn->prepare("select rqt_title from Entry_Types order by rqt_id");
 $rqq->execute();
-$rqr = $rqq->fetchAll(PDO::FETCH_ASSOC);
-foreach($rqr as $rt) {
+while($rt=$rqq->fetch(PDO::FETCH_ASSOC)) {
         $typs[] = $rt['rqt_title'];
 }
 

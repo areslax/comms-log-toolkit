@@ -17,8 +17,7 @@ $typs = "";
 //get locations and dump to js string
 $lq = $conn->prepare("select el_id,el_name,el_gps,el_note from Event_Locations where ev_id=:evid order by el_name");
 $lq->execute(array(":evid"=>$_GET['eventid']));
-$lr = $lq->fetchAll(PDO::FETCH_ASSOC);
-foreach($lr as $r) {
+while($r=$lq->fetch(PDO::FETCH_ASSOC)) {
 	$thisl = stripslashes($r['el_name']);
 	$locs .= "{label:'".str_replace("'","\'",$thisl)."',value:'".$r['el_gps']."',lid:'".$r['el_id']."'},";
 }
@@ -27,8 +26,7 @@ $locs = rtrim($locs,",")."\n";
 //get people
 $pq = $conn->prepare("select es_id,es_callsign,es_fname,es_lname,es_note from Event_Staff where ev_id=:evid order by el_id,es_callsign");
 $pq->execute(array(":evid"=>$_GET['eventid']));
-$pr = $pq->fetchAll(PDO::FETCH_ASSOC);
-foreach($pr as $r) {
+while($r=$pq->fetch(PDO::FETCH_ASSOC)) {
 	$thisp = strtoupper($r['es_callsign'])." ".$r['es_fname']." ".$r['es_lname'];
 	$peep .= "{label:'".$thisp."',value:'".$thisp."',mid:'".$r['es_id']."'},";
 }
@@ -37,8 +35,7 @@ $peep = rtrim($peep,",")."\n";
 //get incidents (events)
 $iq = $conn->prepare("select ev_id,ev_type,ev_name,ev_date_start,ev_date_end,ev_note from Events_Special where ev_id=:evid limit 1");
 $iq->execute(array(":evid"=>$_GET['eventid']));
-$ir = $iq->fetchAll(PDO::FETCH_ASSOC);
-foreach($ir as $r) {
+while($r=$iq->fetch(PDO::FETCH_ASSOC)) {
 	$thisia = $r['ev_name'];
         $thisib = $r['ev_name'];
         $incids .= "{label:'".$thisib."',value:'".$thisia."',iid:'".$r['ev_id']."'},";
@@ -48,8 +45,7 @@ $incids = rtrim($incids,",")."\n";
 //get net controls
 $ncq = $conn->prepare("select nc_id,nc_callsign,nc_location,ev_name from Net_Controls left outer join Events_Special on Events_Special.ev_id=Net_Controls.i_id where nc_active='1' and ev_id=:evid order by nc_callsign");
 $ncq->execute(array(":evid"=>$_GET['eventid']));
-$ncr = $ncq->fetchAll(PDO::FETCH_ASSOC);
-foreach($ncr as $r) {
+while($r=$ncq->fetch(PDO::FETCH_ASSOC)) {
 	$thisia = $r['nc_callsign'].": ".$r['ev_name'];
 	if (!empty($r['nc_location'])) { $thisia .= ": ".$r['nc_location']; }
 	$ncids .= "{label:'".$thisia."',value:'".$thisia."',ncid:'".$r['nc_id']."'},";
@@ -60,8 +56,7 @@ $ncids = rtrim($ncids,",")."\n";
 $typs = "'',";
 $rqq = $conn->prepare("select rqt_title from Entry_Types order by rqt_id");
 $rqq->execute();
-$rqr = $rqq->fetchAll(PDO::FETCH_ASSOC);
-foreach($rqr as $r) {
+while($r=$rqq->fetch(PDO::FETCH_ASSOC)) {
 	$typs .= "'".$r['rqt_title']."',";
 }
 $typs = rtrim($typs,",")."\n";

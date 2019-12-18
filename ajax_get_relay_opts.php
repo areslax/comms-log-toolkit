@@ -11,9 +11,8 @@ $cs = $_POST['callsign'];
 //get member contact options
 $q = $conn->prepare("select Members.m_id,Member_Contacts.mc_type from Members left outer join Member_Contacts on Member_Contacts.m_id=Members.m_id where m_callsign=:callsign");
 $q->execute(array(':callsign'=>$cs));
-$r1 = $q->fetchAll(PDO::FETCH_ASSOC);
 $res = "";
-foreach($r1 as $r) {
+while($r=$q->fetch(PDO::FETCH_ASSOC)) {
 	switch($r['mc_type']) {
 		case 4:
 		$res .= "sms.";

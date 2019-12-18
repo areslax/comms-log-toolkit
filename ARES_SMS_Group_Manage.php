@@ -50,7 +50,7 @@ if (!empty($_POST['sendmsg']) && !empty($_POST['smsgid'])) {
 		foreach($mids as $mid) {
 			$m = $conn->prepare("select mc_data,mc_carrier,carrier_ext from Member_Contacts left outer join Mobile_Carriers on Mobile_Carriers.carrier_id=Member_Contacts.mc_carrier where m_id=".$mid." and mc_carrier is not NULL and mc_type='4' limit 1");
 			$m->execute();
-			$to = $m->fetchAll(PDO::FETCH_ASSOC);
+			$to = $m->fetch(PDO::FETCH_ASSOC);
 			$addr = str_replace($delim,"",$to[0]['mc_data']).$to[0]['carrier_ext'];
 			mail($addr,"ARES SMS Message",$msg,$hed);
 		}
@@ -69,16 +69,14 @@ if ((!empty($_GET['smsgid']) && $_GET['smsgid']!='undefined' && is_numeric($_GET
 	$smsgid = (!empty($smsgid)) ? $smsgid:$_GET['smsgid'];
 	$q = $conn->prepare("select * from SMS_Groups where smsg_id=:smsgid");
 	$q->execute(array(':smsgid'=>$smsgid));
-	$res = $q->fetchAll(PDO::FETCH_ASSOC);
-	foreach($res as $r) {
+	while($r=$q->fetch(PDO::FETCH_ASSOC)) {
 		$smsg_name = $r['smsg_name'];
 		//make group mids array
 		$mids = json_decode($r['m_ids']);
 		//get members
 		$m_ids = "";
 		$mq = $conn->query("select Member_Contacts.m_id,mc_data,mc_carrier,m_fname,m_lname,m_callsign from Member_Contacts left outer join Members on Members.m_id=Member_Contacts.m_id where mc_type='4' and mc_carrier!='' and mc_carrier is not NULL order by m_callsign");
-		$mres = $mq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($mres as $mr) {
+		while($mr=$mq->fetch(PDO::FETCH_ASSOC)) {
 			$mname = $mr['m_fname']." ".$mr['m_lname'];
 			$sel = (in_array($mr['m_id'],$mids)) ? " selected":"";
 			$m_ids .= "<option value=".$mr['m_id'].$sel.">".strtoupper($mr['m_callsign']).": ".$mname."</option>";
@@ -86,7 +84,7 @@ if ((!empty($_GET['smsgid']) && $_GET['smsgid']!='undefined' && is_numeric($_GET
 		$searchresult = "<form method=post>\n<input type=hidden name=updatesmsgroup value=1>\n<input type=hidden name=smsg_id value='".$smsgid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:420px'>
 		<tr><td>Group Name</td><td><input type=text name=smsg_name class='incident' onfocus='this.select();' style='width:280px;text-align:left;' placeholder='i.e. NW Operators, Admins, etc.' value='".$r['smsg_name']."'></td></tr>
 		<tr valign=top><td>Group&nbsp;Members<br><span class=sm>Shift+Click or Ctrl+Click<br>to select multiple<br><br>Only shows Members with cell and carrier</span></td><td><select multiple name='m_ids[]' class='incident' style='width:280px;height:200px;text-align:left;border-color:lightgrey;'>".$m_ids."</select></td></tr>
-		<tr><th colspan=2><input type=submit value='Update Group'> &nbsp; <input type=button value='Cancel Changes' onclick=\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$smsgid."'\"> &nbsp; <input type=button onclick='deleteMe(".$smsgid.")' value='Delete Group'></th></tr>
+		<tr><th colspan=2><input type=submit value='Update Group' style='font-size:.8em'> &nbsp; <input type=button value='Cancel Changes' style='font-size:.8em' onclick=\"location.href='ARES_SMS_Group_Manage.php?smsgid=".$smsgid."'\"> &nbsp; <input type=button onclick='deleteMe(".$smsgid.")' style='color:red;font-size:.8em;' value='Delete Group'></th></tr>
 		<tr><th colspan=2></form><hr><form method=post><input type=hidden name=sendmsg value=1><input type=hidden name=smsgid value='".$smsgid."'></th></tr>
 		<tr><th colspan=2>".$sentmsg."SEND AN SMS MESSAGE TO: \"".$smsg_name."\"</th></tr>
 		<tr valign=top><td>Text Message<br><span class='sm'>No HTML, just text</span></td><td><textarea name=smsq_message style='width:280px'></textarea></td></tr>
@@ -149,8 +147,7 @@ $xicon = (empty($smsgid)) ? "":"<img src='images/icon-delete.png' border=0 width
 //get members
 $m_ids = "";
 $mq = $conn->query("select Member_Contacts.m_id,mc_data,mc_carrier,m_fname,m_lname,m_callsign from Member_Contacts left outer join Members on Members.m_id=Member_Contacts.m_id where mc_type='4' and mc_carrier!='' and mc_carrier is not NULL order by m_callsign");
-$mres = $mq->fetchAll(PDO::FETCH_ASSOC);
-foreach($mres as $mr) {
+while($mr=$mq->fetch(PDO::FETCH_ASSOC)) {
 	$mname = $mr['m_fname']." ".$mr['m_lname'];
 	$m_ids .= "<option value=".$mr['m_id'].">".strtoupper($mr['m_callsign']).": ".$mname."</option>";
 }
@@ -170,9 +167,8 @@ var smsgroups = new Array(<?php
 //get sms groups for lookup
 $sq = $conn->query("select smsg_id,smsg_name from SMS_Groups order by smsg_name");
 $sq->execute();
-$sr = $sq->fetchAll(PDO::FETCH_ASSOC);
 $sstr = "";
-foreach($sr as $s) {
+while($s=$sq->fetch(PDO::FETCH_ASSOC)) {
 	$sstr .= "{'value':'".$s['smsg_name']."','smsgid':'".$s['smsg_id']."'},";
 }
 echo rtrim($sstr,",")."\n";

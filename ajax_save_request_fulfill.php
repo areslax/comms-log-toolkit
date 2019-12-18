@@ -40,7 +40,7 @@ if ($_POST['fld']=='ful_filled' || $_POST['fld']=='ful_complete') {
 		$qr = $q->fetch(PDO::FETCH_ASSOC);
 		$f = $conn->prepare("select ful_approved,ful_filled from Resource_Request_Fulfill where req_id=:reqid and item_num=:rid limit 1");
 		$f->execute(array(":reqid"=>$_POST['reqid'],":rid"=>$_POST['rid']));
-		$fr = $f->fetchAll(PDO::FETCH_ASSOC);
+		$fr = $f->fetch(PDO::FETCH_ASSOC);
 		if ($qr['qty_requested']==$_POST['val'] || $fr['ful_approved']==$_POST['val'] || $fr['ful_filled']==$qr['qty_requested']) {
 			//mark complete
 			$u = $conn->prepare("update Resource_Request_Items set item_status=2 where req_id=:reqid and item_num=:rid limit 1");
@@ -66,9 +66,8 @@ if ($_POST['fld']=='ful_cancel') {
 if ($msg!="reqcomplete" && $msg!="reqcancelled") {
 	$q = $conn->prepare("select item_status from Resource_Request_Items where req_id=:reqid");
 	$q->execute(array(":reqid"=>$_POST['reqid']));
-	$qr = $q->fetchAll(PDO::FETCH_ASSOC);
 	$done = 1;
-	foreach($qr as $qi) {
+	while($qi=$q->fetch(PDO::FETCH_ASSOC)) {
 		if ($qi['item_status']<3) { $done=0; }
 	}
 	if ($done) {

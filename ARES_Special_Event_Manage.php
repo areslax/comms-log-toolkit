@@ -111,9 +111,8 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 	//dump locations in to array for dropdowns
 	$lq = $conn->prepare("select * from Event_Locations where ev_id=:evid order by el_id");
 	$lq->execute(array(':evid'=>$evid));
-	$lres = $lq->fetchAll(PDO::FETCH_ASSOC);
 	$elocs = array();
-	foreach($lres as $lr) {
+	while($lr=$lq->fetch(PDO::FETCH_ASSOC)) {
 		$elocs[$lr['el_id']]['name'] = $lr['el_name'];
 		$elocs[$lr['el_id']]['gps'] = $lr['el_gps'];
 		$elocs[$lr['el_id']]['note'] = $lr['el_note'];
@@ -121,9 +120,8 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 	//get event data
 	$q = $conn->prepare("select * from Events_Special where ev_id=:evid");
 	$q->execute(array(':evid'=>$evid));
-	$res = $q->fetchAll(PDO::FETCH_ASSOC);
 	$a = "{\"result\":[";
-	foreach($res as $r) {
+	while($r=$q->fetch(PDO::FETCH_ASSOC)) {
 		foreach($r as $key => $val) {
 			$r[$key] = addslashes($val);
 		}
@@ -131,22 +129,20 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		//get event types
 		$etypes = "";
 		$iq = $conn->query("select * from Events_Special_Types order by est_id");
-		$ires = $iq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($ires as $ir) {
+		while($ir=$iq->fetch(PDO::FETCH_ASSOC)) {
 			$sel = ($r['ev_type']==$ir['est_id']) ? " selected":"";
 			$etypes .= "<option value=".$ir['est_id'].$sel.">".$ir['est_name']."</option>";
 		}
 		$a = "<form method=post>\n<input type=hidden name=updateevent value=1>\n<input type=hidden name=ev_id value='".$evid."'>\n<table border=0 cellpadding=6 cellspacing=0 style='width:610px'>
 <tr><td>Name</td><td colspan=3><input type=text name=ev_name class='incident' onfocus='this.select();' style='width:456px;text-align:left;' placeholder='i.e. Baker to Vegas' value='".$r['ev_name']."'></td></tr>
 <tr><td>Type</td><td><select name=ev_type style='width:80px'><option value=0></option>".$etypes."</select></td><td>Occurs</td><td><input type=text name=date_start size=16 value='".date("Y/m/d H:i",strtotime($r['ev_date_start']))."' onclick='this.select()' class='datepicker' placeholder='Start'>-<input type=text name=date_end size=16 value='".date("Y/m/d H:i",strtotime($r['ev_date_end']))."' onclick='this.select()' class='datepicker' placeholder='End'></td></tr>";
-		$a .= "<tr><th colspan=4><input type=submit value='Update This Special Event Info'> <button type=button onclick='deleteMe(".$evid.")'>Delete This Event</button></th></tr>\n";
+		$a .= "<tr><th colspan=4><input type=submit value='Update This Special Event Info'> <button type=button onclick='deleteMe(".$evid.")' style='color:red'>Delete This Event</button></th></tr>\n";
 		$a .= "</table>\n</form>\n";
 
 		//get event locations
 		$lq = $conn->prepare("select * from Event_Locations where ev_id=:evid order by el_name");
 		$lq->execute(array(":evid"=>$evid));
 		$gotlocs = ($lq->rowCount()>0) ? 1:0;
-		$lres = $lq->fetchAll(PDO::FETCH_ASSOC);
 		$a .= "<h3 style='cursor:pointer;background-color:lightgrey;width:610px;height:30px;padding:6px 0 0 0;line-height:12px;' id=lochead title='Click to Toggle Event Locations'>Event Locations<br><span style='font-size:10px;font-weight:normal;'>Click to Toggle Event Locations</span></h3>\n";
 		$a .= "<table id=eventlocations border=0 cellpadding=6 cellspacing=0 style='margin-top:-20px;width:610px;display:none;'>\n";
 		//add new location
@@ -163,7 +159,7 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		$a .= "</table>\n</form>\n\n";
 		$a .= "<h4 align=center>Current Event Locations</h4>\n";
 		$a .= "</td></tr>\n";
-		foreach($lres as $ld) {
+		while($ld=$lq->fetch(PDO::FETCH_ASSOC)) {
 			$lid = $ld['el_id'];
 			$a .= "<tr id=eloc".$lid." valign=top>";
 			$a .= "<td>Loc Name</td><td><input type=text id=el_name".$lid." value='".$ld['el_name']."' onchange=\"updateLoc('el_name',".$lid.",".$evid.")\"> <a href='https://maps.google.com/?q=".$ld['el_gps']."' target='_blank' title='Click to view location on Google Maps'><img src='images/icon-google-maps.svg' alt='maps icon' border=0 width=14 align=absmiddle></a><br><button type=button style='font-size:9px'onclick=\"updateLoc('delete',".$lid.",".$evid.")\">REMOVE THIS LOCATION</button></td>";
@@ -178,7 +174,6 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		//get event staff only if locations
 		$sq = $conn->prepare("select Event_Staff.*,el_name,el_gps,el_note from Event_Staff left outer join Event_Locations on Event_Locations.el_id=Event_Staff.el_id where Event_Staff.ev_id=:evid order by el_id,es_callsign");
 		$sq->execute(array(":evid"=>$evid));
-		$sres = $sq->fetchAll(PDO::FETCH_ASSOC);
 		$a .= "<h3 style='cursor:pointer;background-color:lightgrey;width:610px;height:30px;padding:6px 0 0 0;line-height:12px;' id=staffhead title='Click to Toggle Event Staff'>Event Staff Assignments<br><span style='font-size:10px;font-weight:normal;'>Click to Toggle Event Staff</span></h3>\n";
 		$a .= "<table id=eventstaff border=0 cellpadding=6 cellspacing=0 style='margin-top:-20px;width:610px;border-bottom:solid 1px black;display:none;'>\n";
 		//add new event staff
@@ -204,7 +199,7 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		$a .= "<h4 align=center>Current Event Staff Members</h4>\n";
                 $a .= "</td></tr>\n";
 		//show existing event staff for edit/delete
-		foreach($sres as $sr) {
+		while($sr=$sq->fetch(PDO::FETCH_ASSOC)) {
 			$esid = $sr['es_id'];
 			$lname = trim(substr($sr['es_lname'],0,strrpos($sr['es_lname']," ")));
 			$calls = trim(substr($sr['es_lname'],strrpos($sr['es_lname']," ")));
@@ -270,7 +265,7 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 		$a .= "<tr><td>Title</td><td><input type=text name=li_title size=14 style='font-weight:bold' value='".$contacts['title']."'></td><td>Note</td><td><input type=text name=li_note value='".$contacts['note']."'></td></tr>\n";
 		$a .= "<tr><td>First Name</td><td><input type=text name=li_fname size=14 style='font-weight:bold' value='".$contacts['fname']."'></td><td>Last Name</td><td><input type=text name=li_lname size=14 style='font-weight:bold' value='".$contacts['lname']."'> <input type=checkbox name=li_active value=1";
 		if (!empty($r['li_active'])) { $a .= " checked"; }
-		$a .= " title='Liaison Active?'> <button type=button onclick=\"deleteLiaison(".$liid.")\" title='Delete This Liaison'>-</button></td></tr>\n";
+		$a .= " title='Liaison Active?'> <button type=button onclick=\"deleteLiaison(".$liid.")\" title='Delete This Liaison' style='color:red'>-</button></td></tr>\n";
 		$i=0;
 		foreach($contacts['data']['type'] as $k) {
 			$icn = ($k>1 && $k!=5) ? " <a href='tel:".$contacts['data']['data'][$i]."' title='Click to launch your phone dialer'><img src='images/icon-phone.svg' alt='phone icon' border=0 width=14 align=absmiddle></a>":" <a href='mailto:".$contacts['data']['data'][$i]."?subject=ARES Message' title='Click to launch your email program'><img src='images/icon-email.svg' alt='email icon' border=0 width=14 align=absmiddle></a>";
@@ -279,7 +274,7 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 				$sel = ($k==$t) ? " selected":"";
 				$a .= "<option value=".$t.$sel.">".$v."</option>";
 			}
-			$a .= "</select></td><td colspan=3><input type=text name=lic_datas[".$contacts['data']['id'][$i]."] size=44 value='".$contacts['data']['data'][$i]."'> <button type=button onclick=\"deleteMe(".$liid.",'".$contacts['data']['data'][$i]."',".$i.")\" title='Delete This Entry'>-</button>".$icn."</td></tr>\n";
+			$a .= "</select></td><td colspan=3><input type=text name=lic_datas[".$contacts['data']['id'][$i]."] size=44 value='".$contacts['data']['data'][$i]."'> <button type=button onclick=\"deleteMe(".$liid.",'".$contacts['data']['data'][$i]."',".$i.")\" title='Delete This Entry' style='color:red'>-</button>".$icn."</td></tr>\n";
 			$i++;
 		}
 		$a .= "<tr id=lcrow".$i."><td>Add <select name=new_lic_type style='width:80px'>";
@@ -314,8 +309,7 @@ if ((!empty($_GET['eventid']) && $_GET['eventid']!='undefined') || !empty($evid)
 $etypes = "";
 $etarry = array();
 $iq = $conn->query("select * from Events_Special_Types order by est_id");
-$ires = $iq->fetchAll(PDO::FETCH_ASSOC);
-foreach($ires as $ir) {
+while($ir=$iq->fetch(PDO::FETCH_ASSOC)) {
 	$etypes .= "<option value=".$ir['est_id'].$sel.">".$ir['est_name']."</option>";
 	$etarry[$ir['est_id']]['name'] = $ir['est_name'];
 }
@@ -468,9 +462,9 @@ function updateType(tid,val) {
 <tr><th colspan=3>Event Types</th></tr>
 <?php
 foreach($etarry as $it => $idata) {
-	echo "<tr><td><input type=text size=12 name=est_name value='".$idata['name']."' onblur='updateType(".$it.",this.value)'></td><td><button type=button onclick='deleteType(".$it.")'>-</button></td></tr>\n";
+	echo "<tr><td><input type=text size=12 name=est_name value='".$idata['name']."' onblur='updateType(".$it.",this.value)'></td><td><button type=button onclick='deleteType(".$it.")' style='color:red'>-</button></td></tr>\n";
 }
-echo "<tr><td><input type=text size=12 id=est_type_new placeholder='Add Type'></td><td><button type=button onclick='addType()'>+</button></td></tr>";
+echo "<tr><td><input type=text size=12 id=est_type_new placeholder='Add Type'></td><td><button type=button onclick='addType()' style='color:green'>+</button></td></tr>";
 ?>
 </table>
 </div>

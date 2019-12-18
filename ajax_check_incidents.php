@@ -10,9 +10,8 @@ include "db_conn.php";
 //get incidents
 $iq = $conn->prepare("select Incidents.i_id,i_type,i_tactical,i_name,it_data from Incidents left outer join Incident_Types on Incident_Types.it_id=Incidents.i_type where i_status='1' order by i_name");
 $iq->execute();
-$ir = $iq->fetchAll(PDO::FETCH_ASSOC);
 $incs = array();
-foreach($ir as $r) {
+while($r=$iq->fetch(PDO::FETCH_ASSOC)) {
 	$thisia = $r['i_name'];
 	$thisib = $r['it_data'].": ".strtoupper($r['i_tactical']).": ".$r['i_name'];
 	$incids = array();

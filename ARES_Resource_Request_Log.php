@@ -103,16 +103,10 @@ $orderby = ((isset($_GET['orderby']) && $_GET['orderby']=='priority') || empty($
 $hilitep = ($orderby=='item_priority,item_type') ? " class='hilite'":"";
 $hilitet = ($orderby=='item_type,item_priority') ? " class='hilite'":"";
 
-#$q = $conn->prepare("select Resource_Request_Auths.*,Resource_Request_Items.* from Resource_Request_Auths left outer join Resource_Request_Items on Resource_Request_Items.rra_id=Resource_Request_Auths.rra_id where ".$rrashow." and ".$rrishow." order by Resource_Request_Auths.rra_id,rra_timestamp,".$orderby);
-$q = $conn->prepare("select * from Resource_Requests where req_status<1 order by req_id,req_date");
-$q->execute();
-$reqs = $q->fetchAll(PDO::FETCH_ASSOC);
-
 //get priority array
 $priorities = array();
 $pq = $conn->query("select * from Resource_Request_Priorities order by rrp_id");
-$pr = $pq->fetchAll(PDO::FETCH_ASSOC);
-foreach($pr as $p) { $priorities[$p['rrp_id']] = $p['rrp_name']; }
+while($p=$pq->fetch(PDO::FETCH_ASSOC)) { $priorities[$p['rrp_id']] = $p['rrp_name']; }
 ?>
 <!doctype html>
 <html lang="en">
@@ -249,7 +243,10 @@ function orderBy(ob) {
 <?php
 //loop through individual active request groups
 $acnt=0;
-foreach($reqs as $req) {
+#$q = $conn->prepare("select Resource_Request_Auths.*,Resource_Request_Items.* from Resource_Request_Auths left outer join Resource_Request_Items on Resource_Request_Items.rra_id=Resource_Request_Auths.rra_id where ".$rrashow." and ".$rrishow." order by Resource_Request_Auths.rra_id,rra_timestamp,".$orderby);
+$q = $conn->prepare("select * from Resource_Requests where req_status<1 order by req_id,req_date");
+$q->execute();
+while($req=$q->fetch(PDO::FETCH_ASSOC)) {
 	$acnt++;
 	$pbreak = ($acnt>1) ? " class='pbreak'":"";
 	$reqid = $req['req_id'];
@@ -287,9 +284,8 @@ foreach($reqs as $req) {
 //get lineitems for this req
 $q2 = $conn->prepare("select Resource_Request_Items.*,Resource_Request_Fulfill.* from Resource_Request_Items left outer join Resource_Request_Fulfill on (Resource_Request_Fulfill.req_id=Resource_Request_Items.req_id and Resource_Request_Fulfill.item_num=Resource_Request_Items.item_num) where Resource_Request_Items.req_id=:req and item_status<3 order by item_priority");
 $q2->execute(array(":req"=>$reqid));
-$lineitems = $q2->fetchAll(PDO::FETCH_ASSOC);
 $pclrs = array('sustainment'=>'#aaffcc','urgent'=>'#ffdd99','emergent'=>'#ffaaaa');
-foreach($lineitems as $l) {
+while($l=$q2->fetch(PDO::FETCH_ASSOC)) {
 	$rid = $l['item_num'];
 	$suschk = ($l['item_priority']==3) ? " selected":"";
 	$urgchk = ($l['item_priority']==2) ? " selected":"";

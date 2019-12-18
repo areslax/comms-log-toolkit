@@ -27,8 +27,7 @@ if (empty($iid)) {
 	$itypes = "";
 	$itarry = array();
 	$iq = $conn->query("select * from Incident_Types order by it_id");
-	$ires = $iq->fetchAll(PDO::FETCH_ASSOC);
-	foreach($ires as $ir) {
+	while($ir=$iq->fetch(PDO::FETCH_ASSOC)) {
 		$itypes .= "<option value=".$ir['it_id'].$sel.">".$ir['it_data'].": ".$ir['it_title']."</option>";
 		$itarry[$ir['it_id']]['title'] = $ir['it_title'];
 		$itarry[$ir['it_id']]['data'] = $ir['it_data'];

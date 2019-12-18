@@ -13,7 +13,7 @@ $GetMembersPS->execute();
 $mems = array();
 $autocall = "";
 $autoname = "";
-while ($r=$GetMembersPS->fetch(PDO::FETCH_ASSOC)) {
+while($r=$GetMembersPS->fetch(PDO::FETCH_ASSOC)) {
 	$mid = $r['m_id'];
 	$mems[$mid] = array();
 	$mems[$mid]['callsign'] = $r['m_callsign'];

@@ -40,8 +40,7 @@ $iq->execute(array(":mtime"=>$mtime,":reply"=>$reply,":mdata"=>$mdata));
 //get to user, only sms and email
 $tq = $conn->prepare("select mc_type,mc_data,mc_carrier,carrier_ext from Members left outer join Member_Contacts on Member_Contacts.m_id=Members.m_id left outer join Mobile_Carriers on Mobile_Carriers.carrier_id=Member_Contacts.mc_carrier where (mc_type='1' or mc_type='4') and m_callsign=:mcall and m_fname=:mfname and m_lname=:mlname");
 $tq->execute(array(":mcall"=>$tarr[0],":mfname"=>$tarr[1],":mlname"=>$tarr[2]));
-$tr = $tq->fetchAll(PDO::FETCH_ASSOC);
-foreach($tr as $r) {
+while($r=$tq->fetch(PDO::FETCH_ASSOC)) {
 	//got email address, and sendvia includes email
 	if ($r['mc_type']=='1' && in_array('email',$via)) {
 		//build email to addr

@@ -105,8 +105,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 	$mid = (!empty($mid)) ? $mid:$_GET['mid'];
 	$q = $conn->prepare("select Members.*,Locations.l_tactical,Locations.l_name from Members left outer join Locations on Locations.l_id=Members.m_prestage_lid where m_id=:mid");
 	$q->execute(array(':mid'=>$mid));
-	$res = $q->fetchAll(PDO::FETCH_ASSOC);
-	foreach($res as $r) {
+	while($r=$q->fetch(PDO::FETCH_ASSOC)) {
 		foreach($r as $key => $val) {
 			$r[$key] = addslashes($val);
 		}
@@ -115,8 +114,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 		$stypes = "";
 		$sq = $conn->query("select * from Status_Codes order by s_id");
 		$sq->execute();
-		$sarr = $sq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($sarr as $sr) {
+		while($sr=$sq->fetch(PDO::FETCH_ASSOC)) {
 			$sel = ($r['m_status']==$sr['s_id']) ? " selected":"";
 			$stypes .= "<option value=".$sr['s_id'].$sel.">".$sr['s_title']."</option>";
 		}
@@ -124,8 +122,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 		$mtypes = "";
 		$mq = $conn->query("select * from Member_Types order by mt_id");
 		$mq->execute();
-		$marr = $mq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($marr as $mr) {
+		while($mr=$mq->fetch(PDO::FETCH_ASSOC)) {
 			$sel = ($r['m_access_level']==$mr['mt_id']) ? " selected":"";
 			$mtypes .= "<option value=".$mr['mt_id'].$sel.">".$mr['mt_title']."</option>";
 		}
@@ -146,20 +143,19 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 	}
 	$q = $conn->prepare("select * from Member_Contacts where m_id=:mid");
 	$q->execute(array(':mid'=>$mid));
-	$res = $q->fetchAll(PDO::FETCH_ASSOC);
 	$contacts = array();
 	$contacts['id'] = array();
 	$contacts['type'] = array();
 	$contacts['carrier'] = array();
 	$contacts['data'] = array();
-	foreach($res as $r) {
-		foreach($r as $key => $val) {
-			$r[$key] = addslashes($val);
+	while($rs=$q->fetch(PDO::FETCH_ASSOC)) {
+		foreach($rs as $key => $val) {
+			$rs[$key] = addslashes($val);
 		}
-		$contacts['id'][] = $r['mc_id'];
-		$contacts['type'][] = $r['mc_type'];
-		$contacts['carrier'][] = $r['mc_carrier'];
-		$contacts['data'][] = $r['mc_data'];
+		$contacts['id'][] = $rs['mc_id'];
+		$contacts['type'][] = $rs['mc_type'];
+		$contacts['carrier'][] = $rs['mc_carrier'];
+		$contacts['data'][] = $rs['mc_data'];
 	}
 	$i=0;
 	foreach($contacts['type'] as $k) {
@@ -175,8 +171,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 			$carriers = "";
 			$cq = $conn->query("select * from Mobile_Carriers order by carrier_name");
 			$cq->execute();
-			$carr = $cq->fetchAll(PDO::FETCH_ASSOC);
-			foreach($carr as $c) {
+			while($c=$cq->fetch(PDO::FETCH_ASSOC)) {
 				$sel = ($contacts['carrier'][$i]==$c['carrier_id']) ? " selected":"";
 				$carriers .= "<option value=".$c['carrier_id'].$sel.">".$c['carrier_name']."</option>";
 			}
@@ -185,15 +180,14 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 				$pno = ltrim(str_replace($togo,"",$contacts['data'][$i]));
 				$cq = $conn->prepare("select carrier_ext from Mobile_Carriers where carrier_id=:carr limit 1");
 				$cq->execute(array(':carr'=>$contacts['carrier'][$i]));
-				$carr = $cq->fetchAll(PDO::FETCH_ASSOC);
-				foreach($carr as $c) {
+				while($c=$cq->fetch(PDO::FETCH_ASSOC)) {
 					$thiscarr = $c['carrier_ext'];
 				}
 				$icn .= "<a href='mailto:".$pno.$thiscarr."' style='margin-left:4px;text-decoration:none;color:black;font-weight:bold;' title='Click to send text message'>T</a>";
 			}
 		}
 		$carrierfld = ($k==4) ? "<select name=mc_carrier[".$contacts['id'][$i]."] style='width:160px;height:21px;'><option value=0>Carrier</option>".$carriers."</select>":"";
-		$a .= "</select></td><td colspan=3><input type=text name=mc_datas[".$contacts['id'][$i]."] size=".$datafldsize." value='".$contacts['data'][$i]."'>".$carrierfld." <button type=button onclick=\"deleteMe(".$mid.",'".$contacts['data'][$i]."',".$i.")\" title='Delete This Entry'>-</button>".$icn."</td></tr>\n";
+		$a .= "</select></td><td colspan=3><input type=text name=mc_datas[".$contacts['id'][$i]."] size=".$datafldsize." value='".$contacts['data'][$i]."'>".$carrierfld." <button type=button onclick=\"deleteMe(".$mid.",'".$contacts['data'][$i]."',".$i.")\" title='Delete This Entry' style='color:red'>-</button>".$icn."</td></tr>\n";
 		$i++;
 	}
 	$a .= "<tr id=mcrow".$i."><td>Add <select name=new_mc_type style='width:80px'>";
@@ -204,7 +198,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 
 	$a .= "<tr><td colspan=2 align=right><b>New Password</b></td><td colspan=2><input type=password size=12 name=m_password autocomplete='new-password'></td></tr>";
 
-	$a .= "<tr><th colspan=4><input type=submit value='Update This Operator Info'> <button type=button onclick='deleteOp(".$mid.")'>Delete Operator</button></th></tr>
+	$a .= "<tr><th colspan=4><input type=submit value='Update This Operator Info'> <button type=button onclick='deleteOp(".$mid.")' style='color:red'>Delete Operator</button></th></tr>
 </table>
 </form>
 </div>";
@@ -216,8 +210,7 @@ if ((!empty($_GET['mid']) && $_GET['mid']!='undefined') || !empty($mid)) {
 $carriers = "";
 $cq = $conn->query("select * from Mobile_Carriers order by carrier_name");
 $cq->execute();
-$carr = $cq->fetchAll(PDO::FETCH_ASSOC);
-foreach($carr as $c) {
+while($c=$cq->fetch(PDO::FETCH_ASSOC)) {
 	$carriers .= "<option value=".$c['carrier_id'].">".$c['carrier_name']."</option>";
 }
 ?>
@@ -354,11 +347,10 @@ function updateStatus(tid,val) {
 <?php
 $sq = $conn->query("select * from Status_Codes order by s_id");
 $sq->execute();
-$srow = $sq->fetchAll(PDO::FETCH_ASSOC);
-foreach($srow as $st) {
-        echo "<tr><td><input type=text size=14 name=s_title value='".$st['s_title']."' onblur='updateStatus(".$st['s_id'].",this.value)'></td><td><button type=button onclick='deleteStatus(".$st['s_id'].")'>-</button></td></tr>\n";
+while($st=$sq->fetch(PDO::FETCH_ASSOC)) {
+        echo "<tr><td><input type=text size=14 name=s_title value='".$st['s_title']."' onblur='updateStatus(".$st['s_id'].",this.value)'></td><td><button type=button onclick='deleteStatus(".$st['s_id'].")' style='color:red'>-</button></td></tr>\n";
 }
-echo "<tr><td><input type=text size=14 id=stat_title_new placeholder='Add New Code'></td><td><button type=button onclick='addStatus()'>+</button></td></tr>";
+echo "<tr><td><input type=text size=14 id=stat_title_new placeholder='Add New Code'></td><td><button type=button onclick='addStatus()' style='color:green'>+</button></td></tr>";
 ?>
 </table>
 <hr>
@@ -367,11 +359,10 @@ echo "<tr><td><input type=text size=14 id=stat_title_new placeholder='Add New Co
 <?php
 $mq = $conn->query("select * from Member_Types order by mt_id");
 $mq->execute();
-$mrow = $mq->fetchAll(PDO::FETCH_ASSOC);
-foreach($mrow as $mt) {
-	echo "<tr><td><input type=text size=14 name=mt_title value='".$mt['mt_title']."' onblur='updateType(".$mt['mt_id'].",this.value)'></td><td><button type=button onclick='deleteType(".$mt['mt_id'].")'>-</button></td></tr>\n";
+while($mt=$mq->fetch(PDO::FETCH_ASSOC)) {
+	echo "<tr><td><input type=text size=14 name=mt_title value='".$mt['mt_title']."' onblur='updateType(".$mt['mt_id'].",this.value)'></td><td><button type=button onclick='deleteType(".$mt['mt_id'].")' style='color:red'>-</button></td></tr>\n";
 }
-echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Level'></td><td><button type=button onclick='addType()'>+</button></td></tr>";
+echo "<tr><td><input type=text size=14 id=mt_title_new placeholder='Add New Level'></td><td><button type=button onclick='addType()' style='color:green'>+</button></td></tr>";
 ?>
 </table>
 </div>

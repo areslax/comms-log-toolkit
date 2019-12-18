@@ -51,8 +51,7 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 	$ncid = (!empty($ncid)) ? $ncid:$_GET['ncid'];
 	$q = $conn->prepare("select Net_Controls.*,i_tactical,i_name,l_tactical,l_name from Net_Controls left outer join Incidents on Incidents.i_id=Net_Controls.i_id left outer join Locations on Locations.nc_id=Net_Controls.nc_id where Net_Controls.nc_id=:ncid");
 	$q->execute(array(':ncid'=>$ncid));
-	$res = $q->fetchAll(PDO::FETCH_ASSOC);
-	foreach($res as $r) {
+	while($r=$q->fetch(PDO::FETCH_ASSOC)) {
 		foreach($r as $key => $val) {
 			$r[$key] = addslashes($val);
 		}
@@ -61,16 +60,14 @@ if ((!empty($_GET['ncid']) && $_GET['ncid']!='undefined') || !empty($ncid)) {
 		//get leader callsign and name
 		$lq = $conn->prepare("select m_callsign,m_fname,m_lname from Members where m_id=:nclid limit 1");
 		$lq->execute(array(':nclid'=>$r['nc_lead_id'])); 
-		$lres = $lq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($lres as $lr) {
+		while($lr=$lq->fetch(PDO::FETCH_ASSOC)) {
 			$nc_leader = strtoupper($lr['m_callsign']).": ".$lr['m_fname']." ".$lr['m_lname'];
 		}
 		//get parent net control call sign
 		$parentid = "";
 		$pq = $conn->prepare("select * from Net_Controls where nc_id=:parentid limit 1");
 		$pq->execute(array(':parentid'=>$r['nc_parent_id']));
-		$pres = $pq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($pres as $pr) {
+		while($pr=$pq->fetch(PDO::FETCH_ASSOC)) {
 			$parentid = $pr['nc_callsign'];
 		}
 		$xicon = (empty($ncid)) ? "":"<img src='images/icon-delete.png' border=0 width=16 align=absmiddle alt='reset icon' title='Reset Net Control' style='cursor:pointer;margin-left:2px;' onclick=\"location.href='ARES_Net_Control_Manage.php'\">";

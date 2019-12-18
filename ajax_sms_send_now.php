@@ -19,7 +19,7 @@ if (!empty($_POST['qid']) && is_numeric($_POST['qid'])) {
 	foreach($mids as $mid) {
 		$m = $conn->prepare("select mc_data,mc_carrier,carrier_ext from Member_Contacts left outer join Mobile_Carriers on Mobile_Carriers.carrier_id=Member_Contacts.mc_carrier where m_id=".$mid." and mc_carrier is not NULL and mc_type='4' limit 1");
 		$m->execute();
-		$to = $m->fetchAll(PDO::FETCH_ASSOC);
+		$to = $m->fetch(PDO::FETCH_ASSOC);
 		$addr = str_replace($delim,"",$to[0]['mc_data']).$to[0]['carrier_ext'];
 		mail($addr,"ARES SMS Message",$msg,$hed);
 	}

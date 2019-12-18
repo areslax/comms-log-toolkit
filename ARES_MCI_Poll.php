@@ -10,7 +10,7 @@ require "db_conn.php";
 $stationcode = (empty($_GET['stationcode'])) ? "":$_GET['stationcode'];
 $sq = $conn->prepare("select l_id from Locations where l_tactical=:ltac limit 1");
 $sq->execute(array(":ltac"=>$stationcode));
-$r = $sq->fetchAll(PDO::FETCH_ASSOC);
+$r = $sq->fetch(PDO::FETCH_ASSOC);
 $locid = (!empty($r['l_id'])) ? $r['l_id']:"";
 $loccode = substr($_GET['fld'],0,strpos($_GET['fld']," "));
 $locname = substr($_GET['fld'],strpos($_GET['fld']," "),strlen($_GET['fld']));

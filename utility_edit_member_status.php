@@ -17,9 +17,8 @@ if (!empty($_POST['doit'])) {
 //get status codes
 $q = $conn->query("select * from Status_Codes order by s_id");
 $q->execute();
-$qarr = $q->fetchAll(PDO::FETCH_ASSOC);
 $qs = "";
-foreach($qarr as $qr) {
+while($qr=$q->fetch(PDO::FETCH_ASSOC)) {
 	$sel = ($qr['s_id']==$_GET['sid']) ? " selected":"";
 	$qs .= "<option value=".$qr['s_id'].$sel.">".$qr['s_title']."</option>";
 }

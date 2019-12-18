@@ -112,9 +112,8 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 	$lid = (!empty($lid)) ? $lid:$_GET['lid'];
 	$q = $conn->prepare("select Locations.*,Location_Bed_Counts.* from Locations left outer join Location_Bed_Counts on Location_Bed_Counts.l_id=Locations.l_id where Locations.l_id=:lid");
 	$q->execute(array(':lid'=>$lid));
-	$res = $q->fetchAll(PDO::FETCH_ASSOC);
 	$a = "{\"result\":[";
-	foreach($res as $r) {
+	while($r=$q->fetch(PDO::FETCH_ASSOC)) {
 		foreach($r as $key => $val) {
 			$r[$key] = addslashes($val);
 		}
@@ -124,8 +123,7 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 		$ltypes = "";
 		$lq = $conn->query("select * from Location_Types order by lt_id");
 		$lq->execute();
-		$larr = $lq->fetchAll(PDO::FETCH_ASSOC);
-		foreach($larr as $lr) {
+		while($lr=$lq->fetch(PDO::FETCH_ASSOC)) {
 			$sel = ($r['l_type']==$lr['lt_id']) ? " selected":"";
 			$ltypes .= "<option value=".$lr['lt_id'].$sel.">".$lr['lt_title']."</option>";
 		}
@@ -197,8 +195,7 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 		$contacts['data']['data'] = array();
 		$q2 = $conn->prepare("select * from Liaison_Contacts where li_id=:liid order by lic_type");
 		$q2->execute(array(':liid'=>$liid));
-		$res2 = $q2->fetchAll(PDO::FETCH_ASSOC);
-		foreach($res2 as $r2) {
+		while($r2=$q2->fetch(PDO::FETCH_ASSOC)) {
 			$licid = $r2['lic_id'];
 			$contacts['data']['id'][] = $licid;
 			$contacts['data']['type'][] = $r2['lic_type'];
@@ -211,7 +208,7 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 		$a .= "<tr><td>Title</td><td><input type=text name=li_title size=14 style='font-weight:bold' value='".$contacts['title']."'></td><td>Note</td><td><input type=text name=li_note value='".$contacts['note']."'></td></tr>\n";
 		$a .= "<tr><td>First Name</td><td><input type=text name=li_fname size=14 style='font-weight:bold' value='".$contacts['fname']."'></td><td>Last Name</td><td><input type=text name=li_lname size=14 style='font-weight:bold' value='".$contacts['lname']."'> <input type=checkbox name=li_active value=1";
 		if (!empty($r['li_active'])) { $a .= " checked"; }
-		$a .= " title='Liaison Active?'> <button type=button onclick=\"deleteLiaison(".$liid.")\" title='Delete This Liaison'>-</button></td></tr>\n";
+		$a .= " title='Liaison Active?'> <button type=button onclick=\"deleteLiaison(".$liid.")\" title='Delete This Liaison' style='color:red'>-</button></td></tr>\n";
 		$i=0;
 		foreach($contacts['data']['type'] as $k) {
 			$icn = ($k>1 && $k!=5) ? " <a href='tel:".$contacts['data']['data'][$i]."' title='Click to launch your phone dialer'><img src='images/icon-phone.svg' alt='phone icon' border=0 width=14 align=absmiddle></a>":" <a href='mailto:".$contacts['data']['data'][$i]."?subject=ARES Message' title='Click to launch your email program'><img src='images/icon-email.svg' alt='email icon' border=0 width=14 align=absmiddle></a>";
@@ -220,7 +217,7 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 				$sel = ($k==$t) ? " selected":"";
 				$a .= "<option value=".$t.$sel.">".$v."</option>";
 			}
-			$a .= "</select></td><td colspan=3><input type=text name=lic_datas[".$contacts['data']['id'][$i]."] size=44 value='".$contacts['data']['data'][$i]."'> <button type=button onclick=\"deleteMe(".$liid.",'".$contacts['data']['data'][$i]."',".$i.")\" title='Delete This Entry'>-</button>".$icn."</td></tr>\n";
+			$a .= "</select></td><td colspan=3><input type=text name=lic_datas[".$contacts['data']['id'][$i]."] size=44 value='".$contacts['data']['data'][$i]."'> <button type=button onclick=\"deleteMe(".$liid.",'".$contacts['data']['data'][$i]."',".$i.")\" title='Delete This Entry' style='color:red'>-</button>".$icn."</td></tr>\n";
 			$i++;
 		}
 		$a .= "<tr id=lcrow".$i."><td>Add <select name=new_lic_type style='width:80px'>";
@@ -253,8 +250,7 @@ if ((!empty($_GET['lid']) && $_GET['lid']!='undefined') || !empty($lid)) {
 $ltypes = "";
 $lq = $conn->query("select * from Location_Types order by lt_id");
 $lq->execute();
-$larr = $lq->fetchAll(PDO::FETCH_ASSOC);
-foreach($larr as $lr) {
+while($lr=$lq->fetch(PDO::FETCH_ASSOC)) {
 	$ltypes .= "<option value=".$lr['lt_id'].">".$lr['lt_title']."</option>";
 }
 ?>
@@ -368,11 +364,10 @@ function updateType(tid,val) {
 <?php
 $lq = $conn->query("select * from Location_Types order by lt_id");
 $lq->execute();
-$lrow = $lq->fetchAll(PDO::FETCH_ASSOC);
-foreach($lrow as $lt) {
-	echo "<tr><td><input type=text size=14 name=lt_title value='".$lt['lt_title']."' onblur='updateType(".$lt['lt_id'].",this.value)'></td><td><button type=button onclick='deleteType(".$lt['lt_id'].")'>-</button></td></tr>\n";
+while($lt=$lq->fetch(PDO::FETCH_ASSOC)) {
+	echo "<tr><td><input type=text size=14 name=lt_title value='".$lt['lt_title']."' onblur='updateType(".$lt['lt_id'].",this.value)'></td><td><button type=button onclick='deleteType(".$lt['lt_id'].")' style='color:red'>-</button></td></tr>\n";
 }
-echo "<tr><td><input type=text size=14 id=lt_title_new placeholder='Add New Type'></td><td><button type=button onclick='addType()'>+</button></td></tr>";
+echo "<tr><td><input type=text size=14 id=lt_title_new placeholder='Add New Type'></td><td><button type=button onclick='addType()' style='color:green'>+</button></td></tr>";
 ?>
 </table>
 </div>
