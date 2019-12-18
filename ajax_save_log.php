@@ -22,6 +22,7 @@ foreach($_POST as $p => $d) {
 
 $edata = json_encode($_POST);
 $jdata = json_decode($_POST['frmdata']);
+$adata = json_decode($_POST['frmdata'],true);
 
 $tmstmp = $jdata->tmstmp;
 $collected = $jdata->datacollected;
@@ -36,26 +37,34 @@ $lid = $l['l_id'];
 
 switch($rtyp) {
 	case "mcipoll":
+	$rcvd = date("YmdHis");
 	$stacode = $jdata->location;
-	$tmstamp = $jdata->mcitmstmp;
+	$tmstamp = date("YmdHi",strtotime($jdata->tmstmp));
 	$location = $staid;
 	//Triage Counts
 	$immediate = $jdata->immediate;
 	$delayed = $jdata->delayed;
 	$minor = $jdata->minor;
 	$fatalities = $jdata->fatalities;
-	$iq = $conn->prepare("insert into Location_MCI_Status (l_id,ms_timestamp,ms_immediate,ms_delayed,ms_minor,ms_fatalities) values (:lid,:tim,:imm,:del,:min,:fat)");
-	$iq->execute(array(":lid"=>$lid,":tim"=>$tmstamp,":imm"=>$immediate,":del"=>$delayed,":min"=>$minor,":fat"=>$fatalities));
+	$iq = $conn->prepare("insert into Location_MCI_Status (l_id,ms_collected,ms_immediate,ms_delayed,ms_minor,ms_fatalities,ms_timestamp) values (:lid,:tim,:imm,:del,:min,:fat,:rcvd)");
+	$iq->execute(array(":lid"=>$lid,":tim"=>$tmstamp,":imm"=>$immediate,":del"=>$delayed,":min"=>$minor,":fat"=>$fatalities,":rcvd"=>$rcvd));
+                if ($iq->errorInfo()[0]!='00000') {
+                        echo "oops:\n";
+                        print_r($iq->errorInfo());
+                        exit;
+                }
+	$msid = $conn->lastInsertId();
 	//Patients
-	foreach($jdata->patienttype as $i => $v) {
-		if (!empty($jdata->patientinfo[$i])) {
-			$ptype = $v;
-			$pinfo = $jdata->patientinfo[$i];
-			$trans = $jdata->transport[$i];
-			$timea = date("YmdHi",strtotime($jdata->timearrived[$i]));
-			$pdata = '{"patient_type":"'.$v.'","patient_info":"'.$pinfo.'","transport":"'.$trans.'","time_arrived":"'.$timea.'"}';
-			$pq = $conn->prepare("insert into Patients (l_id,p_type,p_note,p_transport,p_timestamp,p_data) values (:lid,:ptype,:pinfo,:trans,:timea,:pdata)");
-			$pq->execute(array(":lid"=>$lid,":ptype"=>$ptype,":pinfo"=>$pinfo,":trans"=>$trans;":timea"=>$timea,":pdata"=>$pdata));
+	$patientcnt = $jdata->patientcnt;
+	for($i=0;$i<=$patientcnt;$i++) {
+		if (!empty($adata['patientinfo['.$i.']'])) {
+			$ptype = $adata['patienttype['.$i.']'];
+			$pinfo = $adata['patientinfo['.$i.']'];
+			$trans = $adata['transport['.$i.']'];
+			$timea = date("YmdHi",strtotime($adata['timearrived['.$i.']']));
+			$pdata = '{"patient_type":"'.$ptype.'","patient_info":"'.$pinfo.'","transport":"'.$trans.'","time_arrived":"'.$timea.'"}';
+			$pq = $conn->prepare("insert into Patients (l_id,ms_id,p_type,p_note,p_transport,p_arrived,p_data,p_timestamp) values (:lid,:msid,:ptype,:pinfo,:trans,:timea,:pdata,:rcvd)");
+			$pq->execute(array(":lid"=>$lid,":msid"=>$msid,":ptype"=>$ptype,":pinfo"=>$pinfo,":trans"=>$trans,":timea"=>$timea,":pdata"=>$pdata,":rcvd"=>$rcvd));
 		}
 	}
 	break;

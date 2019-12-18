@@ -11,7 +11,7 @@ $stationcode = (empty($_GET['stationcode'])) ? "":$_GET['stationcode'];
 $sq = $conn->prepare("select l_id from Locations where l_tactical=:ltac limit 1");
 $sq->execute(array(":ltac"=>$stationcode));
 $r = $sq->fetchAll(PDO::FETCH_ASSOC);
-$locid = $r['l_id'];
+$locid = (!empty($r['l_id'])) ? $r['l_id']:"";
 $loccode = substr($_GET['fld'],0,strpos($_GET['fld']," "));
 $locname = substr($_GET['fld'],strpos($_GET['fld']," "),strlen($_GET['fld']));
 $inid = (empty($_GET['inid']) || !is_numeric($_GET['inid'])) ? "":$_GET['inid'];
@@ -41,6 +41,7 @@ var iter = 1;
 function setScribe(u) { isme = u; }
 
 function addRow() {
+	jQuery("#patientcnt").val(iter-1);
 	if (document.getElementById('patientinfo'+iter).value=='') {
 		iter++;
 		jQuery("#main_table tr:last").after("<tr id=row"+iter+" valign=top><th id=rid"+iter+">"+iter+"</th><td><select id=patienttype"+iter+" name=patienttype["+iter+"] onfocus='hiliteme("+iter+")'><?=$ptypes?></select></td><td style='padding-bottom:0px'><textarea id=patientinfo"+iter+" name=patientinfo["+iter+"] class='msg' rows=1 style='width:300px;padding:2px;' onfocus='hiliteme("+iter+")'></textarea></td><td align=center><input type=text id=transport"+iter+" name=transport["+iter+"] size=10 onfocus='hiliteme("+iter+")'></td><td align=center><input type=text id=timearrived"+iter+" name=timearrived["+iter+"] size=10 onfocus='hiliteme("+iter+")' onblur='disableblur(this);addRow();this.onBlur=\"\";document.getElementById(\"patienttype"+(iter+1)+"\").focus();'></td></tr>\n");
@@ -65,7 +66,7 @@ function saveData(frm) {
 	frmstr = JSON.stringify(frmobj);
 //saving to json text files mainly used by sticks
 //on server for backup, in case no transfer to parent log
-	var datastr = "stationid=<?=$stationid?>&stacode=<?=$stationcode?>&locid=<?=$locid?>&loccode=<?=$loccode?>&incidentid=<?=$inid?>&rtyp=mcipoll&frmdata="+encodeURIComponent(frmstr);
+	var datastr = "stacode=<?=$stationcode?>&locid=<?=$locid?>&loccode=<?=$loccode?>&incidentid=<?=$inid?>&rtyp=mcipoll&frmdata="+encodeURIComponent(frmstr);
 	jQuery.ajax({
 		type: "POST",
 		url: "ajax_save_log.php",
@@ -79,7 +80,7 @@ function saveData(frm) {
 			for(i=0;i<frmarry.length;i++) {
 				msgarry = frmarry[i].split('":"');
 				if (msgarry[1].length>0) {
-					msgdata += msgarry[0]+": "+trim(msgarry[1])+"\n"
+					msgdata += msgarry[0]+": "+msgarry[1].trim()+"\n"
 				}
 			}
 			//transfer to parent comms form
@@ -112,6 +113,7 @@ SPAN { padding: 6px 6px 1px 3px; }
 <input type=hidden name=location id=mcilocation value="<?=$loccode?>">
 <input type=hidden name=locname id=mcilocname value="<?=$locname?>">
 <input type=hidden name=incident_id id=mciincident value="<?=$inid?>">
+<input type=hidden name=patientcnt id=patientcnt value=0>
 
 <div style="position:absolute;top:0px;right:0px;width:12px;height:12px;border-radius:12px;border:solid 1px grey;background-color:lightgrey;text-align:center;font-size:12px;cursor:pointer;" onclick="parent.showModal('','none');" title="Close MCI Poll Popup WITHOUT Saving Poll Data">X</div>
 
