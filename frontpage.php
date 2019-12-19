@@ -76,6 +76,7 @@ if (!empty($_GET['admin'])) { ?>
 <a href="ARES_Resource_Request_Log.php" target="_blank">Resource Request Log</a><br>
 <?php
 } ?>
+<a href="ARES_HSA_Poll_standalone.php" target="_blank">HSA Poll Form</a> | <a href="ARES_MCI_Poll_standalone.php" target="_blank">MCI Poll Form</a><br>
 <br>
 <!--/p-->
 <?php

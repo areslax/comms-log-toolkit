@@ -75,6 +75,8 @@ if (!empty($_GET['admin'])) {
 ?>
  <a href="ARES_Comms_Log.php<?=$isadmin?>" target="_blank" style="font-size:13px;">ARES Comms Log</a><br>
  <a href="ARES_Resource_Request.php" target="_blank" style="font-size:13px;">Resource Request</a><br>
+ <a href="ARES_HSA_Poll_standalone.php" target="_blank" style="font-size:13px;">HSA Poll Form</a><br>
+ <a href="ARES_MCI_Poll_standalone.php" target="_blank" style="font-size:13px;">MCI Poll Form</a><br>
 <br>
 <?php
 #}
