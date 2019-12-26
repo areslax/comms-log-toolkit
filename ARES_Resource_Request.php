@@ -8,13 +8,15 @@
 ini_set('display_errors','1');
 
 $rfld = (empty($_GET['rfld'])) ? "":$_GET['rfld'];
+$loc = (empty($_GET['loc'])) ? "":urldecode($_GET['loc']);
 
 //got form, so submit it
 if (!empty($_POST['sendme'])) {
 	$msgfld = (empty($_POST['rfld'])) ? "":"msg".substr($_POST['rfld'],3);
 	//check if nodb (already posted to db by op)
 	//only applies when coming from comms log
-	if (!empty($msgfld) && (!isset($_POST['nodb']) || empty($_POST['nodb']))) {
+#	if (!empty($msgfld) && (!isset($_POST['nodb']) || empty($_POST['nodb']))) {
+	if (!isset($_POST['nodb']) || empty($_POST['nodb'])) {
 	require "db_conn.php";
 	//clean up missing elements
 	//create resource request
@@ -133,12 +135,21 @@ function checkAuth(frm) {
 	var got3 = (document.getElementById('req_confirm_3').checked) ? 1:0;
 	var gotauth = (document.getElementById('req_auth').value!='') ? 1:0;
 	var gotsig = (document.getElementById('req_sig').value!='') ? 1:0;
-	document.getElementsByClassName('bigbut')[1].style.backgroundColor = (got1 && got2 && got3 && gotauth && gotsig) ? "yellow":"lightgrey";
-	document.getElementsByClassName('bigbut')[1].style.cursor = (got1 && got2 && got3 && gotauth && gotsig) ? "pointer":"default";
-	document.getElementsByClassName('bigbut')[1].disabled = (got1 && got2 && got3 && gotauth && gotsig) ? 0:1;
-	document.getElementsByClassName('bigbut')[0].style.backgroundColor = (got1 && got2 && got3 && gotauth && gotsig) ? "yellow":"lightgrey";
-	document.getElementsByClassName('bigbut')[0].style.cursor = (got1 && got2 && got3 && gotauth && gotsig) ? "pointer":"default";
-	document.getElementsByClassName('bigbut')[0].disabled = (got1 && got2 && got3 && gotauth && gotsig) ? 0:1;
+	var gotinc = (document.getElementById('incident_name').value!='') ? 1:0;
+	var gotdate = (document.getElementById('req_date').value!='') ? 1:0;
+	var gottrack = (document.getElementById('req_tracking_num').value!='') ? 1:0;
+	var gotname = (document.getElementById('req_name').value!='') ? 1:0;
+	var gotagency = (document.getElementById('req_agency').value!='') ? 1:0;
+	var gotpos = (document.getElementById('req_position').value!='') ? 1:0;
+	var gotphone = (document.getElementById('req_phone').value!='') ? 1:0;
+	var gotemail = (document.getElementById('req_email').value!='') ? 1:0;
+	var oktogo = (got1 && got2 && got3 && gotauth && gotsig && gotinc && gotdate && gottrack && gotname && gotagency && gotpos && gotphone && gotemail) ? 1:0;
+	document.getElementsByClassName('bigbut')[1].style.backgroundColor = (oktogo) ? "yellow":"lightgrey";
+	document.getElementsByClassName('bigbut')[1].style.cursor = (oktogo) ? "pointer":"default";
+	document.getElementsByClassName('bigbut')[1].disabled = (oktogo) ? 0:1;
+	document.getElementsByClassName('bigbut')[0].style.backgroundColor = (oktogo) ? "yellow":"lightgrey";
+	document.getElementsByClassName('bigbut')[0].style.cursor = (oktogo) ? "pointer":"default";
+	document.getElementsByClassName('bigbut')[0].disabled = (oktogo) ? 0:1;
 }
 var iter = 3;
 function addReqRow() {
@@ -260,7 +271,7 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
 
 <table cellpadding=4 cellspacing=0 style="width:100%;">
   <tr class="lightyelo">
-    <td colspan=2 style="position:relative;height:36px;text-align:center;"><div class="noprint" style="float:left;left:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button><?=$nodb1?></div><h2>Resource Request: Medical and Health FIELD/HCF<sup style="font-size:.5em">1</sup> to Op Area</h2></td>
+    <td colspan=2 style="position:relative;height:36px;text-align:center;"><div class="noprint" style="float:left;left:10px;padding-top:10px;"><button type=submit class="bigbut" disabled>SEND REQUEST</button><?=$nodb1?></div><h2 style="font-size:20px;line-height:18px">Resource Request: Medical and Health FIELD/HCF<sup style="font-size:.5em">1</sup> to Op Area<br><span style="font-weight:normal;font-size:9px;padding:2px;" class="lightred">* = REQUIRED</span></h2></td>
     <th style="width:126px;height:36px;"><h5>RR MH (11/26/2019)</h5></th>
   </tr>
 
@@ -270,29 +281,29 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
     <p>T<br>O</p>
     <p>C<br>O<br>M<br>P<br>L<br>E<br>T<br>E</p></th>
 
-    <td style="width:76%;font-weight:bold;" valign=top>
-    1. Incident Name:<div style="padding-left:2%;"><input tabindex=1 type="text" name="incident_name" id="incidentname" style="width:97%" maxlength=220></div></td>
-    <th style="font-size:11px;width:12%;border-bottom:none;" class="lightgreen" valign=top>
+    <td style="width:76%;font-weight:bold;" class="lightred" valign=top>
+    1. Incident Name:<div style="padding-left:2%;font-weight:normal;">*&nbsp;<input tabindex=1 type="text" name="incident_name" id="incidentname" style="width:97%" maxlength=220 onblur="checkAuth(this.form)"></div></td>
+    <th style="font-size:11px;width:12%;border-bottom:none;" class="lightred" valign=top>
     2a. Request DATE/TIME:<br>
-	<input tabindex=2 type=text class="datepicker0" name="req_date" style="text-align:center;width:50%" maxlength=16></th>
+	*&nbsp;<input tabindex=2 type=text class="datepicker0" name="req_date" style="text-align:center;width:50%" maxlength=16 onblur="checkAuth(this.form)"></th>
     <!--th style="font-size:11px;width:12%;border-left:none;border-bottom:none;" class="lightgreen" valign=top>
     2b. Request TIME:<br>
 	<input tabindex=3 type=time class="timefld" name="req_time" style="text-align:center;width:90%;" maxlength=12></th-->
   </tr>
 
   <tr>
-    <td style="width:76%;font-weight:bold;" valign=top>
+    <td style="width:76%;font-weight:bold;" class="lightred" valign=top>
     3. Requestor Name, Agency, Position, Phone / Email:<br>
     <table class="noborder" style="width:100%;font-weight:normal;">
-	<tr><td>Requestor&nbsp;Name:</td><td style="width:84%"><input tabindex=5 type=text name="req_name" style="width:97%"></td></tr>
-	<tr><td>Agency:</td><td><input tabindex=6 type=text name="req_agency" class="location" style="text-align:left;width:97%;" maxlength=120></td></tr>
-	<tr><td>Position:</td><td><input tabindex=7 type=text name="req_position" style="width:97%" maxlength=120></td></tr>
-	<tr><td>Phone:</td><td><input tabindex=8 type=text name="req_phone" style="width:30%" maxlength=40></td></tr>
-	<tr><td>Email:</td><td><input tabindex=9 type=text name="req_email" style="width:30%" maxlength=40></td></tr>
+	<tr><td>Requestor&nbsp;Name:</td><td style="width:84%">*&nbsp;<input tabindex=5 type=text name="req_name" style="width:97%" onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Agency:</td><td>*&nbsp;<input tabindex=6 type=text name="req_agency" class="location" style="text-align:left;width:97%;" maxlength=120 value="<?=$loc?>" onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Position:</td><td>*&nbsp;<input tabindex=7 type=text name="req_position" style="width:97%" maxlength=120 onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Phone:</td><td>*&nbsp;<input tabindex=8 type=text name="req_phone" style="width:30%" maxlength=40 onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Email:</td><td>*&nbsp;<input tabindex=9 type=text name="req_email" style="width:30%" maxlength=40 onblur="checkAuth(this.form)"></td></tr>
     </table></td>
-    <th style="font-size:11px;width:24%;padding-top:10px;border-top:none;" class="lightgreen" valign=top>
+    <th style="font-size:11px;width:24%;padding-top:10px;border-top:none;" class="lightred" valign=top>
     2b. Request TRACKING NUMBER:<br><span class="noprint" style="font-weight:normal;font-style:italic;">(Assigned by Requesting Entity)</span><br>
-	<input tabindex=4 type=text name="req_tracking_num" style="width:50%;text-align:center;"></b></font></td>
+	*&nbsp;<input tabindex=4 type=text name="req_tracking_num" style="width:50%;text-align:center;" onblur="checkAuth(this.form)"></b></font></td>
   </tr>
 
   <tr>
@@ -490,7 +501,7 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
     <div style="position:absolute;right:10px;padding-top:10px;" class="noprint"><?=$nodb?><button type=submit class="bigbut" disabled>SEND REQUEST</button></div>
     <p style="margin:0 0 12px 0">8. <span class="noprint">COMMAND/MANAGEMENT REVIEW AND </span>VERIFICATION<span class="noprint"><br>
     <span style="font-size:.9em">(NAME, POSITION, AND SIGNATURE - SIGNATURE INDICATES VERIFICATION OF NEED AND APPROVAL</span>)</span></p></span>
-    &nbsp;&nbsp; *<input type=text id=req_auth name="req_auth" style="width:40%;" maxlength=110 placeholder="Name &amp; Position" onblur="checkAuth(this.form)"> *<input type=text id=req_sig name="req_sig" style="width:15%" placeholder="Signature" onblur="checkAuth(this.form)"></td>
+    &nbsp;&nbsp; *&nbsp;<input type=text id=req_auth name="req_auth" style="width:40%;" maxlength=110 placeholder="Name &amp; Position" onblur="checkAuth(this.form)"> *&nbsp;<input type=text id=req_sig name="req_sig" style="width:15%" placeholder="Signature" onblur="checkAuth(this.form)"></td>
   </tr>
 </table>
 <div style="text-align:center;font-size:.8em;margin:15px 0 120px 0;padding:3px;" class="lightyelo">
