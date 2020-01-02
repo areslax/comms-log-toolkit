@@ -9,6 +9,7 @@ ini_set('display_errors','1');
 
 $rfld = (empty($_GET['rfld'])) ? "":$_GET['rfld'];
 $loc = (empty($_GET['loc'])) ? "":urldecode($_GET['loc']);
+$inc = (empty($_GET['inc'])) ? "":urldecode($_GET['inc']);
 
 //got form, so submit it
 if (!empty($_POST['sendme'])) {
@@ -302,7 +303,7 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
     <p>C<br>O<br>M<br>P<br>L<br>E<br>T<br>E</p></th>
 
     <td style="width:76%;font-weight:bold;" class="lightred" valign=top>
-    1. Incident Name:<div style="padding-left:2%;font-weight:normal;">*&nbsp;<input tabindex=1 type="text" name="incident_name" id="incidentname" style="width:97%" maxlength=220 onblur="checkAuth(this.form)"></div></td>
+    1. Incident Name:<div style="padding-left:2%;font-weight:normal;">*&nbsp;<input tabindex=1 type="text" name="incident_name" id="incidentname" style="width:97%" maxlength=220 onblur="checkAuth(this.form)" value="<?=$inc?>"></div></td>
     <th style="font-size:11px;width:12%;border-bottom:none;" class="lightred" valign=top>
     2a. Request DATE/TIME:<br>
 	*&nbsp;<input tabindex=2 type=text class="datepicker0" name="req_date" style="text-align:center;width:50%" maxlength=16 onblur="checkAuth(this.form)"></th>
@@ -401,8 +402,8 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
     </th>
   </tr>
 
-  <tr id="row_1" valign=top>
-    <td style="width:4%;text-align:center;"><input type=hidden name="req_item_num[]" value=1>1</td>
+  <tr id="row_1" valign=top class="lightred">
+    <td style="width:4%;text-align:center;"><input type=hidden name="req_item_num[]" value=1>1*</td>
     <td style="width:5%">
       <select name="req_item_priority_1" style="width:60px">
       <option value=0></option>

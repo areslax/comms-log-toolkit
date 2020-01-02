@@ -226,7 +226,7 @@ function checkType(rtyp,rfld,doit,inid,sid) {
 	}
 	//resource request
 	if (rtyp=='5') {
-		window.open("ARES_Resource_Request.php?rfld="+rfld);
+		window.open("ARES_Resource_Request.php?rfld="+rfld+"&loc="+locfld[rfld]+"&inc="+encodeURIComponent(document.getElementById('incidentname').value));
 	}
 	//relay request
 	if (rtyp=='6') {
