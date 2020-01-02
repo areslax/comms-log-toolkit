@@ -151,11 +151,38 @@ function checkAuth(frm) {
 	document.getElementsByClassName('bigbut')[0].style.cursor = (oktogo) ? "pointer":"default";
 	document.getElementsByClassName('bigbut')[0].disabled = (oktogo) ? 0:1;
 }
+var rtyp = 0;
+var reqtypes = new Array("supplies","personnel","other");
+function setReqType(t) {
+	rtyp = t;
+	jQuery(".info").css("display","none");
+	jQuery("#info"+t).css("display","block");
+	for (cr=1;cr<(iter+1);cr++) {
+		if (!document.getElementById("row_"+cr)) { break; }
+		customRow(cr,reqtypes[t])
+	}
+	init();
+}
 var iter = 3;
 function addReqRow() {
 //	if (document.getElementById('supply_item_desc_'+iter).value=='') {
 		iter++;
-		var defaultcellcontent = "<table border=0 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Detailed Specific Item Description<br><div class='sm'><b>Vital characteristics, brand, specs, diagrams, and other info</b><br>(Type of Equipment, name, capabilities, output, capacity, Type of Supplies, name, size, capacity, etc.)</div></th><th class='smb' style='width:12%'>Product Class<br><span class='sm'>(Ea, Box, Cs., Pack)</span></th><th class='smb' style='width:12%'>Items per Product Class</th></tr>\n<tr><td><textarea name='supply_item_desc_"+iter+"' id='supply_item_desc"+iter+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='cntr' name='product_class_"+iter+"'></th><th><input type=text class='cntr' name='items_per_product_class_"+iter+"'></th></tr>\n</table>";
+		switch(rtyp) {
+			case 0:
+			//supplies/equipment
+			var defaultcellcontent = "<table border=0 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Detailed Specific Item Description<br><div class='sm'><b>Vital characteristics, brand, specs, diagrams, and other info</b><br>(Type of Equipment, name, capabilities, output, capacity, Type of Supplies, name, size, capacity, etc.)</div></th><th class='smb' style='width:12%'>Product Class<br><span class='sm'>(Ea, Box, Cs., Pack)</span></th><th class='smb' style='width:12%'>Items per Product Class</th></tr>\n<tr><td><textarea name='supply_item_desc_"+iter+"' id='supply_item_desc"+iter+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='cntr' name='product_class_"+iter+"'></th><th><input type=text class='cntr' name='items_per_product_class_"+iter+"'></th></tr>\n</table>";
+			break;
+			case 1:
+			//personnel
+			var defaultcellcontent = "<table border=0 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Personnel Type &amp; Probable Duties<br><div class='sm'> Indicate required license types (see list below)<br>RN, MD, EMT-I, Pharmacist, LVN, EMT-P, NP, DVM, PA, RCP, MFT, DDS, LCSW, etc.</div></th><th class='smb' style='width:10%'><u>Minimum</u> Required<br>Clinical Experience<br><div class='sm'>1=current hospital<br>2=current clinical<br>3=current license<br>4=clinical education</div></th><th class='smb' style='width:10%'><u>Required</u> Skills, Training, Certs<br><div class='sm'>(e.g., PALS, Current ICU experience, Languages, ICS training, Addt'l Lic. i.e., PHN, etc.)</div></th><th class='smb' style='width:10%'><u>Preferred</u> Skills, Training, Certs</th><th class='smb' style='width:10%'>Date/Time Required<br><div class='sm'>Indicate anticipated mobilization or duty date.</div></th><th class='smb' style='width:6%'>Paid</th></tr>\n<tr><td><textarea name='personnel_item_desc_"+iter+"' id='personnel_item_desc"+iter+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='cntr' name='min_experience_"+iter+"'></th><td><textarea name='personnel_req_skills_"+iter+"' id='personnel_req_skills"+iter+"' class='msg' style='width:100%;height:20px;'></textarea></td><td><textarea name='personnel_pref_skills_"+iter+"' id='personnel_pref_skills"+iter+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='datepicker"+iter+" cntr' style='font-size:10px;width:80px;height:16px;' name='mobilize_date_"+iter+"'></th><th><input type=checkbox name='paid_"+iter+"' value=1></th></tr>\n</table>";
+			break;
+			case 2:
+			//other
+			var defaultcellcontent = "<table border=0 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Detailed Specific Item Description<br><div class='sm'>(Facility: Type, Tent, Trailer Size etc.)<br>(Mobile Resources: Alternate Care Supply Cache, Mobile Field Hospital, Ambulance Strike Team)</div></th><th class='smb'>Product Class<br><div class='sm'>(Ea, Cache, Team)</div></th></tr>\n<tr><td><textarea name='other_item_desc_"+iter+"' id='other_item_desc"+iter+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='cntr' name='product_class_"+iter+"'></th></tr>\n</table>";
+			break;
+			default:
+			var defaultcelllcontent = "<table border=0 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th>Detailed Specific Item Description<br><div class='sm'><b>Vital characteristics, brand, specs, diagrams, and other info</b><br>(Type of Equipment, name, capabilities, output, capacity, Type of Supplies, name, size, capacity, etc.)</div></th><th class='smb' style='width:12%'>Product Class<br><span class='sm'>(Ea, Box, Cs., Pack)</span></th><th class='smb' style='width:12%'>Items per Product Class</th></tr>\n<tr><td><textarea name='supply_item_desc_"+iter+"' id='supply_item_desc"+iter+"' class='msg' style='width:100%;height:20px;'></textarea></td><th><input type=text class='cntr' name='product_class_"+iter+"'></th><th><input type=text class='cntr' name='items_per_product_class_"+iter+"'></th></tr>\n</table>";
+		}
 		var newrow = "<tr id='row_"+iter+"' valign=top>\n";
 		newrow += "<td style='width:4%;text-align:center;'><input type=hidden name='req_item_num[]' value="+iter+">"+iter+"</td>\n";
 		newrow += "<td style='width:5%'>\n";
@@ -164,13 +191,6 @@ function addReqRow() {
 		newrow += "<option value=3>Sustainment</option>\n";
 		newrow += "<option value=2>Urgent</option>\n";
 		newrow += "<option value=1>Emergent</option>\n";
-		newrow += "</select>\n";
-		newrow += "</td>\n";
-		newrow += "<td style='width:5%'>\n";
-		newrow += "<select name='req_item_type_"+iter+"' onchange='customRow("+iter+",this.value)' style='width:60px'>\n";
-		newrow += "<option value='supplies'>Supplies/Equipment</option>\n";
-		newrow += "<option value='personnel'>Personnel</option>\n";
-		newrow += "<option value='other'>Other</option>\n";
 		newrow += "</select>\n";
 		newrow += "</td>\n";
 		newrow += "<td id='maincell_"+iter+"' style='width:89%;padding:0;'>\n";
@@ -205,7 +225,7 @@ function customRow(rid,typ) {
 	if (typ=='personnel') {
 		jQuery(".datepicker"+rid).datetimepicker();
 	}
-	init();
+//	init();
 }
 function checkNodb(chk) {
 	jQuery(".nodb").prop("checked",chk);
@@ -318,13 +338,15 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
 
   <tr>
     <td style="font-weight:bold;padding-left:0px;;" colspan=3 class="noprint">
-	<table class="noborder" cellpadding=4 style="font-size:12px;">
+	<table class="noborder" cellpadding=4 style="font-size:12px;width:100%;">
 	<tr>
-	<td style="font-size:1.5em;padding-right:20px;" class="grey">5. ORDER SHEETS (OBSOLETE, choose Item Type below): <i>ATTACH ADDITIONAL</i></td>
-	<th><input type=checkbox name="req_order_supplies" value=1 disabled></th><td class="grey"><b>SUPPLIES</b></td>
-	<th><input type=checkbox name="req_order_equipment" value=1 disabled></th><td class="grey"><b>EQUIPMENT</b></td>
-	<th><input type=checkbox name="req_order_personnel" value=1 disabled></th><td class="grey"><b>PERSONNEL</b></td>
-	<th><input type=checkbox name="req_order_other" value=1 disabled></th><td class="grey"><b>OTHER</b></td></tr>
+	<td style="width:30%;font-size:1.5em;padding-right:20px;">5. ORDER SHEETS / REQUEST TYPE:</td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=SUPPLIES onclick="setReqType(0)" checked></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>SUPPLIES</b></td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=EQUIPMENT onclick="setReqType(0)"></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>EQUIPMENT</b></td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=PERSONNEL onclick="setReqType(1)"></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>PERSONNEL</b></td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=OTHER onclick="setReqType(2)"></th><td style="width:10%;font-size:1.5em;"><b>OTHER</b></td>
+	<td style="text-align:right;color:red;">ONLY ONE TYPE PER REQUEST</td>
+	</tr>
 	</table>
     </td>
   </tr>
@@ -342,25 +364,26 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
 	<p>I<br>T<br>E<br>M<br><br>#</th>
     <th style="width:5%;">
 	Priority<sup style="font-size:.7em">2</sup><br><span style="font-weight:normal;font-style:italic;font-size:.7em;">(See Below)</span></th>
-    <th style="width:5%;">
-	Item<br>Type</th>
     <td style="width:89%;text-align:center;font-weight:bold;">
     <h2 style="font-size:1.6em;margin:0px;color:red;"><span class="noprint">DETAILED SPECIFIC </span>ITEM DESCRIPTIONS:</h2>
-    <h3 class="noprint" style="margin:8px 0 0 0;color:red;">SUPPLIES / EQUIPMENT</h3>
-    <div class="noprint" style="width:90%;margin:0 0 12px 10%;text-align:left;font-weight:normal">
+    <div id="info0" style="display:block" class="info noprint">
+    <h3 style="margin:8px 0 0 0;color:red;">SUPPLIES / EQUIPMENT</h3>
+    <div style="width:90%;margin:0 0 12px 10%;text-align:left;font-weight:normal">
     <b>Rx:</b> Drug Name, Dosage Form, UNIT OF USE PACK or Volume, Prod Info Sheet, In-House PO, photos, etc.<br>
     <b>Medical Supplies:</b> Item name, Size, Brand, etc.<br>
     <b>General Supplies/Equipment:</b> Food, Water, Generators, etc.
-    </div>
-    <h3 class="noprint" style="margin:0px;color:red;">PERSONNEL</h3>
-    <div class="noprint" style="width:90%;margin:0 0 12px 10%;text-align:left;font-weight:normal">
+    </div></div>
+    <div id="info1" style="display:none" class="info noprint">
+    <h3 style="margin:8px 0 0 0;color:red;">PERSONNEL</h3>
+    <div style="width:90%;margin:0 0 12px 10%;text-align:left;font-weight:normal">
     <b>Type &amp; Probable Duties:</b>
     Req'd License, MD, RN, PharmD, ICU/OR Experience, Hospital/Clinical Experience, etc.
-    </div>
-    <h3 class="noprint" style="margin:0px;color:red;">OTHER</h3>
-    <div class="noprint" style="width:90%;margin:0 0 12px 10%;text-align:left;font-weight:normal">
+    </div></div>
+    <div id="info2" style="display:none" class="info noprint">
+    <h3 style="margin:8px 0 0 0;color:red;">OTHER</h3>
+    <div style="width:90%;margin:0 0 12px 10%;text-align:left;font-weight:normal">
     Mobile Field Hospital; Ambulance Strike Team; Alternate Care Supply Cache; Facility: Tent, Trailer, etc. +Size, etc.
-    </div></td>
+    </div></div></td>
     <th style="width:5%">
     Quantity Requested
     <p style="margin:10px 0 0 0;font-size:.6em;color:grey;">
@@ -388,13 +411,6 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
       <option value=1>Emergent</option>
       </select>
     </td>
-    <td style="width:5%">
-      <select name="req_item_type_1" onchange="customRow(1,this.value)" style="width:60px">
-      <option value="supplies">Supplies/Equipment</option>
-      <option value="personnel">Personnel</option>
-      <option value="other">Other</option>
-      </select>
-    </td>
     <td id="maincell_1" style="width:89%;padding:0;">
     <table border=0 cellpadding=2 cellspacing=0 style="border-color:white;width:100%;">
 <tr><th>Detailed Specific Item Description<br><div class="sm"><b>Vital characteristics, brand, specs, diagrams, and other info</b><br>(Type of Equipment, name, capabilities, output, capacity, Type of Supplies, name, size, capacity, etc.)</div></th><th class="smb" style="width:12%">Product Class<br><span class="sm">(Ea, Box, Cs., Pack)</span></th><th class="smb" style="width:12%">Items per Product Class</th></tr>
@@ -416,13 +432,6 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
       <option value=1>Emergent</option>
       </select>
     </td>
-    <td style="width:5%">
-      <select name="req_item_type_2" onchange="customRow(2,this.value)" style="width:60px">
-      <option value="supplies">Supplies/Equipment</option>
-      <option value="personnel">Personnel</option>
-      <option value="other">Other</option>
-      </select>
-    </td>
     <td id="maincell_2" style="width:89%;padding:0;">
     <table border=0 cellpadding=2 cellspacing=0 style="border-color:white;width:100%;">
 <tr><th>Detailed Specific Item Description<br><div class="sm"><b>Vital characteristics, brand, specs, diagrams, and other info</b><br>(Type of Equipment, name, capabilities, output, capacity, Type of Supplies, name, size, capacity, etc.)</div></th><th class="smb" style="width:12%">Product Class<br><span class="sm">(Ea, Box, Cs., Pack)</span></th><th class="smb" style="width:12%">Items per Product Class</th></tr>
@@ -442,13 +451,6 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
       <option value=3>Sustainment</option>
       <option value=2>Urgent</option>
       <option value=1>Emergent</option>
-      </select>
-    </td>
-    <td style="width:5%">
-      <select name="req_item_type_3" onchange="customRow(3,this.value)" style="width:60px">
-      <option value="supplies">Supplies/Equipment</option>
-      <option value="personnel">Personnel</option>
-      <option value="other">Other</option>
       </select>
     </td>
     <td id="maincell_3" style="width:89%;padding:0;">
