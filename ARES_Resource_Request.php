@@ -72,6 +72,7 @@ if (!empty($_POST['sendme'])) {
 	$priorities = array(1=>"EMERGENT",2=>"URGENT",3=>"SUSTAINMENT");
 	$minexper = array(1=>"current hospital",2=>"current clinical",3=>"current license",4=>"clinical education");
 	echo "<script type='text/javascript'>\n";
+	echo "if (opener) {\n";
 	echo "var frmdata = \"";
 	foreach($_POST as $k => $v) {
 		$thisi = NULL;
@@ -116,9 +117,15 @@ if (!empty($_POST['sendme'])) {
 	echo "opener.".$msgfld.".innerHTML = msgdata;\n";
 	echo "opener.focus();\n";
 	echo "self.close();\n";
+	echo "}\n";
+	echo "else { location.href='ARES_Resource_Request.php'; }\n";
 	echo "</script>\n";
 	exit;
 	}//end !empty msgfld
+	else {
+		header("Location: ARES_Resource_Request.php");
+		exit;
+	}
 }
 ?>
 
@@ -307,10 +314,10 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
     <p>C<br>O<br>M<br>P<br>L<br>E<br>T<br>E</p></th>
 
     <td style="width:76%;font-weight:bold;" class="lightred" valign=top>
-    1. Incident Name:<div style="padding-left:2%;font-weight:normal;">*&nbsp;<input tabindex=1 type="text" name="incident_name" id="incidentname" style="width:97%" maxlength=220 onblur="checkAuth(this.form)" value="<?=$inc?>"></div></td>
+    1. Incident Name:<div style="padding-left:2%;font-weight:normal;">*&nbsp;<input tabindex=1 type="text" name="incident_name" id="incident_name" style="width:97%" maxlength=220 onblur="checkAuth(this.form)" value="<?=$inc?>"></div></td>
     <th style="font-size:11px;width:12%;border-bottom:none;" class="lightred" valign=top>
     2a. Request DATE/TIME:<br>
-	*&nbsp;<input tabindex=2 type=text class="datepicker0" name="req_date" style="text-align:center;width:50%" maxlength=16 onblur="checkAuth(this.form)"></th>
+	*&nbsp;<input tabindex=2 type=text class="datepicker0" name="req_date" id="req_date" style="text-align:center;width:50%" maxlength=16 onblur="checkAuth(this.form)"></th>
     <!--th style="font-size:11px;width:12%;border-left:none;border-bottom:none;" class="lightgreen" valign=top>
     2b. Request TIME:<br>
 	<input tabindex=3 type=time class="timefld" name="req_time" style="text-align:center;width:90%;" maxlength=12></th-->
@@ -320,15 +327,15 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
     <td style="width:76%;font-weight:bold;" class="lightred" valign=top>
     3. Requestor Name, Agency, Position, Phone / Email:<br>
     <table class="noborder" style="width:100%;font-weight:normal;">
-	<tr><td>Requestor&nbsp;Name:</td><td style="width:84%">*&nbsp;<input tabindex=5 type=text name="req_name" style="width:97%" onblur="checkAuth(this.form)"></td></tr>
-	<tr><td>Agency:</td><td>*&nbsp;<input tabindex=6 type=text name="req_agency" class="location" style="text-align:left;width:97%;" maxlength=120 value="<?=$loc?>" onblur="checkAuth(this.form)"></td></tr>
-	<tr><td>Position:</td><td>*&nbsp;<input tabindex=7 type=text name="req_position" style="width:97%" maxlength=120 onblur="checkAuth(this.form)"></td></tr>
-	<tr><td>Phone:</td><td>*&nbsp;<input tabindex=8 type=text name="req_phone" style="width:30%" maxlength=40 onblur="checkAuth(this.form)"></td></tr>
-	<tr><td>Email:</td><td>*&nbsp;<input tabindex=9 type=text name="req_email" style="width:30%" maxlength=40 onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Requestor&nbsp;Name:</td><td style="width:84%">*&nbsp;<input tabindex=5 type=text name="req_name" id="req_name" style="width:97%" onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Agency:</td><td>*&nbsp;<input tabindex=6 type=text name="req_agency" id="req_agency" class="location" style="text-align:left;width:97%;" maxlength=120 value="<?=$loc?>" onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Position:</td><td>*&nbsp;<input tabindex=7 type=text name="req_position" id="req_position" style="width:97%" maxlength=120 onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Phone:</td><td>*&nbsp;<input tabindex=8 type=text name="req_phone" id="req_phone" style="width:30%" maxlength=40 onblur="checkAuth(this.form)"></td></tr>
+	<tr><td>Email:</td><td>*&nbsp;<input tabindex=9 type=text name="req_email" id="req_email" style="width:30%" maxlength=40 onblur="checkAuth(this.form)"></td></tr>
     </table></td>
     <th style="font-size:11px;width:24%;padding-top:10px;border-top:none;" class="lightred" valign=top>
     2b. Request TRACKING NUMBER:<br><span class="noprint" style="font-weight:normal;font-style:italic;">(Assigned by Requesting Entity)</span><br>
-	*&nbsp;<input tabindex=4 type=text name="req_tracking_num" style="width:50%;text-align:center;" onblur="checkAuth(this.form)"></b></font></td>
+	*&nbsp;<input tabindex=4 type=text name="req_tracking_num" id="req_tracking_num" style="width:50%;text-align:center;" onblur="checkAuth(this.form)"></b></font></td>
   </tr>
 
   <tr>
@@ -409,7 +416,7 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
   <tr id="row_1" valign=top class="lightred">
     <td style="width:4%;text-align:center;"><input type=hidden name="req_item_num[]" value=1>1*</td>
     <td style="width:5%">
-      <select name="req_item_priority_1" style="width:60px">
+      <select name="req_item_priority_1" id="req_item_priority_1" style="width:60px">
       <option value=0></option>
       <option value=3>Sustainment</option>
       <option value=2>Urgent</option>
@@ -422,7 +429,7 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
 <tr><td><textarea name="supply_item_desc_1" id="supply_item_desc1" class="msg" style="width:100%;height:20px;"></textarea></td><th><input type=text class="cntr" name="product_class_1"></th><th><input type=text class="cntr" name="items_per_product_class_1"></th></tr>
 </table></td>
     <th style="width:5%">
-    <input type=text name="req_item_qty_1" style="width:40px;text-align:center;" onblur="addReqRow()"></td>
+    <input type=text name="req_item_qty_1" id="req_item_qty_1" style="width:40px;text-align:center;" onblur="addReqRow()"></td>
     <td style="width:3%">
     <input type=text name="req_item_estdu_1" style="width:90px;text-align:center;" maxlength=40></td>
   </tr>
@@ -484,21 +491,21 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
   <tr class="lightred">
     <th style="width:4%" rowspan=5>
     <p>R<br>E<br>V<br>I<br>E<br>W</th>
-    <td style="font-weight:bold;" class="noprint" colspan=2>
+    <td style="font-weight:bold;" colspan=2>
     7. Requesting facility <u>must</u> confirm that these 3 requirements have been met prior to submission of request:
     </td>
   </tr>
-  <tr class="lightred noprint">
+  <tr class="lightred">
     <td style="font-size:.8em;font-weight:bold;" colspan=2>
     *<input type=checkbox id=req_confirm_1 name="req_confirm_1" value=1 onclick="checkAuth(this.form)">
     Is the resource(s) being requested exhausted or nearly exhausted?</td>
   </tr>
-  <tr class="lightred noprint">
+  <tr class="lightred">
     <td style="font-size:.8em;font-weight:bold;" colspan=2>
     *<input type=checkbox id=req_confirm_2 name="req_confirm_2" value=1 onclick="checkAuth(this.form)">
     Facility is unable to obtain resources within a reasonable time frame (based upon priority level below) from vendors, contractors, MOU/MOA's or corporate office?</td>
   </tr>
-  <tr class="lightred noprint">
+  <tr class="lightred">
     <td style="font-size:.8em;font-weight:bold;"  colspan=2>
     *<input type=checkbox id=req_confirm_3 name="req_confirm_3" value=1 onclick="checkAuth(this.form)">
     Facility is unable to obtain resource from other non-traditional sources?</td>
@@ -534,7 +541,7 @@ function initAuto() {
 		select: function(event, ui) {
 			event.preventDefault();
 			jQuery(this).val(ui.item.label);
-			locfld[this.id]=ui.item.label;
+//			locfld[this.id]=ui.item.label;
 		}
 	});
 
@@ -547,10 +554,10 @@ function initAuto() {
 		select: function(event, ui) {
 			event.preventDefault();
 			jQuery(this).val(ui.item.value);
-			pplfld[this.id]=ui.item.mid;
+//			pplfld[this.id]=ui.item.mid;
 		}
 	});
-	jQuery("#incidentname").autocomplete({
+	jQuery("#incident_name").autocomplete({
 		source: incidents,
 		focus: function(event, ui) {
 			event.preventDefault();

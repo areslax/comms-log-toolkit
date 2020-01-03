@@ -154,7 +154,7 @@ function orderBy(ob) {
 	.nobord { border: none !important; }
 	.noprint { display: none; }
 	.pbreak { page-break-before: always; }
-	.rhead { font-size: .8em; }
+	.rhead { font-size: .8em;white-space: nowrap; }
 	/* item classes */
 	.sustain { background-color: yellow !important; }
 	.urgent { background-color: orange !important; }
@@ -295,8 +295,10 @@ while($l=$q2->fetch(PDO::FETCH_ASSOC)) {
 	$othchk = "";
 	switch ($l['item_type']) {
 		case 'supplies':
+		case 'equipment':
 		//supply/equipment (DEFAULT)
-		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>Supply Item Description</th><th class='smb' style='width:12%'>Pkg Class</th><th class='smb' style='width:12%'>Units per Pkg Class</th></tr>\n<tr><td class='med'>".str_replace("\\r\\n","<br>",$l['item_desc'])."</td><td align=center class='med'>".$l['pkg_class']."</td><td align=center class='med'>".$l['units_per_pkg_class']."</td></tr>\n</table>";
+		$lbl = ($l['item_type']=='supplies') ? "Supply":"Equipment";
+		$thisrow = "<table border=1 cellpadding=2 cellspacing=0 style='border-color:white;width:100%;'>\n<tr><th class='rhead'>".$lbl." Item Description</th><th class='smb' style='width:12%'>Pkg Class</th><th class='smb' style='width:12%'>Units per Pkg Class</th></tr>\n<tr><td class='med'>".stripslashes(str_replace("\\r\\n","<br>",$l['item_desc']))."</td><td align=center class='med'>".$l['pkg_class']."</td><td align=center class='med'>".$l['units_per_pkg_class']."</td></tr>\n</table>";
 		$supchk = " selected";
 		break;
 		case 'personnel':
