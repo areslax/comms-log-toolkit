@@ -147,7 +147,8 @@ function checkAuth(frm) {
 	var gotpos = (document.getElementById('req_position').value!='') ? 1:0;
 	var gotphone = (document.getElementById('req_phone').value!='') ? 1:0;
 	var gotemail = (document.getElementById('req_email').value!='') ? 1:0;
-	var oktogo = (got1 && got2 && got3 && gotauth && gotsig && gotinc && gotdate && gottrack && gotname && gotagency && gotpos && gotphone && gotemail) ? 1:0;
+	var gotitem = (document.getElementById('req_item_priority_1').value>0 && document.getElementById('req_item_qty_1').value!='') ? 1:0;
+	var oktogo = (got1 && got2 && got3 && gotauth && gotsig && gotinc && gotdate && gottrack && gotname && gotagency && gotpos && gotphone && gotemail && gotitem) ? 1:0;
 	document.getElementsByClassName('bigbut')[1].style.backgroundColor = (oktogo) ? "yellow":"lightgrey";
 	document.getElementsByClassName('bigbut')[1].style.cursor = (oktogo) ? "pointer":"default";
 	document.getElementsByClassName('bigbut')[1].disabled = (oktogo) ? 0:1;
