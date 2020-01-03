@@ -19,6 +19,8 @@ if (!empty($_POST['sendme'])) {
 #	if (!empty($msgfld) && (!isset($_POST['nodb']) || empty($_POST['nodb']))) {
 	if (!isset($_POST['nodb']) || empty($_POST['nodb'])) {
 	require "db_conn.php";
+	//set request type
+	$type = $_POST['req_order_type'];
 	//clean up missing elements
 	//create resource request
 	$q = $conn->prepare("insert into Resource_Requests (incident_name,req_date,req_name,req_agency,req_position,req_phone,req_email,req_tracking_num,req_mission_desc,req_staging_note,req_supply_notes,req_delivery_notes,req_staging_notes,req_additional_notes,req_confirm_1,req_confirm_2,req_confirm_3,req_auth,req_sig) values (:iname,:rdate,:rname,:ragency,:rpos,:rphone,:remail,:rtracking,:rmission,:rstaging,:rsupplyn,:rdeliveryn,:rstagingn,:raddtln,:rconf1,:rconf2,:rconf3,:rauth,:rsig)");
@@ -29,9 +31,10 @@ if (!empty($_POST['sendme'])) {
 		if (empty($_POST['req_item_priority_'.$iid]) || empty($_POST['req_item_qty_'.$iid])) { continue; }
 		//what's what
 		$priority = $_POST['req_item_priority_'.$iid];
-		$type = $_POST['req_item_type_'.$iid];
+#		$type = $_POST['req_item_type_'.$iid];//set above, one type per request
 		switch ($type) {
 			case "supplies":
+			case "equipment":
 			$desc = trim(json_encode($_POST['supply_item_desc_'.$iid]),'"');
 			$q1 = $conn->prepare("insert into Resource_Request_Items (req_id,item_num,item_priority,item_type,item_desc,pkg_class,units_per_pkg_class,qty_requested,est_duration) values (:rid,:iid,:priority,:type,:desc,:pclass,:upclass,:qtyreq,:estdu)");
 			$q1->execute(array(":rid"=>$rid,":iid"=>$iid,":priority"=>$priority,":type"=>$type,":desc"=>$desc,":pclass"=>$_POST['product_class_'.$iid],":upclass"=>$_POST['items_per_product_class_'.$iid],":qtyreq"=>$_POST['req_item_qty_'.$iid],":estdu"=>$_POST['req_item_estdu_'.$iid]));
@@ -342,10 +345,10 @@ $nodb1 = (empty($rfld)) ? "":" <table border=0 style='border:none;display:inline
 	<table class="noborder" cellpadding=4 style="font-size:12px;width:100%;">
 	<tr>
 	<td style="width:30%;font-size:1.5em;padding-right:20px;">5. ORDER SHEETS / REQUEST TYPE:</td>
-	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=SUPPLIES onclick="setReqType(0)" checked></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>SUPPLIES</b></td>
-	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=EQUIPMENT onclick="setReqType(0)"></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>EQUIPMENT</b></td>
-	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=PERSONNEL onclick="setReqType(1)"></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>PERSONNEL</b></td>
-	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=OTHER onclick="setReqType(2)"></th><td style="width:10%;font-size:1.5em;"><b>OTHER</b></td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=supplies onclick="setReqType(0)" checked></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>SUPPLIES</b></td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=equipment onclick="setReqType(0)"></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>EQUIPMENT</b></td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=personnel onclick="setReqType(1)"></th><td style="width:10%;font-size:1.5em;padding-right:14px;"><b>PERSONNEL</b></td>
+	<th style="width:20px;padding-bottom:8px;"><input type=radio name="req_order_type" value=other onclick="setReqType(2)"></th><td style="width:10%;font-size:1.5em;"><b>OTHER</b></td>
 	<td style="text-align:right;color:red;">ONLY ONE TYPE PER REQUEST</td>
 	</tr>
 	</table>
